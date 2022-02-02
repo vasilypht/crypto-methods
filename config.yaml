@@ -1,0 +1,16 @@
+task names:
+    Basic concepts and history of cryptography:
+        - Atbash
+        - Scytale
+    Classical symmetric cryptosystems:
+        - name1
+        - name2
+        - name3
+    Modern symmetric cryptosyste:
+        - name4
+        - name5
+
+task id:
+    default: 0
+    Atbash: 1
+    Scytale: 2

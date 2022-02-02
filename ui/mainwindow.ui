@@ -50,7 +50,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QGroupBox" name="group_box_1">
+      <widget class="QGroupBox" name="group_box_left">
        <property name="title">
         <string>Encryption algorithms</string>
        </property>
@@ -87,7 +87,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QGroupBox" name="group_box_2">
+      <widget class="QGroupBox" name="group_box_right">
        <property name="title">
         <string>GroupBox</string>
        </property>
@@ -118,7 +118,7 @@
           <widget class="QWidget" name="page_0">
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <spacer name="verticalSpacer_2">
+             <spacer name="page_0_vertical_spacer_top">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
@@ -131,7 +131,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QLabel" name="label_page_0">
+             <widget class="QLabel" name="page_0_label_topic">
               <property name="font">
                <font>
                 <family>.AppleSystemUIFont</family>
@@ -148,7 +148,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_3">
+             <widget class="QLabel" name="page_0_label_subtopic">
               <property name="font">
                <font>
                 <family>.AppleSystemUIFont</family>
@@ -164,7 +164,7 @@
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer">
+             <spacer name="page_0_vertical_spacer_bottom">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
@@ -177,7 +177,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QLabel" name="label_4">
+             <widget class="QLabel" name="page_0_label_author">
               <property name="font">
                <font>
                 <family>.AppleSystemUIFont</family>
@@ -211,7 +211,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QGroupBox" name="groupBox">
+             <widget class="QGroupBox" name="page_1_group_box_input">
               <property name="title">
                <string>Input text</string>
               </property>
@@ -232,18 +232,18 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QTextEdit" name="textEdit"/>
+                <widget class="QTextEdit" name="page_1_text_edit_input"/>
                </item>
               </layout>
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout">
+             <layout class="QHBoxLayout" name="page_1_horizontal_layout">
               <property name="spacing">
                <number>0</number>
               </property>
               <item>
-               <spacer name="horizontalSpacer">
+               <spacer name="page_1_horizontal_spacer">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -259,7 +259,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton">
+               <widget class="QPushButton" name="page_1_button_calc">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -280,7 +280,7 @@
              </layout>
             </item>
             <item>
-             <widget class="QGroupBox" name="groupBox_2">
+             <widget class="QGroupBox" name="page_1_group_box_output">
               <property name="title">
                <string>Output text</string>
               </property>
@@ -301,7 +301,7 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QTextEdit" name="textEdit_2">
+                <widget class="QTextEdit" name="page_1_text_edit_output">
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>

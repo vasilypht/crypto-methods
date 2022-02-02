@@ -1,9 +1,10 @@
 import sys
 
-from PyQt6 import QtWidgets, QtGui, QtCore
 import yaml
+from PyQt6 import QtWidgets, QtGui
 
 from ui.mainwindow import Ui_MainWindow
+from ciphers import *
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -14,10 +15,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        self.__config = None
+
         self.ui.splitter.setStretchFactor(1, 1)
         self.ui.treeWidget.clicked.connect(self.__tree_widget_item_clicked)
 
-        self.__config = None
+        self.ui.page_1_button_calc.clicked.connect(self.page_1_button_calc_clicked)
 
         self.__load_config()
         self.__init_tree_widget()
@@ -41,7 +44,7 @@ class MainWindow(QtWidgets.QMainWindow):
         except AttributeError:
             path = f"./{item.text(0)}"
 
-        self.ui.group_box_2.setTitle(path)
+        self.ui.group_box_right.setTitle(path)
         self.ui.stackedWidget.setCurrentIndex(self.__config["task id"].get(item.text(0), 0))
 
     def __init_tree_widget(self):
@@ -55,8 +58,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.treeWidget.insertTopLevelItems(0, items)
 
     def __init_stacked_widget_default(self):
-        self.ui.group_box_2.setTitle("Cryptographic methods")
+        self.ui.group_box_right.setTitle("Cryptographic methods")
         self.ui.stackedWidget.setCurrentIndex(0)
+
+    def page_1_button_calc_clicked(self):
+        input_text = self.ui.page_1_text_edit_input.toPlainText()
+        processed_text = atbash.encrypt(input_text)
+        self.ui.page_1_text_edit_output.setText(processed_text)
 
 
 if __name__ == "__main__":

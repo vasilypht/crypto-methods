@@ -15,10 +15,16 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.__config = None
 
+        # General settings
         self.ui.splitter.setStretchFactor(1, 1)
         self.ui.treeWidget.clicked.connect(self.tree_widget_item_clicked)
 
+        # page 1
         self.ui.page_1_button_calc.clicked.connect(self.page_1_button_calc_clicked)
+
+        # page 2
+        self.ui.page_2_check_box_columns.stateChanged.connect(self.page_2_check_box_check)
+        self.ui.page_2_button_calc.clicked.connect(self.page_2_button_calc_clicked)
 
         self.__load_config()
         self.__init_tree_widget()
@@ -64,10 +70,37 @@ class MainWindow(QtWidgets.QMainWindow):
         processed_text = sym.atbash.encrypt(input_text)
         self.ui.page_1_text_edit_output.setText(processed_text)
 
+    def page_2_check_box_check(self):
+        if self.ui.page_2_check_box_columns.isChecked():
+            self.ui.page_2_spin_box_columns.setDisabled(False)
+            self.ui.page_2_check_box_columns.setStyleSheet("color: white")
+        else:
+            self.ui.page_2_spin_box_columns.setDisabled(True)
+            self.ui.page_2_check_box_columns.setStyleSheet("color: grey")
+
+    def page_2_button_calc_clicked(self):
+        text = self.ui.page_2_text_edit_input.toPlainText()
+        n = self.ui.page_2_spin_box_rows.value()
+
+        if self.ui.page_2_spin_box_columns.isEnabled():
+            m = self.ui.page_2_spin_box_columns.value()
+        else:
+            m = (len(text) - 1) // n + 1
+
+        match self.ui.page_2_combo_box_rows.currentText():
+            case "Encrypt":
+                processed_text = sym.scytale.encrypt(text, n, m)
+            case "Decrypt":
+                processed_text = sym.scytale.decrypt(text, n)
+            case _:
+                processed_text = ""
+
+        self.ui.page_2_text_edit_output.setText(processed_text)
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    app.setWindowIcon(QtGui.QIcon("../share/icon/cyber-security.png"))
+    app.setWindowIcon(QtGui.QIcon("resources/icon/cyber-security.png"))
     window = MainWindow()
     window.show()
 

@@ -3,22 +3,20 @@ import sys
 import yaml
 from PyQt6 import QtWidgets, QtGui
 
-from ui.mainwindow import Ui_MainWindow
-from ciphers import *
+from gui.mainwindow import Ui_MainWindow
+from methods import symmetric as sym
 
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        QtGui.QFontDatabase.addApplicationFont("fonts/SourceSansPro-Regular.ttf")
-
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         self.__config = None
 
         self.ui.splitter.setStretchFactor(1, 1)
-        self.ui.treeWidget.clicked.connect(self.__tree_widget_item_clicked)
+        self.ui.treeWidget.clicked.connect(self.tree_widget_item_clicked)
 
         self.ui.page_1_button_calc.clicked.connect(self.page_1_button_calc_clicked)
 
@@ -28,14 +26,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __load_config(self):
         try:
-            with open("config.yaml", "r") as cfg:
+            with open("src/config.yaml", "r") as cfg:
                 self.__config = yaml.safe_load(cfg)
 
         except IOError:
             QtWidgets.QMessageBox.critical(self, "Error!", "Failed to open config!")
             sys.exit(0)
 
-    def __tree_widget_item_clicked(self):
+    def tree_widget_item_clicked(self):
         item = self.ui.treeWidget.currentItem()
         parent = item.parent()
 
@@ -63,13 +61,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def page_1_button_calc_clicked(self):
         input_text = self.ui.page_1_text_edit_input.toPlainText()
-        processed_text = atbash.encrypt(input_text)
+        processed_text = sym.atbash.encrypt(input_text)
         self.ui.page_1_text_edit_output.setText(processed_text)
 
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    app.setWindowIcon(QtGui.QIcon("icon/cyber-security.png"))
+    app.setWindowIcon(QtGui.QIcon("../share/icon/cyber-security.png"))
     window = MainWindow()
     window.show()
 

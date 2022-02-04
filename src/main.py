@@ -79,21 +79,13 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.page_2_check_box_columns.setStyleSheet("color: grey")
 
     def page_2_button_calc_clicked(self):
-        text = self.ui.page_2_text_edit_input.toPlainText()
-        n = self.ui.page_2_spin_box_rows.value()
-
-        if self.ui.page_2_spin_box_columns.isEnabled():
-            m = self.ui.page_2_spin_box_columns.value()
-        else:
-            m = (len(text) - 1) // n + 1
-
-        match self.ui.page_2_combo_box_rows.currentText():
-            case "Encrypt":
-                processed_text = sym.scytale.encrypt(text, n, m)
-            case "Decrypt":
-                processed_text = sym.scytale.decrypt(text, n)
-            case _:
-                processed_text = ""
+        processed_text = sym.scytale.make(
+            text=self.ui.page_2_text_edit_input.toPlainText(),
+            n=self.ui.page_2_spin_box_rows.value(),
+            m=self.ui.page_2_spin_box_columns.value(),
+            processing_type=self.ui.page_2_combo_box_rows.currentText(),
+            auto_m=not self.ui.page_2_check_box_columns.isChecked()
+        )
 
         self.ui.page_2_text_edit_output.setText(processed_text)
 

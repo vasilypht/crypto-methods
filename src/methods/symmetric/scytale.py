@@ -9,7 +9,7 @@ def encrypt(text: str, n: int, m: int) -> str:
         lines_list.append(line)
 
     flip_lines_list = [i for i in zip(*lines_list)]
-    return ''.join(''.join(i) for i in flip_lines_list)
+    return ''.join(''.join(i) for i in flip_lines_list).rstrip()
 
 
 def decrypt(text: str, n: int) -> str:
@@ -19,4 +19,4 @@ def decrypt(text: str, n: int) -> str:
         line = text[i:len(text):n]
         lines_list.append(line)
 
-    return ''.join(lines_list)
+    return ''.join(lines_list).rstrip()

@@ -66,8 +66,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.stackedWidget.setCurrentIndex(0)
 
     def page_1_button_calc_clicked(self):
-        input_text = self.ui.page_1_text_edit_input.toPlainText()
-        processed_text = sym.atbash.encrypt(input_text)
+        processed_text = sym.atbash.make(
+            text=self.ui.page_1_text_edit_input.toPlainText()
+        )
         self.ui.page_1_text_edit_output.setText(processed_text)
 
     def page_2_check_box_check(self):

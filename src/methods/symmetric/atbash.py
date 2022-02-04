@@ -24,3 +24,7 @@ def encrypt(text: str) -> str:
 
         letters_list[i] = letter
     return ''.join(letters_list)
+
+
+def make(text: str) -> str:
+    return encrypt(text)

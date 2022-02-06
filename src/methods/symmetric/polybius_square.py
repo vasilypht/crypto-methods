@@ -157,6 +157,7 @@ def method_3(text: str, shift: int = 1, processing_type: str = "Encrypt") -> str
     if shift <= 0 or shift % 2 == 0:
         raise Exception("Invalid shift value! Value must be odd!")
 
+    shift %= len(text)
     letter_indices, indices_i, indices_j = _get_indices(text)
 
     match processing_type:

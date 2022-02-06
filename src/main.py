@@ -26,13 +26,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_2_check_box_columns.stateChanged.connect(self.page_2_check_box_check)
         self.ui.page_2_button_calc.clicked.connect(self.page_2_button_calc_clicked)
 
+        # page 3
+        self.ui.page_3_combo_box_method.currentIndexChanged.connect(self.page_3_combo_box_check)
+        self.ui.page_3_button_calc.clicked.connect(self.page_3_button_calc_clicked)
+
         self.__load_config()
         self.__init_tree_widget()
         self.__init_stacked_widget_default()
 
     def __load_config(self):
         try:
-            with open("src/config.yaml", "r") as cfg:
+            with open("config.yaml", "r") as cfg:
                 self.__config = yaml.safe_load(cfg)
 
         except IOError:
@@ -84,16 +88,33 @@ class MainWindow(QtWidgets.QMainWindow):
             text=self.ui.page_2_text_edit_input.toPlainText(),
             n=self.ui.page_2_spin_box_rows.value(),
             m=self.ui.page_2_spin_box_columns.value(),
-            processing_type=self.ui.page_2_combo_box_rows.currentText(),
+            processing_type=self.ui.page_2_combo_box_type.currentText(),
             auto_m=not self.ui.page_2_check_box_columns.isChecked()
         )
 
         self.ui.page_2_text_edit_output.setText(processed_text)
 
+    def page_3_combo_box_check(self):
+        if self.ui.page_3_combo_box_method.currentText() == "Method 3":
+            self.ui.page_3_spin_box_shift.setDisabled(False)
+            self.ui.page_3_label_shift.setStyleSheet("color: white")
+        else:
+            self.ui.page_3_spin_box_shift.setDisabled(True)
+            self.ui.page_3_label_shift.setStyleSheet("color: grey")
+
+    def page_3_button_calc_clicked(self):
+        processed_text = sym.polybius_square.make(
+            text=self.ui.page_3_text_edit_input.toPlainText(),
+            method=self.ui.page_3_combo_box_method.currentText(),
+            shift=self.ui.page_3_spin_box_shift.value(),
+            processing_type=self.ui.page_3_combo_box_type.currentText()
+        )
+        self.ui.page_3_text_edit_output.setText(processed_text)
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    app.setWindowIcon(QtGui.QIcon("resources/icon/cyber-security.png"))
+    app.setWindowIcon(QtGui.QIcon("../resources/icon/cyber-security.png"))
     window = MainWindow()
     window.show()
 

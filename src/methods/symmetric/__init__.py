@@ -1,5 +1,6 @@
 from . import (
     atbash,
     scytale,
-    polybius_square
+    polybius_square,
+    caesar
 )

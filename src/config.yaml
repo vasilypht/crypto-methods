@@ -3,6 +3,7 @@ task names:
         - Atbash
         - Scytale
         - Polybius Square
+        - Caesar
     Classical symmetric cryptosystems:
         - name1
         - name2
@@ -16,3 +17,4 @@ task id:
     Atbash: 1
     Scytale: 2
     Polybius Square: 3
+    Caesar: 4

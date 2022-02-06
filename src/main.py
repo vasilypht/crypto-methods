@@ -30,6 +30,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_3_combo_box_method.currentIndexChanged.connect(self.page_3_combo_box_check)
         self.ui.page_3_button_calc.clicked.connect(self.page_3_button_calc_clicked)
 
+        # page 4
+        self.ui.page_4_button_calc.clicked.connect(self.page_4_button_calc_clicked)
+
         self.__load_config()
         self.__init_tree_widget()
         self.__init_stacked_widget_default()
@@ -110,6 +113,14 @@ class MainWindow(QtWidgets.QMainWindow):
             processing_type=self.ui.page_3_combo_box_type.currentText()
         )
         self.ui.page_3_text_edit_output.setText(processed_text)
+
+    def page_4_button_calc_clicked(self):
+        processed_text = sym.caesar.make(
+            text=self.ui.page_4_text_edit_input.toPlainText(),
+            shift=self.ui.page_4_spin_box_shift.value(),
+            processing_type=self.ui.page_4_combo_box_type.currentText()
+        )
+        self.ui.page_4_text_edit_output.setText(processed_text)
 
 
 if __name__ == "__main__":

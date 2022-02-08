@@ -4,6 +4,7 @@ task names:
         - Scytale
         - Polybius Square
         - Caesar
+        - Cardan grille
     Classical symmetric cryptosystems:
         - name1
         - name2
@@ -18,3 +19,4 @@ task id:
     Scytale: 2
     Polybius Square: 3
     Caesar: 4
+    Cardan grille: 5

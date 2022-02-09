@@ -3,5 +3,6 @@ from . import (
     scytale,
     polybius_square,
     caesar,
-    cardan_grille
+    cardan_grille,
+    richelieu
 )

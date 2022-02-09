@@ -5,6 +5,7 @@ task names:
         - Polybius Square
         - Caesar
         - Cardan grille
+        - Richelieu
     Classical symmetric cryptosystems:
         - name1
         - name2
@@ -20,3 +21,4 @@ task id:
     Polybius Square: 3
     Caesar: 4
     Cardan grille: 5
+    Richelieu: 6

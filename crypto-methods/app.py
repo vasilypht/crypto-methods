@@ -1,12 +1,15 @@
 import sys
-import math
+import re
+import webbrowser
 
-from PyQt6 import QtWidgets, QtGui
+from PyQt6 import QtWidgets, QtGui, QtCore
 import yaml
 import numpy as np
 
 from gui.mainwindow import Ui_MainWindow
 from methods import symmetric as sym
+
+QtCore.QDir.addSearchPath("icons", "resources/icons")
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -18,8 +21,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__config = None
 
         # General settings
+        self.setWindowTitle("Crypto methods")
         self.ui.splitter.setStretchFactor(1, 1)
         self.ui.treeWidget.clicked.connect(self.tree_widget_item_clicked)
+        self.ui.group_box_right.setTitle("Cryptographic methods")
+        self.ui.stackedWidget.setCurrentIndex(0)
+
+        # page 0
+        self.ui.page_0_button_vk.setIcon(QtGui.QIcon("icons:icon-vk.png"))
+        self.ui.page_0_button_vk.clicked.connect(lambda: webbrowser.open(f"https://{self.ui.page_0_button_vk.text()}"))
+
+        self.ui.page_0_button_tg.setIcon(QtGui.QIcon("icons:icon-telegram.png"))
+        self.ui.page_0_button_tg.clicked.connect(lambda: webbrowser.open(f"https://{self.ui.page_0_button_tg.text()}"))
+
+        self.ui.page_0_button_github.setIcon(QtGui.QIcon("icons:icon-github.png"))
+        self.ui.page_0_button_github.clicked.connect(lambda: webbrowser.open(f"https://{self.ui.page_0_button_github.text()}"))
 
         # page 1
         self.ui.page_1_button_calc.clicked.connect(self.page_1_button_calc_clicked)
@@ -39,18 +55,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_5_button_gen_stencil.clicked.connect(self.page_5_button_gen_stencil_clicked)
         self.ui.page_5_button_calc.clicked.connect(self.page_5_button_calc_clicked)
 
-        self.__load_config()
-        self.__init_tree_widget()
-        self.__init_stacked_widget_default()
+        # page 6
+        self.ui.page_6_button_calc.clicked.connect(self.page_6_button_calc_clicked)
 
-    def __load_config(self):
-        try:
-            with open("config.yaml", "r") as cfg:
-                self.__config = yaml.safe_load(cfg)
-
-        except IOError:
-            QtWidgets.QMessageBox.critical(self, "Error!", "Failed to open config!")
-            sys.exit(0)
+        self.load_config()
+        self.init_tree_widget()
 
     def tree_widget_item_clicked(self):
         item = self.ui.treeWidget.currentItem()
@@ -64,7 +73,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.group_box_right.setTitle(path)
         self.ui.stackedWidget.setCurrentIndex(self.__config["task id"].get(item.text(0), 0))
 
-    def __init_tree_widget(self):
+    def load_config(self):
+        try:
+            with open("config.yaml", "r") as cfg:
+                self.__config = yaml.safe_load(cfg)
+
+        except IOError:
+            QtWidgets.QMessageBox.critical(self, "Error!", "Failed to open config!")
+            sys.exit(0)
+
+    def init_tree_widget(self):
         items = []
         for key, values in self.__config["task names"].items():
             item = QtWidgets.QTreeWidgetItem((key,))
@@ -73,10 +91,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 item.addChild(child)
             items.append(item)
         self.ui.treeWidget.insertTopLevelItems(0, items)
-
-    def __init_stacked_widget_default(self):
-        self.ui.group_box_right.setTitle("Cryptographic methods")
-        self.ui.stackedWidget.setCurrentIndex(0)
 
     def page_1_button_calc_clicked(self):
         processed_text = sym.atbash.make(
@@ -193,9 +207,47 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_5_table_widget_preview.resizeRowsToContents()
         self.ui.page_5_table_widget_preview.resizeColumnsToContents()
 
+    def page_6_button_calc_clicked(self):
+        key_text = self.ui.page_6_line_edit_key.text()
+        input_text = self.ui.page_6_text_edit_input.toPlainText()
+
+        if not key_text:
+            QtWidgets.QMessageBox.warning(self, "Warning!", "The key field is empty. Enter the key!")
+            return
+
+        if not re.match(r"^\(\d+(,\d+|\)\(\d+)*\)$", key_text):
+            QtWidgets.QMessageBox.warning(self, "Warning!", "Invalid key entered!")
+            return
+
+        # parse key str
+        key_list = key_text.strip("()").split(")(")
+        for i in range(len(key_list)):
+            subkey = key_list[i].split(",")
+            key_list[i] = list(map(int, subkey))
+
+        # check range
+        for subkey in key_list:
+            for i in range(1, len(subkey) + 1):
+                if i not in subkey:
+                    QtWidgets.QMessageBox.warning(self, "Warning!", "Invalid key entered!")
+                    return
+
+        # check len
+        len_key = sum(len(subkey) for subkey in key_list)
+        if len_key > len(input_text):
+            QtWidgets.QMessageBox.warning(self, "Warning!", "Invalid key entered!")
+            return
+
+        processed_text = sym.richelieu.make(
+            text=input_text,
+            key=key_list,
+        )
+        self.ui.page_6_text_edit_output.setText(processed_text)
+
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    app.setWindowIcon(QtGui.QIcon("../resources/icon/cyber-security.png"))
+    app.setWindowIcon(QtGui.QIcon("icons:icon-app.png"))
     window = MainWindow()
     window.show()
 

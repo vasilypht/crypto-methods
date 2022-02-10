@@ -3,10 +3,6 @@ def encrypt(
         text: str,
         key: list[list[int]]
 ) -> str:
-    len_key = sum(len(subkey) for subkey in key)
-    if len_key > len(text):
-        raise Exception("The total length of the key is greater than the length of the text!")
-
     encrypted_text = ""
 
     text_index = 0

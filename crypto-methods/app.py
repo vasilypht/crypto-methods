@@ -234,12 +234,6 @@ class MainWindow(QtWidgets.QMainWindow):
                     QtWidgets.QMessageBox.warning(self, "Warning!", "Invalid key entered!")
                     return
 
-        # check len
-        len_key = sum(len(subkey) for subkey in key_list)
-        if len_key > len(input_text):
-            QtWidgets.QMessageBox.warning(self, "Warning!", "Invalid key entered!")
-            return
-
         processed_text = sym.richelieu.make(
             text=input_text,
             key=key_list,

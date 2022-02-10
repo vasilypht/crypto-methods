@@ -244,6 +244,7 @@ class MainWindow(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     app.setWindowIcon(QtGui.QIcon("icons:icon-app.png"))
+    app.setStyleSheet(open("gui/stylesheet.css").read())
     window = MainWindow()
     window.show()
 

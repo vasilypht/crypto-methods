@@ -30,8 +30,7 @@ class Ui_MainWindow(object):
         self.splitter.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.splitter.setObjectName("splitter")
         self.group_box_left = QtWidgets.QGroupBox(self.splitter)
-        self.group_box_left.setStyleSheet("\n"
-"")
+        self.group_box_left.setStyleSheet("")
         self.group_box_left.setObjectName("group_box_left")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.group_box_left)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -67,9 +66,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.page_0_button_vk.sizePolicy().hasHeightForWidth())
         self.page_0_button_vk.setSizePolicy(sizePolicy)
-        self.page_0_button_vk.setStyleSheet("background: transparent;\n"
-"border: none;\n"
-"")
+        self.page_0_button_vk.setStyleSheet("")
         self.page_0_button_vk.setObjectName("page_0_button_vk")
         self.page_0_horizontal_layout_links.addWidget(self.page_0_button_vk)
         self.page_0_button_tg = QtWidgets.QPushButton(self.page_0)
@@ -78,9 +75,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.page_0_button_tg.sizePolicy().hasHeightForWidth())
         self.page_0_button_tg.setSizePolicy(sizePolicy)
-        self.page_0_button_tg.setStyleSheet("background: transparent;\n"
-"border: none;\n"
-"")
+        self.page_0_button_tg.setStyleSheet("")
         self.page_0_button_tg.setIconSize(QtCore.QSize(16, 16))
         self.page_0_button_tg.setCheckable(False)
         self.page_0_button_tg.setFlat(False)
@@ -92,8 +87,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.page_0_button_github.sizePolicy().hasHeightForWidth())
         self.page_0_button_github.setSizePolicy(sizePolicy)
-        self.page_0_button_github.setStyleSheet("background: transparent;\n"
-"border: none;\n"
+        self.page_0_button_github.setStyleSheet("\n"
 "\n"
 "")
         self.page_0_button_github.setObjectName("page_0_button_github")
@@ -223,7 +217,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.page_2_check_box_columns.sizePolicy().hasHeightForWidth())
         self.page_2_check_box_columns.setSizePolicy(sizePolicy)
         self.page_2_check_box_columns.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
-        self.page_2_check_box_columns.setStyleSheet("color: grey")
+        self.page_2_check_box_columns.setStyleSheet("")
         self.page_2_check_box_columns.setAutoExclusive(False)
         self.page_2_check_box_columns.setTristate(False)
         self.page_2_check_box_columns.setObjectName("page_2_check_box_columns")
@@ -320,7 +314,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.page_3_label_shift.sizePolicy().hasHeightForWidth())
         self.page_3_label_shift.setSizePolicy(sizePolicy)
-        self.page_3_label_shift.setStyleSheet("color: grey")
+        self.page_3_label_shift.setStyleSheet("")
         self.page_3_label_shift.setObjectName("page_3_label_shift")
         self.page_3_horizontal_layout_2.addWidget(self.page_3_label_shift)
         self.page_3_spin_box_shift = QtWidgets.QSpinBox(self.page_3)
@@ -450,8 +444,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.page_5_table_widget_stencil.sizePolicy().hasHeightForWidth())
         self.page_5_table_widget_stencil.setSizePolicy(sizePolicy)
-        self.page_5_table_widget_stencil.setStyleSheet("\n"
-"")
+        self.page_5_table_widget_stencil.setStyleSheet("")
         self.page_5_table_widget_stencil.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
         self.page_5_table_widget_stencil.setAlternatingRowColors(True)
         self.page_5_table_widget_stencil.setTextElideMode(QtCore.Qt.TextElideMode.ElideLeft)
@@ -472,8 +465,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_22.setSpacing(0)
         self.verticalLayout_22.setObjectName("verticalLayout_22")
         self.page_5_text_edit_input = QtWidgets.QTextEdit(self.page_5_group_box_input)
-        self.page_5_text_edit_input.setStyleSheet("\n"
-"")
+        self.page_5_text_edit_input.setStyleSheet("")
         self.page_5_text_edit_input.setObjectName("page_5_text_edit_input")
         self.verticalLayout_22.addWidget(self.page_5_text_edit_input)
         self.page_5_horizontal_layout_1.addWidget(self.page_5_group_box_input)
@@ -658,7 +650,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(5)
+        self.stackedWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

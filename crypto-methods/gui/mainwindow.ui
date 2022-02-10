@@ -52,8 +52,7 @@
       </property>
       <widget class="QGroupBox" name="group_box_left">
        <property name="styleSheet">
-        <string notr="true">
-</string>
+        <string notr="true"/>
        </property>
        <property name="title">
         <string>Encryption algorithms</string>
@@ -129,7 +128,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>5</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="page_0">
            <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -144,9 +143,7 @@
                  </sizepolicy>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">background: transparent;
-border: none;
-</string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
                  <string>vk.com/vasilypht</string>
@@ -162,9 +159,7 @@ border: none;
                  </sizepolicy>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">background: transparent;
-border: none;
-</string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
                  <string>t.me/vasilypht</string>
@@ -192,8 +187,7 @@ border: none;
                  </sizepolicy>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">background: transparent;
-border: none;
+                 <string notr="true">
 
 </string>
                 </property>
@@ -540,7 +534,7 @@ border: none;
                  <enum>Qt::LeftToRight</enum>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: grey</string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
                  <string>Custom number of columns:</string>
@@ -777,7 +771,7 @@ border: none;
                  </sizepolicy>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: grey</string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
                  <string>Shift:</string>
@@ -1113,8 +1107,7 @@ border: none;
                     </sizepolicy>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">
-</string>
+                    <string notr="true"/>
                    </property>
                    <property name="editTriggers">
                     <set>QAbstractItemView::NoEditTriggers</set>
@@ -1169,8 +1162,7 @@ border: none;
                  <item>
                   <widget class="QTextEdit" name="page_5_text_edit_input">
                    <property name="styleSheet">
-                    <string notr="true">
-</string>
+                    <string notr="true"/>
                    </property>
                   </widget>
                  </item>

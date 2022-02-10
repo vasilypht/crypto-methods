@@ -86,8 +86,10 @@ class MainWindow(QtWidgets.QMainWindow):
         items = []
         for key, values in self.__config["task names"].items():
             item = QtWidgets.QTreeWidgetItem((key,))
+            item.setIcon(0, QtGui.QIcon("icons:icon-folder.png"))
             for value in values:
                 child = QtWidgets.QTreeWidgetItem((value,))
+                child.setIcon(0, QtGui.QIcon("icons:icon-doc.png"))
                 item.addChild(child)
             items.append(item)
         self.ui.treeWidget.insertTopLevelItems(0, items)

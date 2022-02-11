@@ -74,7 +74,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QTreeWidget" name="treeWidget">
+         <widget class="QTreeWidget" name="tree_widget_list_apps">
           <property name="mouseTracking">
            <bool>false</bool>
           </property>
@@ -128,7 +128,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>6</number>
           </property>
           <widget class="QWidget" name="page_0">
            <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -187,9 +187,7 @@
                  </sizepolicy>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">
-
-</string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
                  <string>github.com/vasilypht</string>
@@ -273,19 +271,19 @@
           <widget class="QWidget" name="page_1">
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <property name="spacing">
-             <number>-1</number>
+             <number>12</number>
             </property>
             <property name="leftMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="topMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="rightMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="bottomMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <item>
              <widget class="QGroupBox" name="page_1_group_box_input">
@@ -317,7 +315,7 @@
             <item>
              <layout class="QHBoxLayout" name="page_1_horizontal_layout">
               <property name="spacing">
-               <number>0</number>
+               <number>12</number>
               </property>
               <item>
                <spacer name="page_1_horizontal_spacer">
@@ -392,19 +390,19 @@
           <widget class="QWidget" name="page_2">
            <layout class="QVBoxLayout" name="verticalLayout_10">
             <property name="spacing">
-             <number>0</number>
+             <number>12</number>
             </property>
             <property name="leftMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="topMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="rightMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="bottomMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <item>
              <widget class="QGroupBox" name="page_2_group_box_input">
@@ -439,10 +437,13 @@
                <number>4</number>
               </property>
               <property name="leftMargin">
-               <number>3</number>
+               <number>8</number>
               </property>
               <property name="topMargin">
-               <number>4</number>
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
               </property>
               <property name="bottomMargin">
                <number>0</number>
@@ -520,6 +521,9 @@
             <item>
              <layout class="QHBoxLayout" name="page_2_horizontal_layout_columns">
               <property name="spacing">
+               <number>8</number>
+              </property>
+              <property name="leftMargin">
                <number>8</number>
               </property>
               <item>
@@ -648,19 +652,19 @@
           <widget class="QWidget" name="page_3">
            <layout class="QVBoxLayout" name="verticalLayout_13">
             <property name="spacing">
-             <number>0</number>
+             <number>12</number>
             </property>
             <property name="leftMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="topMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="rightMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="bottomMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <item>
              <widget class="QGroupBox" name="page_3_group_box_input">
@@ -691,8 +695,14 @@
             </item>
             <item>
              <layout class="QHBoxLayout" name="page_3_horizontal_layout_1">
+              <property name="spacing">
+               <number>12</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
               <property name="topMargin">
-               <number>6</number>
+               <number>0</number>
               </property>
               <item>
                <widget class="QComboBox" name="page_3_combo_box_method">
@@ -757,7 +767,7 @@
             <item>
              <layout class="QHBoxLayout" name="page_3_horizontal_layout_2">
               <property name="spacing">
-               <number>4</number>
+               <number>12</number>
               </property>
               <property name="leftMargin">
                <number>8</number>
@@ -870,19 +880,19 @@
           <widget class="QWidget" name="page_4">
            <layout class="QVBoxLayout" name="verticalLayout_16">
             <property name="spacing">
-             <number>0</number>
+             <number>12</number>
             </property>
             <property name="leftMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="topMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="rightMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="bottomMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <item>
              <widget class="QGroupBox" name="page_4_group_box_input">
@@ -914,13 +924,13 @@
             <item>
              <layout class="QHBoxLayout" name="page_4_horizontal_layout_1">
               <property name="spacing">
-               <number>4</number>
+               <number>12</number>
               </property>
               <property name="leftMargin">
                <number>8</number>
               </property>
               <property name="topMargin">
-               <number>6</number>
+               <number>0</number>
               </property>
               <item>
                <widget class="QLabel" name="page_4_label_shift">
@@ -1061,19 +1071,19 @@
           <widget class="QWidget" name="page_5">
            <layout class="QVBoxLayout" name="verticalLayout_26">
             <property name="spacing">
-             <number>0</number>
+             <number>12</number>
             </property>
             <property name="leftMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="topMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="rightMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="bottomMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <item>
              <layout class="QHBoxLayout" name="page_5_horizontal_layout_1">
@@ -1173,11 +1183,14 @@
             </item>
             <item>
              <layout class="QHBoxLayout" name="page_5_horizontal_layout_2">
+              <property name="spacing">
+               <number>12</number>
+              </property>
               <property name="leftMargin">
-               <number>6</number>
+               <number>8</number>
               </property>
               <property name="topMargin">
-               <number>8</number>
+               <number>0</number>
               </property>
               <item>
                <widget class="QPushButton" name="page_5_button_gen_stencil">
@@ -1250,7 +1263,7 @@
             <item>
              <layout class="QHBoxLayout" name="page_5_horizontal_layout_3">
               <property name="spacing">
-               <number>4</number>
+               <number>12</number>
               </property>
               <property name="leftMargin">
                <number>8</number>
@@ -1416,19 +1429,19 @@
           <widget class="QWidget" name="page_6">
            <layout class="QVBoxLayout" name="verticalLayout_19">
             <property name="spacing">
-             <number>0</number>
+             <number>12</number>
             </property>
             <property name="leftMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="topMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="rightMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <property name="bottomMargin">
-             <number>0</number>
+             <number>4</number>
             </property>
             <item>
              <widget class="QGroupBox" name="page_6_group_box_input">
@@ -1459,11 +1472,14 @@
             </item>
             <item>
              <layout class="QHBoxLayout" name="page_6_horizontal_layout_2">
+              <property name="spacing">
+               <number>12</number>
+              </property>
               <property name="leftMargin">
-               <number>4</number>
+               <number>8</number>
               </property>
               <property name="topMargin">
-               <number>6</number>
+               <number>0</number>
               </property>
               <item>
                <widget class="QLabel" name="page_6_label_key">

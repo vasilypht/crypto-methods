@@ -23,7 +23,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # General settings
         self.setWindowTitle("Crypto methods")
         self.ui.splitter.setStretchFactor(1, 1)
-        self.ui.treeWidget.clicked.connect(self.tree_widget_item_clicked)
+        self.ui.tree_widget_list_apps.clicked.connect(self.tree_widget_item_clicked)
         self.ui.group_box_right.setTitle("Cryptographic methods")
         self.ui.stackedWidget.setCurrentIndex(0)
 
@@ -62,7 +62,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.init_tree_widget()
 
     def tree_widget_item_clicked(self):
-        item = self.ui.treeWidget.currentItem()
+        item = self.ui.tree_widget_list_apps.currentItem()
         parent = item.parent()
 
         try:
@@ -92,7 +92,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 child.setIcon(0, QtGui.QIcon("icons:icon-doc.png"))
                 item.addChild(child)
             items.append(item)
-        self.ui.treeWidget.insertTopLevelItems(0, items)
+        self.ui.tree_widget_list_apps.insertTopLevelItems(0, items)
 
     def page_1_button_calc_clicked(self):
         processed_text = sym.atbash.make(

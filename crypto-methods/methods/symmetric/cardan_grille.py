@@ -19,6 +19,27 @@ class Field:
         return self.value * self.cond == other
 
 
+def check_correct_stencil(square: np.array) -> bool:
+    s_1 = square
+    s_2 = np.rot90(s_1, -1)
+    s_3 = np.rot90(s_2, -1)
+    s_4 = np.rot90(s_3, -1)
+
+    n, _ = square.shape
+
+    # If nothing is selected
+    if len(np.where(s_1 != 0)[0]) < 1:
+        return False
+
+    # Check for matching values
+    for i in range(n):
+        for j in range(n):
+            if [s_1[i, j].cond, s_2[i, j].cond, s_3[i, j].cond, s_4[i, j].cond].count(True) > 1:
+                return False
+
+    return True
+
+
 def gen_stencil(k: int):
     if k < 2:
         raise Exception(f"K (k={k}) must be greater than 1!")
@@ -53,22 +74,26 @@ def encrypt(
         litter_type: str = "without_trash"
 ) -> str:
     n, _ = stencil.shape
-    one_iter_len = (n//2) ** 2
-    max_len = n**2
 
-    texts = [_text[i:i+max_len] for i in range(0, len(_text), max_len)]
+    indices_allow_values = np.where(stencil != 0)
+    sorted_allow_values = sorted(stencil[indices_allow_values], key=lambda x: x.value)
+
+    one_iter_len_text = len(sorted_allow_values) * 4
+
+    texts = [_text[i:i + one_iter_len_text] for i in range(0, len(_text), one_iter_len_text)]
+
     encrypted_text = ""
 
     for text in texts:
         square = np.empty((n, n), dtype=str)
         square.fill("")
 
-        for i in range(0, len(text), one_iter_len):
-            substr = text[i:i+one_iter_len]
+        for i in range(0, len(text), len(sorted_allow_values)):
+            substr = text[i:i+len(sorted_allow_values)]
 
-            for k, char in enumerate(substr, start=1):
-                i, j = np.where(stencil == k)
-                square[i, j] = char
+            for char, value in zip(substr, sorted_allow_values):
+                indices_value = np.where(stencil == value)
+                square[indices_value] = char
 
             stencil = np.rot90(stencil, -1)
 
@@ -86,7 +111,7 @@ def encrypt(
 
         encrypted_text += "".join("".join(i) for i in square)
 
-    return encrypted_text
+    return encrypted_text.rstrip()
 
 
 def decrypt(
@@ -94,11 +119,12 @@ def decrypt(
         stencil: np.ndarray
 ):
     n, _ = stencil.shape
-    one_iter_len = (n//2) ** 2
-    max_len = n ** 2
 
-    encrypted_texts = [_text[i:i + max_len] for i in range(0, len(_text), max_len)]
-    encrypted_texts[-1] += " " * (max_len - len(encrypted_texts[-1]))
+    indices_allow_values = np.where(stencil != 0)
+    sorted_allow_values = sorted(stencil[indices_allow_values], key=lambda x: x.value)
+
+    encrypted_texts = [_text[i:i + n**2] for i in range(0, len(_text), n**2)]
+    encrypted_texts[-1] += " " * (n**2 - len(encrypted_texts[-1]))
 
     decrypted_text = ""
 
@@ -106,13 +132,13 @@ def decrypt(
         square = np.array(list(text)).reshape((n, n))
 
         for _ in range(4):
-            for k in range(1, one_iter_len + 1):
-                i, j = np.where(stencil == k)
+            for value in sorted_allow_values:
+                i, j = np.where(stencil == value)
                 decrypted_text += str(square[i[0], j[0]])
 
             stencil = np.rot90(stencil, -1)
 
-    return decrypted_text
+    return decrypted_text.rstrip()
 
 
 def make(

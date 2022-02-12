@@ -54,6 +54,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # page 5
         self.ui.page_5_button_gen_stencil.clicked.connect(self.page_5_button_gen_stencil_clicked)
         self.ui.page_5_button_calc.clicked.connect(self.page_5_button_calc_clicked)
+        self.ui.page_5_table_widget_stencil.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode(0))
+        self.ui.page_5_table_widget_stencil.clicked.connect(self.page_5_table_widget_change)
+        self.ui.page_5_button_clean_stencil.clicked.connect(self.page_5_button_clean_stencil)
 
         # page 6
         self.ui.page_6_button_calc.clicked.connect(self.page_6_button_calc_clicked)
@@ -161,44 +164,76 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_5_table_widget_stencil.resizeRowsToContents()
         self.ui.page_5_table_widget_stencil.resizeColumnsToContents()
 
+    def page_5_button_clean_stencil(self):
+        k = self.ui.page_5_spin_box_dim_stencil.value()
+        stencil = sym.cardan_grille.gen_stencil(k)
+
+        self.ui.page_5_table_widget_stencil.setRowCount(2 * k)
+        self.ui.page_5_table_widget_stencil.setColumnCount(2 * k)
+
+        for i in range(2*k):
+            for j in range(2*k):
+                item = QtWidgets.QTableWidgetItem(str(stencil[i, j].value))
+                self.ui.page_5_table_widget_stencil.setItem(i, j, item)
+
+        self.ui.page_5_table_widget_stencil.resizeRowsToContents()
+        self.ui.page_5_table_widget_stencil.resizeColumnsToContents()
+
+    def page_5_table_widget_change(self):
+        item = self.ui.page_5_table_widget_stencil.currentItem()
+        if item.background() == QtGui.QColor("orange"):
+            item.setBackground(QtGui.QColor(0, 0, 0, 0))
+        else:
+            item.setBackground(QtGui.QColor("orange"))
+
     def page_5_button_calc_clicked(self):
         if self.ui.page_5_table_widget_stencil.rowCount() == 0:
             QtWidgets.QMessageBox.warning(self, "Warning!", "The stencil field is empty! Generate a stencil.")
             return
 
+        # clear preview table
         self.ui.page_5_table_widget_preview.clear()
+
         n = self.ui.page_5_table_widget_stencil.rowCount()
 
-        square = []
+        square = np.empty(shape=(n, n), dtype=sym.cardan_grille.Field)
+
         for i in range(n):
-            row = []
             for j in range(n):
                 item = self.ui.page_5_table_widget_stencil.item(i, j)
-                row.append(sym.cardan_grille.Field(int(item.text()), item.background() == QtGui.QColor("orange")))
-            square.append(row)
+                square[i, j] = sym.cardan_grille.Field(
+                    int(item.text()),
+                    item.background() == QtGui.QColor("orange")
+                )
+
+        # check stencil
+        if not sym.cardan_grille.check_correct_stencil(square):
+            QtWidgets.QMessageBox.warning(self, "Warning!", "The stencil is incorrect!")
+            return
 
         processed_text = sym.cardan_grille.make(
             text=self.ui.page_5_text_edit_input.toPlainText(),
-            stencil=np.array(square),
+            stencil=square,
             litter_type=self.ui.page_5_combo_box_trash.currentText(),
             processing_type=self.ui.page_5_combo_box_type.currentText()
         )
-        self.ui.page_5_text_edit_output.setText(processed_text.rstrip())
+        self.ui.page_5_text_edit_output.setText(processed_text)
 
-        n_blocks = len(processed_text) // n**2
+        texts = [processed_text[i:i+n**2] for i in range(0, len(processed_text), n**2)]
 
         self.ui.page_5_table_widget_preview.setColumnCount(n)
-        self.ui.page_5_table_widget_preview.setRowCount(n*n_blocks + n_blocks)
+        self.ui.page_5_table_widget_preview.setRowCount(n * len(texts) + len(texts))
 
         offset_i = 0
         row_labels = []
-        for k in range(0, len(processed_text), n**2):
-            substr = processed_text[0:n**2]
+        for text in texts:
+            text += " " * (n**2 - len(text))
 
             for i in range(n):
                 row_labels.append(str(i + 1))
+
                 for j in range(n):
-                    item = QtWidgets.QTableWidgetItem(substr[i*n + j])
+                    item = QtWidgets.QTableWidgetItem(text[i * n + j])
                     self.ui.page_5_table_widget_preview.setItem(i + offset_i, j, item)
 
             row_labels.append("")

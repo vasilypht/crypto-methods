@@ -39,6 +39,7 @@ class Ui_MainWindow(object):
         self.tree_widget_list_apps = QtWidgets.QTreeWidget(self.group_box_left)
         self.tree_widget_list_apps.setMouseTracking(False)
         self.tree_widget_list_apps.setStyleSheet("")
+        self.tree_widget_list_apps.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.DoubleClicked|QtWidgets.QAbstractItemView.EditTrigger.EditKeyPressed)
         self.tree_widget_list_apps.setAnimated(True)
         self.tree_widget_list_apps.setAllColumnsShowFocus(False)
         self.tree_widget_list_apps.setHeaderHidden(True)
@@ -445,6 +446,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.page_5_table_widget_stencil.sizePolicy().hasHeightForWidth())
         self.page_5_table_widget_stencil.setSizePolicy(sizePolicy)
+        self.page_5_table_widget_stencil.setFocusPolicy(QtCore.Qt.FocusPolicy.StrongFocus)
         self.page_5_table_widget_stencil.setStyleSheet("")
         self.page_5_table_widget_stencil.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
         self.page_5_table_widget_stencil.setAlternatingRowColors(True)
@@ -484,6 +486,9 @@ class Ui_MainWindow(object):
         self.page_5_button_gen_stencil.setMinimumSize(QtCore.QSize(100, 30))
         self.page_5_button_gen_stencil.setObjectName("page_5_button_gen_stencil")
         self.page_5_horizontal_layout_2.addWidget(self.page_5_button_gen_stencil)
+        self.page_5_button_clean_stencil = QtWidgets.QPushButton(self.page_5)
+        self.page_5_button_clean_stencil.setObjectName("page_5_button_clean_stencil")
+        self.page_5_horizontal_layout_2.addWidget(self.page_5_button_clean_stencil)
         spacerItem9 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.page_5_horizontal_layout_2.addItem(spacerItem9)
         self.page_5_combo_box_trash = QtWidgets.QComboBox(self.page_5)
@@ -653,7 +658,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(6)
+        self.stackedWidget.setCurrentIndex(5)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -695,6 +700,7 @@ class Ui_MainWindow(object):
         self.page_5_group_box_stencil.setTitle(_translate("MainWindow", "Stencil"))
         self.page_5_group_box_input.setTitle(_translate("MainWindow", "Input text"))
         self.page_5_button_gen_stencil.setText(_translate("MainWindow", "Generate Stencil"))
+        self.page_5_button_clean_stencil.setText(_translate("MainWindow", "Clean stencil"))
         self.page_5_combo_box_trash.setItemText(0, _translate("MainWindow", "With trash"))
         self.page_5_combo_box_trash.setItemText(1, _translate("MainWindow", "Without trash"))
         self.page_5_combo_box_type.setItemText(0, _translate("MainWindow", "Encrypt"))

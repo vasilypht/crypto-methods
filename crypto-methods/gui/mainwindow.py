@@ -576,6 +576,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.page_5_text_edit_output.sizePolicy().hasHeightForWidth())
         self.page_5_text_edit_output.setSizePolicy(sizePolicy)
+        self.page_5_text_edit_output.setReadOnly(True)
         self.page_5_text_edit_output.setObjectName("page_5_text_edit_output")
         self.verticalLayout_24.addWidget(self.page_5_text_edit_output)
         self.page_5_horizontalLayout_4.addWidget(self.page_5_group_box_output)
@@ -637,6 +638,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.page_6_text_edit_output.sizePolicy().hasHeightForWidth())
         self.page_6_text_edit_output.setSizePolicy(sizePolicy)
+        self.page_6_text_edit_output.setReadOnly(True)
         self.page_6_text_edit_output.setObjectName("page_6_text_edit_output")
         self.verticalLayout_18.addWidget(self.page_6_text_edit_output)
         self.verticalLayout_19.addWidget(self.page_6_group_box_output)
@@ -658,7 +660,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(5)
+        self.stackedWidget.setCurrentIndex(4)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

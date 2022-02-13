@@ -208,7 +208,7 @@ class MainWindow(QtWidgets.QMainWindow):
             item.setBackground(QtGui.QColor("orange"))
 
     def page_5_button_calc_clicked(self):
-        if not self.ui.page_1_text_edit_input.toPlainText():
+        if not self.ui.page_5_text_edit_input.toPlainText():
             QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
             return
 
@@ -269,7 +269,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # Richelieu
     def page_6_button_calc_clicked(self):
-        if not self.ui.page_1_text_edit_input.toPlainText():
+        if not self.ui.page_6_text_edit_input.toPlainText():
             QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
             return
 

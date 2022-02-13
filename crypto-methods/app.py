@@ -97,12 +97,18 @@ class MainWindow(QtWidgets.QMainWindow):
             items.append(item)
         self.ui.tree_widget_list_apps.insertTopLevelItems(0, items)
 
+    # Atbash
     def page_1_button_calc_clicked(self):
+        if not self.ui.page_1_text_edit_input.toPlainText():
+            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
+            return
+
         processed_text = sym.atbash.make(
             text=self.ui.page_1_text_edit_input.toPlainText()
         )
         self.ui.page_1_text_edit_output.setText(processed_text)
 
+    # Scytale
     def page_2_check_box_check(self):
         if self.ui.page_2_check_box_columns.isChecked():
             self.ui.page_2_spin_box_columns.setDisabled(False)
@@ -112,6 +118,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.page_2_check_box_columns.setStyleSheet("color: grey")
 
     def page_2_button_calc_clicked(self):
+        if not self.ui.page_2_text_edit_input.toPlainText():
+            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
+            return
+
         processed_text = sym.scytale.make(
             text=self.ui.page_2_text_edit_input.toPlainText(),
             n=self.ui.page_2_spin_box_rows.value(),
@@ -122,6 +132,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.page_2_text_edit_output.setText(processed_text)
 
+    # Polybius square
     def page_3_combo_box_check(self):
         if self.ui.page_3_combo_box_method.currentText() == "Method 3":
             self.ui.page_3_spin_box_shift.setDisabled(False)
@@ -131,6 +142,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.page_3_label_shift.setStyleSheet("color: grey")
 
     def page_3_button_calc_clicked(self):
+        if not self.ui.page_3_text_edit_input.toPlainText():
+            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
+            return
+
         processed_text = sym.polybius_square.make(
             text=self.ui.page_3_text_edit_input.toPlainText(),
             method=self.ui.page_3_combo_box_method.currentText(),
@@ -139,7 +154,12 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         self.ui.page_3_text_edit_output.setText(processed_text)
 
+    # Caesar
     def page_4_button_calc_clicked(self):
+        if not self.ui.page_4_text_edit_input.toPlainText():
+            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
+            return
+
         processed_text = sym.caesar.make(
             text=self.ui.page_4_text_edit_input.toPlainText(),
             shift=self.ui.page_4_spin_box_shift.value(),
@@ -147,6 +167,7 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         self.ui.page_4_text_edit_output.setText(processed_text)
 
+    # Cardan grille
     def page_5_button_gen_stencil_clicked(self):
         k = self.ui.page_5_spin_box_dim_stencil.value()
         stencil = sym.cardan_grille.gen_stencil(k)
@@ -187,6 +208,10 @@ class MainWindow(QtWidgets.QMainWindow):
             item.setBackground(QtGui.QColor("orange"))
 
     def page_5_button_calc_clicked(self):
+        if not self.ui.page_1_text_edit_input.toPlainText():
+            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
+            return
+
         if self.ui.page_5_table_widget_stencil.rowCount() == 0:
             QtWidgets.QMessageBox.warning(self, "Warning!", "The stencil field is empty! Generate a stencil.")
             return
@@ -195,7 +220,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_5_table_widget_preview.clear()
 
         n = self.ui.page_5_table_widget_stencil.rowCount()
-
         square = np.empty(shape=(n, n), dtype=sym.cardan_grille.Field)
 
         for i in range(n):
@@ -240,11 +264,15 @@ class MainWindow(QtWidgets.QMainWindow):
             offset_i += n + 1
 
         self.ui.page_5_table_widget_preview.setVerticalHeaderLabels(row_labels)
-
         self.ui.page_5_table_widget_preview.resizeRowsToContents()
         self.ui.page_5_table_widget_preview.resizeColumnsToContents()
 
+    # Richelieu
     def page_6_button_calc_clicked(self):
+        if not self.ui.page_1_text_edit_input.toPlainText():
+            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
+            return
+
         key_text = self.ui.page_6_line_edit_key.text()
         input_text = self.ui.page_6_text_edit_input.toPlainText()
 

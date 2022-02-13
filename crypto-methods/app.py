@@ -300,6 +300,7 @@ class MainWindow(QtWidgets.QMainWindow):
         processed_text = sym.richelieu.make(
             text=input_text,
             key=key_list,
+            processing_type=self.ui.page_6_combo_box_type.currentText()
         )
         self.ui.page_6_text_edit_output.setText(processed_text)
 

@@ -131,7 +131,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>4</number>
+           <number>6</number>
           </property>
           <widget class="QWidget" name="page_0">
            <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1487,15 +1487,12 @@
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="page_6_horizontal_layout_2">
+             <layout class="QHBoxLayout" name="page_6_horizontal_layout_3">
               <property name="spacing">
                <number>12</number>
               </property>
               <property name="leftMargin">
                <number>8</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
               </property>
               <item>
                <widget class="QLabel" name="page_6_label_key">
@@ -1517,6 +1514,46 @@
                 </property>
                </widget>
               </item>
+              <item>
+               <spacer name="page_6_horizontal_spacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QComboBox" name="page_6_combo_box_type">
+                <item>
+                 <property name="text">
+                  <string>Encrypt</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Decrypt</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="page_6_horizontal_layout_2">
+              <property name="spacing">
+               <number>12</number>
+              </property>
+              <property name="leftMargin">
+               <number>8</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
               <item>
                <spacer name="page_6_horizontal_spacer_2">
                 <property name="orientation">

@@ -6,13 +6,13 @@ from ..const import (
 
 def calculate(text: str) -> str:
     """
-    Atbash cipher encryption/decryption function.
+    Atbash cipher. Encryption/decryption function.
 
     Parameters:
         text (str): text to be encrypted/decrypted.
 
     Returns:
-        text (str): encrypted/decrypted string.
+        text (str): encrypted/decrypted text.
     """
     letters_list: list[str] = list(text)
 
@@ -36,12 +36,12 @@ def calculate(text: str) -> str:
 
 def make(text: str) -> str:
     """
-    Interface for calling encryption/decryption functions.
+    Atbash cipher. Interface for calling encryption/decryption functions.
 
     Parameters:
         text (str): text to be encrypted/decrypted.
 
     Returns:
-        ext (str): encrypted/decrypted string.
+        text (str): encrypted/decrypted text.
     """
     return calculate(text)

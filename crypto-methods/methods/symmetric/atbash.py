@@ -4,8 +4,18 @@ from ..const import (
 )
 
 
-def encrypt(text: str) -> str:
+def calculate(text: str) -> str:
+    """
+    Atbash cipher encryption/decryption function.
+
+    Parameters:
+        text (str): text to be encrypted/decrypted.
+
+    Returns:
+        text (str): encrypted/decrypted string.
+    """
     letters_list: list[str] = list(text)
+
     for i in range(len(text)):
         letter = letters_list[i].lower()
 
@@ -25,4 +35,13 @@ def encrypt(text: str) -> str:
 
 
 def make(text: str) -> str:
-    return encrypt(text)
+    """
+    Interface for calling encryption/decryption functions.
+
+    Parameters:
+        text (str): text to be encrypted/decrypted.
+
+    Returns:
+        ext (str): encrypted/decrypted string.
+    """
+    return calculate(text)

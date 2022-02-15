@@ -2,12 +2,23 @@ import sys
 import re
 import webbrowser
 
-from PyQt6 import QtWidgets, QtGui, QtCore
+from PyQt6 import (
+    QtWidgets,
+    QtGui,
+    QtCore
+)
 import yaml
 import numpy as np
 
 from gui.mainwindow import Ui_MainWindow
-from methods import symmetric as sym
+from methods.symmetric import (
+    atbash,
+    scytale,
+    polybius_square,
+    caesar,
+    cardan_grille,
+    richelieu
+)
 
 QtCore.QDir.addSearchPath("icons", "resources/icons")
 
@@ -64,7 +75,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.load_config()
         self.init_tree_widget()
 
-    def tree_widget_item_clicked(self):
+    def tree_widget_item_clicked(self) -> None:
+        """(Slot) Method for switching widgets."""
         item = self.ui.tree_widget_list_apps.currentItem()
         parent = item.parent()
 
@@ -76,7 +88,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.group_box_right.setTitle(path)
         self.ui.stackedWidget.setCurrentIndex(self.__config["task id"].get(item.text(0), 0))
 
-    def load_config(self):
+    def load_config(self) -> None:
+        """Method for reading config."""
         try:
             with open("config.yaml", "r") as cfg:
                 self.__config = yaml.safe_load(cfg)
@@ -85,31 +98,36 @@ class MainWindow(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.critical(self, "Error!", "Failed to open config!")
             sys.exit(0)
 
-    def init_tree_widget(self):
+    def init_tree_widget(self) -> None:
+        """Method for initializing the list of program names."""
         items = []
+
         for key, values in self.__config["task names"].items():
             item = QtWidgets.QTreeWidgetItem((key,))
             item.setIcon(0, QtGui.QIcon("icons:icon-folder.png"))
+
             for value in values:
                 child = QtWidgets.QTreeWidgetItem((value,))
                 child.setIcon(0, QtGui.QIcon("icons:icon-doc.png"))
                 item.addChild(child)
+
             items.append(item)
+
         self.ui.tree_widget_list_apps.insertTopLevelItems(0, items)
 
-    # Atbash
-    def page_1_button_calc_clicked(self):
+    def page_1_button_calc_clicked(self) -> None:
+        """Atbash | (Slot) Method for handling button click. (Encryption/decryption)"""
         if not self.ui.page_1_text_edit_input.toPlainText():
             QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
             return
 
-        processed_text = sym.atbash.make(
+        processed_text = atbash.make(
             text=self.ui.page_1_text_edit_input.toPlainText()
         )
         self.ui.page_1_text_edit_output.setText(processed_text)
 
-    # Scytale
-    def page_2_check_box_check(self):
+    def page_2_check_box_check(self) -> None:
+        """Scytale | (Slot) Method for activating/deactivating a checkbox."""
         if self.ui.page_2_check_box_columns.isChecked():
             self.ui.page_2_spin_box_columns.setDisabled(False)
             self.ui.page_2_check_box_columns.setStyleSheet("color: white")
@@ -117,12 +135,13 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.page_2_spin_box_columns.setDisabled(True)
             self.ui.page_2_check_box_columns.setStyleSheet("color: grey")
 
-    def page_2_button_calc_clicked(self):
+    def page_2_button_calc_clicked(self) -> None:
+        """Scytale | (Slot) Method for handling button click. (Encryption/decryption)"""
         if not self.ui.page_2_text_edit_input.toPlainText():
             QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
             return
 
-        processed_text = sym.scytale.make(
+        processed_text = scytale.make(
             text=self.ui.page_2_text_edit_input.toPlainText(),
             n=self.ui.page_2_spin_box_rows.value(),
             m=self.ui.page_2_spin_box_columns.value(),
@@ -132,8 +151,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.page_2_text_edit_output.setText(processed_text)
 
-    # Polybius square
-    def page_3_combo_box_check(self):
+    def page_3_combo_box_check(self) -> None:
+        """Polybius square | (Slot) Method for activating/deactivating a spinbox."""
         if self.ui.page_3_combo_box_method.currentText() == "Method 3":
             self.ui.page_3_spin_box_shift.setDisabled(False)
             self.ui.page_3_label_shift.setStyleSheet("color: white")
@@ -141,12 +160,13 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.page_3_spin_box_shift.setDisabled(True)
             self.ui.page_3_label_shift.setStyleSheet("color: grey")
 
-    def page_3_button_calc_clicked(self):
+    def page_3_button_calc_clicked(self) -> None:
+        """Polybius square | (Slot) Method for handling button click. (Encryption/decryption)"""
         if not self.ui.page_3_text_edit_input.toPlainText():
             QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
             return
 
-        processed_text = sym.polybius_square.make(
+        processed_text = polybius_square.make(
             text=self.ui.page_3_text_edit_input.toPlainText(),
             method=self.ui.page_3_combo_box_method.currentText(),
             shift=self.ui.page_3_spin_box_shift.value(),
@@ -154,23 +174,23 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         self.ui.page_3_text_edit_output.setText(processed_text)
 
-    # Caesar
-    def page_4_button_calc_clicked(self):
+    def page_4_button_calc_clicked(self) -> None:
+        """Caesar | (Slot) Method for handling button click. (Encryption/decryption)"""
         if not self.ui.page_4_text_edit_input.toPlainText():
             QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
             return
 
-        processed_text = sym.caesar.make(
+        processed_text = caesar.make(
             text=self.ui.page_4_text_edit_input.toPlainText(),
             shift=self.ui.page_4_spin_box_shift.value(),
             processing_type=self.ui.page_4_combo_box_type.currentText().lower()
         )
         self.ui.page_4_text_edit_output.setText(processed_text)
 
-    # Cardan grille
-    def page_5_button_gen_stencil_clicked(self):
+    def page_5_button_gen_stencil_clicked(self) -> None:
+        """Cardan grille | (Slot) Method for creating a stencil on button click"""
         k = self.ui.page_5_spin_box_dim_stencil.value()
-        stencil = sym.cardan_grille.gen_stencil(k)
+        stencil = cardan_grille.gen_stencil(k)
 
         self.ui.page_5_table_widget_stencil.setRowCount(2*k)
         self.ui.page_5_table_widget_stencil.setColumnCount(2*k)
@@ -185,9 +205,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_5_table_widget_stencil.resizeRowsToContents()
         self.ui.page_5_table_widget_stencil.resizeColumnsToContents()
 
-    def page_5_button_clean_stencil(self):
+    def page_5_button_clean_stencil(self) -> None:
+        """Cardan grille | (Slot) Method for creating a clean stencil on button click."""
         k = self.ui.page_5_spin_box_dim_stencil.value()
-        stencil = sym.cardan_grille.gen_stencil(k)
+        stencil = cardan_grille.gen_stencil(k)
 
         self.ui.page_5_table_widget_stencil.setRowCount(2 * k)
         self.ui.page_5_table_widget_stencil.setColumnCount(2 * k)
@@ -200,14 +221,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_5_table_widget_stencil.resizeRowsToContents()
         self.ui.page_5_table_widget_stencil.resizeColumnsToContents()
 
-    def page_5_table_widget_change(self):
+    def page_5_table_widget_change(self) -> None:
+        """Cardan grille | (Slot) Method to change table cell color when cell is clicked."""
         item = self.ui.page_5_table_widget_stencil.currentItem()
         if item.background() == QtGui.QColor("orange"):
             item.setBackground(QtGui.QColor(0, 0, 0, 0))
         else:
             item.setBackground(QtGui.QColor("orange"))
 
-    def page_5_button_calc_clicked(self):
+    def page_5_button_calc_clicked(self) -> None:
+        """Cardan grille | (Slot) Method for handling button click. (Encryption/decryption)"""
         if not self.ui.page_5_text_edit_input.toPlainText():
             QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
             return
@@ -220,22 +243,22 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_5_table_widget_preview.clear()
 
         n = self.ui.page_5_table_widget_stencil.rowCount()
-        square = np.empty(shape=(n, n), dtype=sym.cardan_grille.Field)
+        square = np.empty(shape=(n, n), dtype=cardan_grille.Field)
 
         for i in range(n):
             for j in range(n):
                 item = self.ui.page_5_table_widget_stencil.item(i, j)
-                square[i, j] = sym.cardan_grille.Field(
+                square[i, j] = cardan_grille.Field(
                     int(item.text()),
                     item.background() == QtGui.QColor("orange")
                 )
 
         # check stencil
-        if not sym.cardan_grille.check_correct_stencil(square):
+        if not cardan_grille.check_correct_stencil(square):
             QtWidgets.QMessageBox.warning(self, "Warning!", "The stencil is incorrect!")
             return
 
-        processed_text = sym.cardan_grille.make(
+        processed_text = cardan_grille.make(
             text=self.ui.page_5_text_edit_input.toPlainText(),
             stencil=square,
             litter_type=self.ui.page_5_combo_box_trash.currentText(),
@@ -248,6 +271,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_5_table_widget_preview.setColumnCount(n)
         self.ui.page_5_table_widget_preview.setRowCount(n * len(texts) + len(texts))
 
+        # Output of processed text after stencil
         offset_i = 0
         row_labels = []
         for text in texts:
@@ -267,8 +291,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_5_table_widget_preview.resizeRowsToContents()
         self.ui.page_5_table_widget_preview.resizeColumnsToContents()
 
-    # Richelieu
-    def page_6_button_calc_clicked(self):
+    def page_6_button_calc_clicked(self) -> None:
+        """Richelieu | (Slot) Method for handling button click. (Encryption/decryption)"""
         if not self.ui.page_6_text_edit_input.toPlainText():
             QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
             return
@@ -297,7 +321,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     QtWidgets.QMessageBox.warning(self, "Warning!", "Invalid key entered!")
                     return
 
-        processed_text = sym.richelieu.make(
+        processed_text = richelieu.make(
             text=input_text,
             key=key_list,
             processing_type=self.ui.page_6_combo_box_type.currentText()

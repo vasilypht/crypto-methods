@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "cryptographic-methods-labs"
+version = "0.1.0"
+description = ""
+authors = ["Vasily Perekhrest <perekhrest-vasily@mail.ru>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+PyQt6 = "^6.2.3"
+numpy = "^1.22.2"
+PyYAML = "^6.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.0.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

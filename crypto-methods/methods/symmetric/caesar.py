@@ -24,10 +24,10 @@ def encrypt(text: str, shift: int = 1) -> str:
             if letter not in alphabet:
                 continue
 
-            i = alphabet.index(letter)
-            new_i = (i + shift) % len(alphabet)
+            pos = alphabet.index(letter)
+            new_pos = (pos + shift) % len(alphabet)
 
-            letter = alphabet[new_i]
+            letter = alphabet[new_pos]
             break
 
         if text_list[i].isupper():
@@ -58,10 +58,10 @@ def decrypt(text: str, shift: int = 1) -> str:
             if letter not in alphabet:
                 continue
 
-            i = alphabet.index(letter)
-            new_i = (i - shift) % len(alphabet)
+            pos = alphabet.index(letter)
+            new_pos = (pos - shift) % len(alphabet)
 
-            letter = alphabet[new_i]
+            letter = alphabet[new_pos]
             break
 
         if text_list[i].isupper():

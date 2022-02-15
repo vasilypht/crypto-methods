@@ -1,4 +1,58 @@
-# Cryptographic-methods-labs
+# Cryptographic methods labs
 
-### TODO
-- [ ] Make a README :)
+Laboratory work on cryptographic methods of information protection.
+
+## Installation
+
+We clone the repository and go to the project:
+
+```zsh
+git clone https://github.com/vasilypht/Cryptographic-methods
+cd Cryptographic-methods
+```
+
+### Dependencies
+
+> For the program to work, you must have Python version 3.10+
+
+Next, you need to install the dependencies. This can be done in one of the following ways:
+
+ 1. for **poetry**:
+    
+    Create a shell:
+ 
+    ```zsh
+    poetry shell
+    ```
+    
+    Next, install all dependencies:
+
+    ```zsh
+    poetry install --no-dev
+    ```
+
+ 2. for **virtualenv**:
+
+    Creating a virtual environment and activate it:
+
+    ```zsh
+    python3 -m venv .venv
+    . ./.venv/bin/activate
+    ```
+    
+    Next, update pip and install all dependencies:
+
+    ```zsh
+    pip install -U pip
+    pip install -r requirements.txt
+    ```
+
+## Usage
+
+To run the program, go to the source folder and run the file ***app.py***:
+
+```zsh
+cd crypto-methods
+python3 app.py
+```
+

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "cryptographic-methods-labs"
+name = "cryptographic-methods"
 version = "0.1.0"
 description = ""
 authors = ["Vasily Perekhrest <perekhrest-vasily@mail.ru>"]

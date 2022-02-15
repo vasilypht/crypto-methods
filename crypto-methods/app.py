@@ -163,7 +163,7 @@ class MainWindow(QtWidgets.QMainWindow):
         processed_text = sym.caesar.make(
             text=self.ui.page_4_text_edit_input.toPlainText(),
             shift=self.ui.page_4_spin_box_shift.value(),
-            processing_type=self.ui.page_4_combo_box_type.currentText()
+            processing_type=self.ui.page_4_combo_box_type.currentText().lower()
         )
         self.ui.page_4_text_edit_output.setText(processed_text)
 

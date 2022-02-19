@@ -6,15 +6,15 @@ from ..const import (
 
 def encrypt(text: str, key: str) -> str:
     """
-        Gronsfeld cipher. Encryption function.
+    Gronsfeld cipher. Encryption function.
 
-        Parameters:
-            text (str): text to be encrypted.
-            key (str): set of positive numbers.
+    Parameters:
+        text (str): text to be encrypted.
+        key (str): set of positive numbers.
 
-        Returns:
-            text (str): encrypted text.
-        """
+    Returns:
+        text (str): encrypted text.
+    """
     text_list = list(text)
 
     for i in range(len(text)):
@@ -41,15 +41,15 @@ def encrypt(text: str, key: str) -> str:
 
 def decrypt(text: str, key: str) -> str:
     """
-        Gronsfeld cipher. Decryption function.
+    Gronsfeld cipher. Decryption function.
 
-        Parameters:
-            text (str): text to be decrypted.
-            key (str): set of positive numbers.
+    Parameters:
+        text (str): text to be decrypted.
+        key (str): set of positive numbers.
 
-        Returns:
-            text (str): decrypted text.
-        """
+    Returns:
+        text (str): decrypted text.
+    """
     text_list = list(text)
 
     for i in range(len(text)):
@@ -80,16 +80,16 @@ def make(
         processing_type: str = "encrypt"
 ):
     """
-        Gronsfeld cipher. Interface for calling encryption/decryption functions.
+    Gronsfeld cipher. Interface for calling encryption/decryption functions.
 
-        Parameters:
-            text (str): text to be encrypted/decrypted.
-            key (str): set of positive numbers.
-            processing_type (str): encryption or decryption (default "encrypt").
+    Parameters:
+        text (str): text to be encrypted/decrypted.
+        key (str): set of positive numbers.
+        processing_type (str): encryption or decryption (default "encrypt").
 
-        Returns:
-            text (str): encrypted/decrypted text.
-        """
+    Returns:
+        text (str): encrypted/decrypted text.
+    """
     match processing_type:
         case "encrypt":
             return encrypt(text, key)

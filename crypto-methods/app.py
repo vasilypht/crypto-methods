@@ -80,7 +80,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_8_line_edit_key.setValidator(
             QtGui.QRegularExpressionValidator(QtCore.QRegularExpression(r"^\d*$"))
         )
-        self.ui.page_8_button_calc.clicked.connect(self.page_8_button_calc_clicked)
+        self.ui.page_8_button_make.clicked.connect(self.page_8_button_make_clicked)
 
         # page 9
         self.ui.page_9_line_edit_key.setValidator(
@@ -344,7 +344,7 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         self.ui.page_6_text_edit_output.setText(processed_text)
 
-    def page_8_button_calc_clicked(self) -> None:
+    def page_8_button_make_clicked(self) -> None:
         """Gronsfeld | (Slot) Method for handling button click. (Encryption/decryption)"""
         if not self.ui.page_8_text_edit_input.toPlainText():
             QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
@@ -364,7 +364,7 @@ class MainWindow(QtWidgets.QMainWindow):
         processed_text = gronsfeld.make(
             text=input_text,
             key=key_text,
-            processing_type=self.ui.page_8_combo_box_type.currentText().lower()
+            mode=self.ui.page_8_combo_box_mode.currentText().lower()
         )
 
         self.ui.page_8_text_edit_output.setText(processed_text)

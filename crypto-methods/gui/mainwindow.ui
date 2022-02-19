@@ -131,7 +131,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>9</number>
+           <number>8</number>
           </property>
           <widget class="QWidget" name="page_0">
            <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1716,7 +1716,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QComboBox" name="page_8_combo_box_type">
+               <widget class="QComboBox" name="page_8_combo_box_mode">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1753,7 +1753,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="page_8_button_calc">
+               <widget class="QPushButton" name="page_8_button_make">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>

@@ -1,83 +1,57 @@
-from ..const import (
-    RUS_LCASE,
-    ENG_LCASE
+from ..utils import (
+    get_alphabet_by_letter
 )
 
 
-def encrypt(text: str, key: str) -> str:
+def transform(text: str, key: str, mode: bool = True) -> str:
     """
-    Gronsfeld cipher. Encryption function.
+    Gronsfeld cipher. Encryption/Decryption function.
 
     Parameters:
         text (str): text to be encrypted.
         key (str): set of positive numbers.
+        mode (bool): True - encrypt, False - decrypt
 
     Returns:
         text (str): encrypted text.
     """
-    text_list = list(text)
+    text_list: list[str] = list(text)
 
     for i in range(len(text)):
-        letter_lower = text_list[i].lower()
+        letter_text = text_list[i]
 
-        for alpha in (ENG_LCASE, RUS_LCASE):
-            if letter_lower not in alpha:
-                continue
+        if (alphabet_letter := get_alphabet_by_letter(letter_text)) is None:
+            continue
 
-            letter_index = alpha.index(letter_lower)
-            shift = int(key[i % len(key)])
+        letter_text_index = alphabet_letter.index(letter_text.lower())
+        shift = int(key[i % len(key)])
 
-            new_index = (letter_index + shift) % len(alpha)
-            new_letter = alpha[new_index]
+        # choice of sign
+        sign = 1 if mode else -1
 
-            if text_list[i].isupper():
-                new_letter = new_letter.upper()
+        new_letter_index = (letter_text_index + shift * sign) % len(alphabet_letter)
+        new_letter_text = alphabet_letter[new_letter_index]
 
-            text_list[i] = new_letter
-            break
+        if letter_text.isupper():
+            new_letter_text = new_letter_text.upper()
+
+        text_list[i] = new_letter_text
 
     return "".join(text_list)
+
+
+def encrypt(text: str, key: str) -> str:
+    return transform(text, key, True)
 
 
 def decrypt(text: str, key: str) -> str:
-    """
-    Gronsfeld cipher. Decryption function.
-
-    Parameters:
-        text (str): text to be decrypted.
-        key (str): set of positive numbers.
-
-    Returns:
-        text (str): decrypted text.
-    """
-    text_list = list(text)
-
-    for i in range(len(text)):
-        letter_lower = text_list[i].lower()
-
-        for alpha in (ENG_LCASE, RUS_LCASE):
-            if letter_lower not in alpha:
-                continue
-
-            letter_index = alpha.index(letter_lower)
-            shift = int(key[i % len(key)])
-
-            new_index = (letter_index - shift) % len(alpha)
-            new_letter = alpha[new_index]
-
-            if text_list[i].isupper():
-                new_letter = new_letter.upper()
-
-            text_list[i] = new_letter
-            break
-
-    return "".join(text_list)
+    return transform(text, key, False)
 
 
 def make(
         text: str,
         key: str,
-        processing_type: str = "encrypt"
+        mode: str = "encrypt"
 ):
     """
     Gronsfeld cipher. Interface for calling encryption/decryption functions.
@@ -85,12 +59,12 @@ def make(
     Parameters:
         text (str): text to be encrypted/decrypted.
         key (str): set of positive numbers.
-        processing_type (str): encryption or decryption (default "encrypt").
+        mode (str): encryption or decryption (default "encrypt").
 
     Returns:
         text (str): encrypted/decrypted text.
     """
-    match processing_type:
+    match mode:
         case "encrypt":
             return encrypt(text, key)
 

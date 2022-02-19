@@ -34,7 +34,6 @@ def encrypt(text: str, key: str) -> str:
                 new_letter = new_letter.upper()
 
             text_list[i] = new_letter
-
             break
 
     return "".join(text_list)
@@ -70,7 +69,6 @@ def decrypt(text: str, key: str) -> str:
                 new_letter = new_letter.upper()
 
             text_list[i] = new_letter
-
             break
 
     return "".join(text_list)

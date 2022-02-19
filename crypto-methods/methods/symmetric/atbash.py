@@ -17,19 +17,20 @@ def calculate(text: str) -> str:
     letters_list: list[str] = list(text)
 
     for i in range(len(text)):
-        letter = letters_list[i].lower()
+        letter_lower = letters_list[i].lower()
 
         for alpha in (ENG_LCASE, RUS_LCASE):
-            if letter not in alpha:
+            if letter_lower not in alpha:
                 continue
 
-            pos = alpha.index(letter)
-            letter = alpha[len(alpha) - pos - 1]
+            pos = alpha.index(letter_lower)
+            new_letter = alpha[len(alpha) - pos - 1]
 
             if letters_list[i].isupper():
-                letter = letter.upper()
+                new_letter = letter_lower.upper()
 
-            letters_list[i] = letter
+            letters_list[i] = new_letter
+            break
 
     return ''.join(letters_list)
 

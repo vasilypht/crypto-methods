@@ -91,7 +91,6 @@ def _get_indices(text: str) -> tuple[list, list, list]:
             if char_upper not in letter_index.keys():
                 continue
 
-            print(char_upper, lang)
             letter_indices.append((char_index, lang))
 
             i, j = letter_index.get(char_upper)

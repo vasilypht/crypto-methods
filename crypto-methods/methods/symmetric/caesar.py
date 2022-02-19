@@ -18,22 +18,22 @@ def encrypt(text: str, shift: int = 1) -> str:
     text_list: list[str] = list(text)
 
     for i in range(len(text)):
-        letter = text_list[i].lower()
+        letter_lower = text_list[i].lower()
 
         for alphabet in (ENG_LCASE, RUS_LCASE):
-            if letter not in alphabet:
+            if letter_lower not in alphabet:
                 continue
 
-            pos = alphabet.index(letter)
+            pos = alphabet.index(letter_lower)
             new_pos = (pos + shift) % len(alphabet)
 
-            letter = alphabet[new_pos]
+            new_letter = alphabet[new_pos]
+
+            if text_list[i].isupper():
+                new_letter = letter_lower.upper()
+
+            text_list[i] = new_letter
             break
-
-        if text_list[i].isupper():
-            letter = letter.upper()
-
-        text_list[i] = letter
 
     return "".join(text_list)
 
@@ -52,22 +52,22 @@ def decrypt(text: str, shift: int = 1) -> str:
     text_list: list[str] = list(text)
 
     for i in range(len(text)):
-        letter = text_list[i].lower()
+        letter_lower = text_list[i].lower()
 
         for alphabet in (ENG_LCASE, RUS_LCASE):
-            if letter not in alphabet:
+            if letter_lower not in alphabet:
                 continue
 
-            pos = alphabet.index(letter)
+            pos = alphabet.index(letter_lower)
             new_pos = (pos - shift) % len(alphabet)
 
-            letter = alphabet[new_pos]
+            new_letter = alphabet[new_pos]
+
+            if text_list[i].isupper():
+                new_letter = letter_lower.upper()
+
+            text_list[i] = new_letter
             break
-
-        if text_list[i].isupper():
-            letter = letter.upper()
-
-        text_list[i] = letter
 
     return "".join(text_list)
 

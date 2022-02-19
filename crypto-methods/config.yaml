@@ -6,19 +6,24 @@ task names:
         - Caesar
         - Cardan grille
         - Richelieu
+
     Classical symmetric cryptosystems:
         - name1
-        - name2
+        - Gronsfeld
         - name3
+
     Modern symmetric cryptosyste:
         - name4
         - name5
 
 task id:
     default: 0
+
     Atbash: 1
     Scytale: 2
     Polybius Square: 3
     Caesar: 4
     Cardan grille: 5
     Richelieu: 6
+
+    Gronsfeld: 8

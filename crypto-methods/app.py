@@ -17,7 +17,8 @@ from methods.symmetric import (
     polybius_square,
     caesar,
     cardan_grille,
-    richelieu
+    richelieu,
+    gronsfeld
 )
 
 QtCore.QDir.addSearchPath("icons", "resources/icons")
@@ -71,6 +72,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # page 6
         self.ui.page_6_button_calc.clicked.connect(self.page_6_button_calc_clicked)
+
+        # page 7
+
+        # page 8
+        self.ui.page_8_line_edit_key.setValidator(
+            QtGui.QRegularExpressionValidator(QtCore.QRegularExpression(r"^\d*$"))
+        )
+        self.ui.page_8_button_calc.clicked.connect(self.page_8_button_calc_clicked)
 
         self.load_config()
         self.init_tree_widget()
@@ -327,6 +336,31 @@ class MainWindow(QtWidgets.QMainWindow):
             processing_type=self.ui.page_6_combo_box_type.currentText()
         )
         self.ui.page_6_text_edit_output.setText(processed_text)
+
+    def page_8_button_calc_clicked(self) -> None:
+        """Gronsfeld | (Slot) Method for handling button click. (Encryption/decryption)"""
+        if not self.ui.page_8_text_edit_input.toPlainText():
+            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
+            return
+
+        if not self.ui.page_8_line_edit_key.text():
+            QtWidgets.QMessageBox.warning(self, "Warning!", "The key field is empty. Enter something!")
+            return
+
+        input_text = self.ui.page_8_text_edit_input.toPlainText()
+        key_text = self.ui.page_8_line_edit_key.text()
+
+        if not re.match(r"^\d*$", key_text):
+            QtWidgets.QMessageBox.warning(self, "Warning!", "Invalid key entered!")
+            return
+
+        processed_text = gronsfeld.make(
+            text=input_text,
+            key=key_text,
+            processing_type=self.ui.page_8_combo_box_type.currentText().lower()
+        )
+
+        self.ui.page_8_text_edit_output.setText(processed_text)
 
 
 if __name__ == "__main__":

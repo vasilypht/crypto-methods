@@ -4,5 +4,6 @@ from . import (
     polybius_square,
     caesar,
     cardan_grille,
-    richelieu
+    richelieu,
+    gronsfeld
 )

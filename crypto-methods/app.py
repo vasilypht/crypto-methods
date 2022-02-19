@@ -18,7 +18,8 @@ from methods.symmetric import (
     caesar,
     cardan_grille,
     richelieu,
-    gronsfeld
+    gronsfeld,
+    vigenere
 )
 
 QtCore.QDir.addSearchPath("icons", "resources/icons")
@@ -80,6 +81,12 @@ class MainWindow(QtWidgets.QMainWindow):
             QtGui.QRegularExpressionValidator(QtCore.QRegularExpression(r"^\d*$"))
         )
         self.ui.page_8_button_calc.clicked.connect(self.page_8_button_calc_clicked)
+
+        # page 9
+        self.ui.page_9_line_edit_key.setValidator(
+            QtGui.QRegularExpressionValidator(QtCore.QRegularExpression(r"^[а-яА-ЯёЁa-zA-Z]*$"))
+        )
+        self.ui.page_9_button_make.clicked.connect(self.page_9_button_make_clicked)
 
         self.load_config()
         self.init_tree_widget()
@@ -361,6 +368,30 @@ class MainWindow(QtWidgets.QMainWindow):
         )
 
         self.ui.page_8_text_edit_output.setText(processed_text)
+
+    def page_9_button_make_clicked(self) -> None:
+        """Vigenere | (Slot) Method for handling button click. (Encryption/decryption)"""
+        if not self.ui.page_9_text_edit_input.toPlainText():
+            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
+            return
+
+        if not self.ui.page_9_line_edit_key.text():
+            QtWidgets.QMessageBox.warning(self, "Warning!", "The key field is empty. Enter something!")
+            return
+
+        input_text = self.ui.page_9_text_edit_input.toPlainText()
+        key_text = self.ui.page_9_line_edit_key.text()
+
+        if not re.match(r"^[а-яА-ЯёЁa-zA-Z]*$", key_text):
+            QtWidgets.QMessageBox.warning(self, "Warning!", "Invalid key entered!")
+            return
+
+        processed_text = vigenere.make(
+            text=input_text,
+            key=key_text,
+            mode=self.ui.page_9_combo_box_mode.currentText().lower()
+        )
+        self.ui.page_9_text_edit_output.setText(processed_text)
 
 
 if __name__ == "__main__":

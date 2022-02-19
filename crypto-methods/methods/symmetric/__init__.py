@@ -5,5 +5,6 @@ from . import (
     caesar,
     cardan_grille,
     richelieu,
-    gronsfeld
+    gronsfeld,
+    vigenere
 )

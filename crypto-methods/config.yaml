@@ -10,7 +10,7 @@ task names:
     Classical symmetric cryptosystems:
         - name1
         - Gronsfeld
-        - name3
+        - Vigenere
 
     Modern symmetric cryptosyste:
         - name4
@@ -27,3 +27,4 @@ task id:
     Richelieu: 6
 
     Gronsfeld: 8
+    Vigenere: 9

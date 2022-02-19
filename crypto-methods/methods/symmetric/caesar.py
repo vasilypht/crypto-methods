@@ -1,7 +1,41 @@
-from ..const import (
-    RUS_LCASE,
-    ENG_LCASE
+from ..utils import (
+    get_alphabet_by_letter
 )
+
+
+def transform(text: str, shift: int = 1, mode: bool = True) -> str:
+    """
+    Caesar's cipher. Encryption/decryption function.
+
+    Parameters:
+        text (str): text to be encrypted.
+        shift (int): alphabet shift (default 1).
+        mode (bool): True - encrypt, False - decrypt (default True).
+
+    Returns:
+        text (str): encrypted text.
+    """
+    text_list: list[str] = list(text)
+
+    for i in range(len(text)):
+        letter_text = text_list[i]
+        if (alphabet_letter_text := get_alphabet_by_letter(letter_text)) is None:
+            continue
+
+        letter_text_index = alphabet_letter_text.index(letter_text.lower())
+
+        # choice of sign
+        sign = 1 if mode else -1
+
+        new_letter_text_index = (letter_text_index + shift * sign) % len(alphabet_letter_text)
+        new_letter_text = alphabet_letter_text[new_letter_text_index]
+
+        if letter_text.isupper():
+            new_letter_text = new_letter_text.upper()
+
+        text_list[i] = new_letter_text
+
+    return "".join(text_list)
 
 
 def encrypt(text: str, shift: int = 1) -> str:
@@ -15,27 +49,7 @@ def encrypt(text: str, shift: int = 1) -> str:
     Returns:
         text (str): encrypted text.
     """
-    text_list: list[str] = list(text)
-
-    for i in range(len(text)):
-        letter_lower = text_list[i].lower()
-
-        for alphabet in (ENG_LCASE, RUS_LCASE):
-            if letter_lower not in alphabet:
-                continue
-
-            pos = alphabet.index(letter_lower)
-            new_pos = (pos + shift) % len(alphabet)
-
-            new_letter = alphabet[new_pos]
-
-            if text_list[i].isupper():
-                new_letter = letter_lower.upper()
-
-            text_list[i] = new_letter
-            break
-
-    return "".join(text_list)
+    return transform(text, shift, True)
 
 
 def decrypt(text: str, shift: int = 1) -> str:
@@ -49,27 +63,7 @@ def decrypt(text: str, shift: int = 1) -> str:
     Returns:
         text (str): decrypted text.
     """
-    text_list: list[str] = list(text)
-
-    for i in range(len(text)):
-        letter_lower = text_list[i].lower()
-
-        for alphabet in (ENG_LCASE, RUS_LCASE):
-            if letter_lower not in alphabet:
-                continue
-
-            pos = alphabet.index(letter_lower)
-            new_pos = (pos - shift) % len(alphabet)
-
-            new_letter = alphabet[new_pos]
-
-            if text_list[i].isupper():
-                new_letter = letter_lower.upper()
-
-            text_list[i] = new_letter
-            break
-
-    return "".join(text_list)
+    return transform(text, shift, False)
 
 
 def make(text: str, shift: int = 1, processing_type: str = "encrypt") -> str:

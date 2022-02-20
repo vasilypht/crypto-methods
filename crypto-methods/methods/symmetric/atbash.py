@@ -1,10 +1,9 @@
-from ..const import (
-    ENG_LCASE,
-    RUS_LCASE
+from ..utils import (
+    get_alphabet_by_letter
 )
 
 
-def calculate(text: str) -> str:
+def transform(text: str) -> str:
     """
     Atbash cipher. Encryption/decryption function.
 
@@ -17,20 +16,18 @@ def calculate(text: str) -> str:
     letters_list: list[str] = list(text)
 
     for i in range(len(text)):
-        letter_lower = letters_list[i].lower()
+        letter_text = letters_list[i]
 
-        for alpha in (ENG_LCASE, RUS_LCASE):
-            if letter_lower not in alpha:
-                continue
+        if (alphabet := get_alphabet_by_letter(letter_text)) is None:
+            continue
 
-            pos = alpha.index(letter_lower)
-            new_letter = alpha[len(alpha) - pos - 1]
+        letter_index = alphabet.index(letter_text.lower())
+        new_letter = alphabet[len(alphabet) - letter_index - 1]
 
-            if letters_list[i].isupper():
-                new_letter = letter_lower.upper()
+        if letter_text.isupper():
+            new_letter = new_letter.upper()
 
-            letters_list[i] = new_letter
-            break
+        letters_list[i] = new_letter
 
     return ''.join(letters_list)
 
@@ -45,4 +42,4 @@ def make(text: str) -> str:
     Returns:
         text (str): encrypted/decrypted text.
     """
-    return calculate(text)
+    return transform(text)

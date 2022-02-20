@@ -51,28 +51,28 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_0_button_github.clicked.connect(lambda: webbrowser.open(f"https://{self.ui.page_0_button_github.text()}"))
 
         # page 1
-        self.ui.page_1_button_calc.clicked.connect(self.page_1_button_calc_clicked)
+        self.ui.page_1_button_make.clicked.connect(self.page_1_button_make_clicked)
 
         # page 2
         self.ui.page_2_check_box_columns.stateChanged.connect(self.page_2_check_box_check)
-        self.ui.page_2_button_calc.clicked.connect(self.page_2_button_calc_clicked)
+        self.ui.page_2_button_make.clicked.connect(self.page_2_button_make_clicked)
 
         # page 3
         self.ui.page_3_combo_box_method.currentIndexChanged.connect(self.page_3_combo_box_check)
-        self.ui.page_3_button_calc.clicked.connect(self.page_3_button_calc_clicked)
+        self.ui.page_3_button_make.clicked.connect(self.page_3_button_make_clicked)
 
         # page 4
-        self.ui.page_4_button_calc.clicked.connect(self.page_4_button_calc_clicked)
+        self.ui.page_4_button_make.clicked.connect(self.page_4_button_make_clicked)
 
         # page 5
         self.ui.page_5_button_gen_stencil.clicked.connect(self.page_5_button_gen_stencil_clicked)
-        self.ui.page_5_button_calc.clicked.connect(self.page_5_button_calc_clicked)
+        self.ui.page_5_button_make.clicked.connect(self.page_5_button_make_clicked)
         self.ui.page_5_table_widget_stencil.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode(0))
         self.ui.page_5_table_widget_stencil.clicked.connect(self.page_5_table_widget_change)
         self.ui.page_5_button_clean_stencil.clicked.connect(self.page_5_button_clean_stencil)
 
         # page 6
-        self.ui.page_6_button_calc.clicked.connect(self.page_6_button_calc_clicked)
+        self.ui.page_6_button_make.clicked.connect(self.page_6_button_make_clicked)
 
         # page 7
 
@@ -131,7 +131,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.tree_widget_list_apps.insertTopLevelItems(0, items)
 
-    def page_1_button_calc_clicked(self) -> None:
+    def page_1_button_make_clicked(self) -> None:
         """Atbash | (Slot) Method for handling button click. (Encryption/decryption)"""
         if not self.ui.page_1_text_edit_input.toPlainText():
             QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
@@ -151,7 +151,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.page_2_spin_box_columns.setDisabled(True)
             self.ui.page_2_check_box_columns.setStyleSheet("color: grey")
 
-    def page_2_button_calc_clicked(self) -> None:
+    def page_2_button_make_clicked(self) -> None:
         """Scytale | (Slot) Method for handling button click. (Encryption/decryption)"""
         if not self.ui.page_2_text_edit_input.toPlainText():
             QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
@@ -161,7 +161,7 @@ class MainWindow(QtWidgets.QMainWindow):
             text=self.ui.page_2_text_edit_input.toPlainText(),
             n=self.ui.page_2_spin_box_rows.value(),
             m=self.ui.page_2_spin_box_columns.value(),
-            processing_type=self.ui.page_2_combo_box_type.currentText(),
+            processing_type=self.ui.page_2_combo_box_mode.currentText(),
             auto_m=not self.ui.page_2_check_box_columns.isChecked()
         )
 
@@ -176,7 +176,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.page_3_spin_box_shift.setDisabled(True)
             self.ui.page_3_label_shift.setStyleSheet("color: grey")
 
-    def page_3_button_calc_clicked(self) -> None:
+    def page_3_button_make_clicked(self) -> None:
         """Polybius square | (Slot) Method for handling button click. (Encryption/decryption)"""
         if not self.ui.page_3_text_edit_input.toPlainText():
             QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
@@ -186,11 +186,11 @@ class MainWindow(QtWidgets.QMainWindow):
             text=self.ui.page_3_text_edit_input.toPlainText(),
             method=self.ui.page_3_combo_box_method.currentText(),
             shift=self.ui.page_3_spin_box_shift.value(),
-            processing_type=self.ui.page_3_combo_box_type.currentText()
+            processing_type=self.ui.page_3_combo_box_mode.currentText()
         )
         self.ui.page_3_text_edit_output.setText(processed_text)
 
-    def page_4_button_calc_clicked(self) -> None:
+    def page_4_button_make_clicked(self) -> None:
         """Caesar | (Slot) Method for handling button click. (Encryption/decryption)"""
         if not self.ui.page_4_text_edit_input.toPlainText():
             QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
@@ -199,7 +199,7 @@ class MainWindow(QtWidgets.QMainWindow):
         processed_text = caesar.make(
             text=self.ui.page_4_text_edit_input.toPlainText(),
             shift=self.ui.page_4_spin_box_shift.value(),
-            processing_type=self.ui.page_4_combo_box_type.currentText().lower()
+            processing_type=self.ui.page_4_combo_box_mode.currentText().lower()
         )
         self.ui.page_4_text_edit_output.setText(processed_text)
 
@@ -245,7 +245,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             item.setBackground(QtGui.QColor("orange"))
 
-    def page_5_button_calc_clicked(self) -> None:
+    def page_5_button_make_clicked(self) -> None:
         """Cardan grille | (Slot) Method for handling button click. (Encryption/decryption)"""
         if not self.ui.page_5_text_edit_input.toPlainText():
             QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
@@ -278,7 +278,7 @@ class MainWindow(QtWidgets.QMainWindow):
             text=self.ui.page_5_text_edit_input.toPlainText(),
             stencil=square,
             litter_type=self.ui.page_5_combo_box_trash.currentText(),
-            processing_type=self.ui.page_5_combo_box_type.currentText()
+            processing_type=self.ui.page_5_combo_box_mode.currentText()
         )
         self.ui.page_5_text_edit_output.setText(processed_text)
 
@@ -307,7 +307,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_5_table_widget_preview.resizeRowsToContents()
         self.ui.page_5_table_widget_preview.resizeColumnsToContents()
 
-    def page_6_button_calc_clicked(self) -> None:
+    def page_6_button_make_clicked(self) -> None:
         """Richelieu | (Slot) Method for handling button click. (Encryption/decryption)"""
         if not self.ui.page_6_text_edit_input.toPlainText():
             QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
@@ -340,7 +340,7 @@ class MainWindow(QtWidgets.QMainWindow):
         processed_text = richelieu.make(
             text=input_text,
             key=key_list,
-            processing_type=self.ui.page_6_combo_box_type.currentText()
+            processing_type=self.ui.page_6_combo_box_mode.currentText().lower()
         )
         self.ui.page_6_text_edit_output.setText(processed_text)
 

@@ -1,9 +1,6 @@
 
-def encrypt(
-        text: str,
-        key: list[list[int]]
-) -> str:
-    encrypted_text = list(text)
+def transform(text: str, key: list[list[int]], mode: bool = True) -> str:
+    text_list: list[str] = list(text)
 
     text_index = 0
     key_index = 0
@@ -17,50 +14,35 @@ def encrypt(
         substr = text[text_index:text_index + len(subkey)]
 
         for i, k in enumerate(subkey):
-            encrypted_text[text_index + k - 1] = substr[i]
+            if mode:
+                text_list[text_index + k - 1] = substr[i]
+            else:
+                text_list[text_index + i] = substr[k - 1]
 
         text_index += len(subkey)
         key_index = (key_index + 1) % len(key)
 
-    return "".join(encrypted_text)
+    return "".join(text_list)
 
 
-def decrypt(
-        text: str,
-        key: list[list[int]]
-) -> str:
-    decrypted_text = list(text)
+def encrypt(text: str, key: list[list[int]]) -> str:
+    return transform(text, key, True)
 
-    text_index = 0
-    key_index = 0
 
-    while True:
-        subkey = key[key_index]
-
-        if text_index + len(subkey) > len(text):
-            break
-
-        substr = text[text_index:text_index + len(subkey)]
-
-        for i, k in enumerate(subkey):
-            decrypted_text[text_index + i] = substr[k - 1]
-
-        text_index += len(subkey)
-        key_index = (key_index + 1) % len(key)
-
-    return "".join(decrypted_text)
+def decrypt(text: str, key: list[list[int]]) -> str:
+    return transform(text, key, False)
 
 
 def make(
         text: str,
         key: list[list[int]],
-        processing_type: str = "Encrypt"
+        processing_type: str = "encrypt"
 ) -> str:
     match processing_type:
-        case "Encrypt":
+        case "encrypt":
             return encrypt(text, key)
 
-        case "Decrypt":
+        case "decrypt":
             return decrypt(text, key)
 
         case _:

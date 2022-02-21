@@ -8,13 +8,12 @@ task names:
         - Richelieu
 
     Classical symmetric cryptosystems:
-        - name1
         - Gronsfeld
         - Vigenere
+        - Playfair
 
     Modern symmetric cryptosyste:
-        - name4
-        - name5
+        - ...
 
 task id:
     default: 0
@@ -28,3 +27,4 @@ task id:
 
     Gronsfeld: 8
     Vigenere: 9
+    Playfair: 10

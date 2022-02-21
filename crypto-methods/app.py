@@ -19,7 +19,8 @@ from methods.symmetric import (
     cardan_grille,
     richelieu,
     gronsfeld,
-    vigenere
+    vigenere,
+    playfair
 )
 
 QtCore.QDir.addSearchPath("icons", "resources/icons")
@@ -72,6 +73,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_5_button_clean_stencil.clicked.connect(self.page_5_button_clean_stencil)
 
         # page 6
+        self.ui.page_6_line_edit_key.setValidator(
+            QtGui.QRegularExpressionValidator(QtCore.QRegularExpression(r"^[(),\d]*$"))
+        )
         self.ui.page_6_button_make.clicked.connect(self.page_6_button_make_clicked)
 
         # page 7
@@ -87,6 +91,12 @@ class MainWindow(QtWidgets.QMainWindow):
             QtGui.QRegularExpressionValidator(QtCore.QRegularExpression(r"^[а-яА-ЯёЁa-zA-Z]*$"))
         )
         self.ui.page_9_button_make.clicked.connect(self.page_9_button_make_clicked)
+
+        # page 10
+        self.ui.page_10_line_edit_key.setValidator(
+            QtGui.QRegularExpressionValidator(QtCore.QRegularExpression(r"(^[а-яА-ЯёЁ]*$)|(^[a-zA-Z]*$)"))
+        )
+        self.ui.page_10_button_make.clicked.connect(self.page_10_button_make_clicked)
 
         self.load_config()
         self.init_tree_widget()
@@ -392,6 +402,30 @@ class MainWindow(QtWidgets.QMainWindow):
             mode=self.ui.page_9_combo_box_mode.currentText().lower()
         )
         self.ui.page_9_text_edit_output.setText(processed_text)
+
+    def page_10_button_make_clicked(self):
+        """Playfair | (Slot) Method for handling button click. (Encryption/decryption)"""
+        if not self.ui.page_10_text_edit_input.toPlainText():
+            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
+            return
+
+        if not self.ui.page_10_line_edit_key.text():
+            QtWidgets.QMessageBox.warning(self, "Warning!", "The key field is empty. Enter something!")
+            return
+
+        input_text = self.ui.page_10_text_edit_input.toPlainText()
+        key_text = self.ui.page_10_line_edit_key.text()
+
+        if not re.match(r"(^[а-яА-ЯёЁ]*$)|(^[a-zA-Z]*$)", key_text):
+            QtWidgets.QMessageBox.warning(self, "Warning!", "Invalid key entered!")
+            return
+
+        processed_text = playfair.make(
+            text=input_text,
+            key=key_text,
+            mode=self.ui.page_10_combo_box_mode.currentText().lower()
+        )
+        self.ui.page_10_text_edit_output.setText(processed_text)
 
 
 if __name__ == "__main__":

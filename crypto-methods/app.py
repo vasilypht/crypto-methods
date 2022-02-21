@@ -143,10 +143,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def page_1_button_make_clicked(self) -> None:
         """Atbash | (Slot) Method for handling button click. (Encryption/decryption)"""
-        if not self.ui.page_1_text_edit_input.toPlainText():
-            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
-            return
-
         processed_text = atbash.make(
             text=self.ui.page_1_text_edit_input.toPlainText()
         )

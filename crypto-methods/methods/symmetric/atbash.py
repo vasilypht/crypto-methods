@@ -13,6 +13,10 @@ def transform(text: str) -> str:
     Returns:
         text (str): encrypted/decrypted text.
     """
+    # if the input text is empty
+    if not text:
+        return ""
+
     letters_list: list[str] = list(text)
 
     for i in range(len(text)):
@@ -30,7 +34,7 @@ def transform(text: str) -> str:
 
         letters_list[i] = new_letter
 
-    return ''.join(letters_list)
+    return "".join(letters_list)
 
 
 def make(text: str) -> str:

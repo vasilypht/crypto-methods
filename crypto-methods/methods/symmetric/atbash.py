@@ -17,7 +17,7 @@ def transform(text: str) -> str:
     Returns:
         text (str): encrypted/decrypted text.
     """
-    # if the input text is empty
+
     if not text:
         raise AtbashError("Input text is empty!")
 

@@ -20,9 +20,10 @@ def transform(text: str, key: str, mode: bool = True) -> str:
     for i in range(len(text)):
         letter_text = text_list[i]
 
-        if (alphabet_letter := get_alphabet_by_letter(letter_text)) is None:
+        if (alphabet_lang := get_alphabet_by_letter(letter_text)) is None:
             continue
 
+        alphabet_letter, _ = alphabet_lang
         letter_text_index = alphabet_letter.index(letter_text.lower())
         shift = int(key[i % len(key)])
 

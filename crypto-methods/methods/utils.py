@@ -4,12 +4,13 @@ from .const import (
 )
 
 
-def get_alphabet_by_letter(letter: str) -> str or None:
+def get_alphabet_by_letter(letter: str) -> tuple[str, str] or None:
     letter = letter.lower()
 
-    for alphabet in (ENG_LCASE, RUS_LCASE):
+    for alphabet, lang in ((ENG_LCASE, "en"),
+                           (RUS_LCASE, "ru")):
         if letter in alphabet:
-            return alphabet
+            return alphabet, lang
 
     return None
 

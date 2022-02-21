@@ -8,12 +8,15 @@ def transform(text: str, key: str, mode: bool = True) -> str:
 
     for i in range(len(text)):
         letter_text = text_list[i]
-        if (alphabet_letter_text := get_alphabet_by_letter(letter_text)) is None:
+        if (alphabet_lang_text := get_alphabet_by_letter(letter_text)) is None:
             continue
 
         letter_key = key[i % len(key)]
-        if (alphabet_letter_key := get_alphabet_by_letter(letter_key)) is None:
+        if (alphabet_lang_key := get_alphabet_by_letter(letter_key)) is None:
             continue
+
+        alphabet_letter_text, _ = alphabet_lang_text
+        alphabet_letter_key, _ = alphabet_lang_key
 
         letter_text_index = alphabet_letter_text.index(letter_text.lower())
         letter_key_index = alphabet_letter_key.index(letter_key.lower())

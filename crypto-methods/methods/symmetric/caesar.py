@@ -19,9 +19,10 @@ def transform(text: str, shift: int = 1, mode: bool = True) -> str:
 
     for i in range(len(text)):
         letter_text = text_list[i]
-        if (alphabet_letter_text := get_alphabet_by_letter(letter_text)) is None:
+        if (alphabet_lang := get_alphabet_by_letter(letter_text)) is None:
             continue
 
+        alphabet_letter_text, _ = alphabet_lang
         letter_text_index = alphabet_letter_text.index(letter_text.lower())
 
         # choice of sign

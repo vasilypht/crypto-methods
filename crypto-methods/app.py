@@ -148,6 +148,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 text=self.ui.page_1_text_edit_input.toPlainText()
             )
             self.ui.page_1_text_edit_output.setText(processed_text)
+
         except atbash.AtbashError as e:
             QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
 
@@ -162,19 +163,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def page_2_button_make_clicked(self) -> None:
         """Scytale | (Slot) Method for handling button click. (Encryption/decryption)"""
-        if not self.ui.page_2_text_edit_input.toPlainText():
-            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
-            return
+        try:
+            processed_text = scytale.make(
+                text=self.ui.page_2_text_edit_input.toPlainText(),
+                n=self.ui.page_2_spin_box_rows.value(),
+                m=self.ui.page_2_spin_box_columns.value(),
+                auto_m=not self.ui.page_2_check_box_columns.isChecked(),
+                mode=self.ui.page_2_combo_box_mode.currentText().lower()
+            )
+            self.ui.page_2_text_edit_output.setText(processed_text)
 
-        processed_text = scytale.make(
-            text=self.ui.page_2_text_edit_input.toPlainText(),
-            n=self.ui.page_2_spin_box_rows.value(),
-            m=self.ui.page_2_spin_box_columns.value(),
-            processing_type=self.ui.page_2_combo_box_mode.currentText(),
-            auto_m=not self.ui.page_2_check_box_columns.isChecked()
-        )
-
-        self.ui.page_2_text_edit_output.setText(processed_text)
+        except scytale.ScytaleError as e:
+            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
 
     def page_3_combo_box_check(self) -> None:
         """Polybius square | (Slot) Method for activating/deactivating a spinbox."""

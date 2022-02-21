@@ -1,4 +1,30 @@
-def encrypt(text: str, n: int, m: int) -> str:
+
+class ScytaleError(Exception):
+    pass
+
+
+def encrypt(text: str, n: int, m: int, auto_m: bool = True) -> str:
+    """
+     Scytale cipher. Encryption function.
+
+     Parameters:
+         text (str): text to be encrypted.
+         n (int): number of rows.
+         m (int): number of columns.
+         auto_m (bool): calculate number of columns automatically (default True).
+
+     Returns:
+         text (str): encrypted text.
+     """
+    if not text:
+        raise ScytaleError("Input text is empty!")
+
+    if n <= 0 or m <= 0:
+        raise ScytaleError("'n' and 'm' must be positive!")
+
+    if auto_m:
+        m = (len(text) - 1) // n + 1
+
     lines_list: list[list[str]] = []
 
     for i in range(n):
@@ -7,38 +33,61 @@ def encrypt(text: str, n: int, m: int) -> str:
         lines_list.append(line)
 
     flip_lines_list = [i for i in zip(*lines_list)]
-    return ''.join(''.join(i) for i in flip_lines_list).rstrip()
+    return "".join("".join(i) for i in flip_lines_list)
 
 
 def decrypt(text: str, n: int) -> str:
+    """
+    Scytale cipher. Decryption function.
+
+    Parameters:
+        text (str): text to be decrypted.
+        n (int): number of rows.
+
+    Returns:
+        text (str): decrypted text.
+    """
+    if not text:
+        raise ScytaleError("Input text is empty!")
+
+    if n <= 0:
+        raise ScytaleError("'n' must be positive!")
+
     lines_list: list[str] = []
 
     for i in range(n):
         line = text[i:len(text):n]
         lines_list.append(line)
 
-    return ''.join(lines_list).rstrip()
+    return "".join(lines_list)
 
 
 def make(
         text: str,
         n: int,
         m: int,
-        processing_type: str = "Encrypt",
-        auto_m: bool = True
+        auto_m: bool = True,
+        mode: str = "encrypt",
 ) -> str:
-    if n < 0 or m < 0:
-        raise Exception("'n' and 'm' must be positive!")
+    """
+    Scytale cipher. Interface for calling encryption/decryption functions.
 
-    if auto_m:
-        m = (len(text) - 1) // n + 1
+    Parameters:
+        text (str): text to be encrypted/decrypted.
+        n (int): number of rows.
+        m (int): number of columns.
+        auto_m (bool): calculate number of columns automatically (default True).
+        mode (str): encryption or decryption (default "encrypt").
 
-    match processing_type:
-        case "Encrypt":
-            return encrypt(text, n, m)
+    Returns:
+        text (str): encrypted/decrypted text.
+    """
+    match mode:
+        case "encrypt":
+            return encrypt(text, n, m, auto_m)
 
-        case "Decrypt":
+        case "decrypt":
             return decrypt(text, n)
 
         case _:
-            return ""
+            raise ScytaleError(f"Invalid processing type! -> {mode}")

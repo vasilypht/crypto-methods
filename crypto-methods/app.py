@@ -143,10 +143,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def page_1_button_make_clicked(self) -> None:
         """Atbash | (Slot) Method for handling button click. (Encryption/decryption)"""
-        processed_text = atbash.make(
-            text=self.ui.page_1_text_edit_input.toPlainText()
-        )
-        self.ui.page_1_text_edit_output.setText(processed_text)
+        try:
+            processed_text = atbash.make(
+                text=self.ui.page_1_text_edit_input.toPlainText()
+            )
+            self.ui.page_1_text_edit_output.setText(processed_text)
+        except atbash.AtbashError as e:
+            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
 
     def page_2_check_box_check(self) -> None:
         """Scytale | (Slot) Method for activating/deactivating a checkbox."""

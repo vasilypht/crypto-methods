@@ -3,6 +3,10 @@ from ..utils import (
 )
 
 
+class AtbashError(Exception):
+    pass
+
+
 def transform(text: str) -> str:
     """
     Atbash cipher. Encryption/decryption function.
@@ -15,7 +19,7 @@ def transform(text: str) -> str:
     """
     # if the input text is empty
     if not text:
-        return ""
+        raise AtbashError("Input text is empty!")
 
     letters_list: list[str] = list(text)
 

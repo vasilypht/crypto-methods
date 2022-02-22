@@ -171,10 +171,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 auto_m=not self.ui.page_2_check_box_columns.isChecked(),
                 mode=self.ui.page_2_combo_box_mode.currentText().lower()
             )
-            self.ui.page_2_text_edit_output.setText(processed_text)
 
         except scytale.ScytaleError as e:
             QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+        self.ui.page_2_text_edit_output.setText(processed_text)
 
     def page_3_combo_box_check(self) -> None:
         """Polybius square | (Slot) Method for activating/deactivating a spinbox."""
@@ -194,10 +196,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 method=self.ui.page_3_combo_box_method.currentText().lower(),
                 mode=self.ui.page_3_combo_box_mode.currentText().lower()
             )
-            self.ui.page_3_text_edit_output.setText(processed_text)
 
         except polybius_square.PolybiusSquareError as e:
             QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+        self.ui.page_3_text_edit_output.setText(processed_text)
 
     def page_4_button_make_clicked(self) -> None:
         """Caesar | (Slot) Method for handling button click. (Encryption/decryption)"""
@@ -207,10 +211,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 shift=self.ui.page_4_spin_box_shift.value(),
                 mode=self.ui.page_4_combo_box_mode.currentText().lower()
             )
-            self.ui.page_4_text_edit_output.setText(processed_text)
 
         except caesar.CaesarError as e:
             QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+        self.ui.page_4_text_edit_output.setText(processed_text)
 
     def page_5_button_gen_stencil_clicked(self) -> None:
         """Cardan grille | (Slot) Method for creating a stencil on button click"""

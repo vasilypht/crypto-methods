@@ -85,7 +85,7 @@ def make(text: str, shift: int = 1, mode: str = "encrypt") -> str:
     Args:
         text: text to be encrypted/decrypted.
         shift: alphabet shift (default 1).
-        mode:
+        mode: encryption or decryption (default "encrypt").
 
     Returns:
         Encrypted or decrypted string.

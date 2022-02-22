@@ -39,7 +39,7 @@ def decrypt(text: str, n: int) -> str:
     """Scytale cipher. Decryption function.
 
     Args:
-        text: ext to be decrypted.
+        text: text to be decrypted.
         n: number of rows.
 
     Returns:

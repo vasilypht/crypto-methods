@@ -1,199 +1,304 @@
-from typing import Final
-from random import random
+from random import randint
 
-ENG_LETTER_INDEX: Final = {
-    "A": (1, 1), "B": (2, 1), "C": (3, 1), "D": (4, 1),              "E": (5, 1),
-    "F": (1, 2), "G": (2, 2), "H": (3, 2), "I": (4, 2), "J": (4, 2), "K": (5, 2),
-    "L": (1, 3), "M": (2, 3), "N": (3, 3), "O": (4, 3),              "P": (5, 3),
-    "Q": (1, 4), "R": (2, 4), "S": (3, 4), "T": (4, 4),              "U": (5, 4),
-    "V": (1, 5), "W": (2, 5), "X": (3, 5), "Y": (4, 5),              "Z": (5, 5)
-}
-
-ENG_INDEX_LETTER: Final = {
-    (1, 1): ("A",), (2, 1): ("B",), (3, 1): ("C",), (4, 1): ("D",),     (5, 1): ("E",),
-    (1, 2): ("F",), (2, 2): ("G",), (3, 2): ("H",), (4, 2): ("I", "J"), (5, 2): ("K",),
-    (1, 3): ("L",), (2, 3): ("M",), (3, 3): ("N",), (4, 3): ("O",),     (5, 3): ("P",),
-    (1, 4): ("Q",), (2, 4): ("R",), (3, 4): ("S",), (4, 4): ("T",),     (5, 4): ("U",),
-    (1, 5): ("V",), (2, 5): ("W",), (3, 5): ("X",), (4, 5): ("Y",),     (5, 5): ("Z",)
-}
-
-RUS_LETTER_INDEX: Final = {
-    "А": (1, 1),              "Б": (2, 1),              "В": (3, 1),              "Г": (4, 1), "Д": (5, 1),
-    "Е": (1, 2), "Э": (1, 2), "Ж": (2, 2), "З": (2, 2), "И": (3, 2), "Й": (3, 2), "К": (4, 2), "Л": (5, 2),
-    "М": (1, 3),              "Н": (2, 3),              "О": (3, 3),              "П": (4, 3), "Р": (5, 3), "С": (5, 3),
-    "Т": (1, 4),              "У": (2, 4),              "Ф": (3, 4), "Х": (3, 4), "Ц": (4, 4), "Ч": (5, 4),
-    "Ш": (1, 5), "Щ": (1, 5), "Ы": (2, 5),              "Ь": (3, 5),              "Ю": (4, 5), "Я": (5, 5)
-}
-
-RUS_INDEX_LETTER: Final = {
-    (1, 1): ("А",),     (2, 1): ("Б",),     (3, 1): ("В",),     (4, 1): ("Г",), (5, 1): ("Д",),
-    (1, 2): ("Е", "Э"), (2, 2): ("Ж", "З"), (3, 2): ("И", "Й"), (4, 2): ("К",), (5, 2): ("Л",),
-    (1, 3): ("М",),     (2, 3): ("Н",),     (3, 3): ("О",),     (4, 3): ("П",), (5, 3): ("Р", "С"),
-    (1, 4): ("Т",),     (2, 4): ("У",),     (3, 4): ("Ф", "Х"), (4, 4): ("Ц",), (5, 4): ("Ч",),
-    (1, 5): ("Ш", "Щ"), (2, 5): ("Ы",),     (3, 5): ("Ь",),     (4, 5): ("Ю",), (5, 5): ("Я",)
-}
+from ..const import (
+    PS_RUS_LETTER_INDEX,
+    PS_RUS_INDEX_LETTER,
+    PS_ENG_LETTER_INDEX,
+    PS_ENG_INDEX_LETTER
+)
 
 
-def method_1(text: str, processing_type: str = "Encrypt") -> str:
-    processed_text = ""
-
-    for char in text:
-        char_upper = char.upper()
-
-        for letter_index, index_letter in ((ENG_LETTER_INDEX, ENG_INDEX_LETTER),
-                                           (RUS_LETTER_INDEX, RUS_INDEX_LETTER)):
-            if char_upper not in letter_index.keys():
-                continue
-
-            i, j = letter_index.get(char_upper)
-
-            match processing_type:
-                case "Encrypt":
-                    if j == 5:
-                        j = 1
-                    else:
-                        j += 1
-
-                case "Decrypt":
-                    if j == 1:
-                        j = 5
-                    else:
-                        j -= 1
-
-                case _:
-                    raise Exception("Invalid processing type!")
-
-            chars = index_letter.get((i, j))
-            char_upper = chars[round(random())] if len(chars) == 2 else chars[0]
-            break
-
-        if char.islower():
-            char = char_upper.lower()
-        else:
-            char = char_upper
-
-        processed_text += char
-
-    return processed_text
+class PolybiusSquareError(Exception):
+    pass
 
 
-def _get_indices(text: str) -> tuple[list, list, list]:
+def get_square_by_letter(letter: str) -> tuple[dict, dict, str] or None:
+    """Function to determine the language of a square by letter.
+
+    Args:
+        letter: any character.
+
+    Returns:
+        Square in the form of dictionaries and language, otherwise None.
+    """
+    if not letter:
+        return None
+
+    for letter_index, index_letter, lang in ((PS_ENG_LETTER_INDEX, PS_ENG_INDEX_LETTER, "en"),
+                                             (PS_RUS_LETTER_INDEX, PS_RUS_INDEX_LETTER, "ru")):
+        if letter.upper() in letter_index.keys():
+            return letter_index, index_letter, lang
+
+    return None
+
+
+def method_1(text: str, mode: str = "encrypt") -> str:
+    """Polybius Square. Method 1. Function for encryption and decryption.
+
+    Args:
+        text: text to encrypt or decrypt.
+        mode: encryption or decryption (default "encrypt").
+
+    Returns:
+        Encrypted or decrypted string.
+    """
+    if not text:
+        raise PolybiusSquareError("Input text is empty!")
+
+    text_list: list[str] = list(text)
+
+    for i in range(len(text)):
+        letter = text_list[i]
+
+        if (square := get_square_by_letter(letter)) is None:
+            continue
+
+        letter_index, index_letter, _ = square
+        letter_i, letter_j = letter_index.get(letter.upper())
+
+        match mode:
+            case "encrypt":
+                if letter_j == 5:
+                    letter_j = 1
+                else:
+                    letter_j += 1
+
+            case "decrypt":
+                if letter_j == 1:
+                    letter_j = 5
+                else:
+                    letter_j -= 1
+
+            case _:
+                raise PolybiusSquareError(f"Invalid processing type! -> {mode}")
+
+        new_letters = index_letter.get((letter_i, letter_j))
+        new_letter = new_letters[randint(0, 1)] if len(new_letters) == 2 else new_letters[0]
+
+        if letter.islower():
+            new_letter = new_letter.lower()
+
+        text_list[i] = new_letter
+
+    return "".join(text_list)
+
+
+def get_indices_from_square(text: str) -> tuple[list, tuple[list, list]]:
+    """A function to extract characters from text that can be processed by methods.
+
+    Args:
+        text: text from which letters will be extracted for further processing.
+
+    Returns:
+        A list containing pairs (the index of a letter in the source text and its language),
+        as well as a tuple with the indices of these letters in squares.
+    """
+    # pair (letter_index, lang), (...), ...
     letter_indices = []
 
     indices_i = []
     indices_j = []
 
-    for char_index, char in enumerate(text):
-        char_upper = char.upper()
+    for i, letter in enumerate(text):
+        if (square := get_square_by_letter(letter)) is None:
+            continue
 
-        for letter_index, index_letter, lang in ((ENG_LETTER_INDEX, ENG_INDEX_LETTER, "ENG"),
-                                                 (RUS_LETTER_INDEX, RUS_INDEX_LETTER, "RUS")):
-            if char_upper not in letter_index.keys():
-                continue
+        letter_index, index_letter, lang = square
 
-            letter_indices.append((char_index, lang))
+        letter_indices.append((i, lang))
+        letter_i, letter_j = letter_index.get(letter.upper())
+        indices_i.append(letter_i)
+        indices_j.append(letter_j)
 
-            i, j = letter_index.get(char_upper)
-            indices_i.append(i)
-            indices_j.append(j)
-            break
-
-    return letter_indices, indices_i, indices_j
+    return letter_indices, (indices_i, indices_j)
 
 
-def _replace_letters(
+def replace_letters_by_indices(
         text: str,
         letter_indices: list[tuple[int, str]],
-        indices: list[tuple[int, int]]
+        square_indices: list[tuple[int, int]]
 ):
+    """A function to replace certain letters in the text with new ones.
+
+    Args:
+        text: the text in which the letters will be changed.
+        letter_indices: a list containing pairs (the index of a letter in the source text and its language)
+        square_indices: new indexes by which new letters in the square will be found.
+
+    Returns:
+        String with changed letters.
+    """
     list_text: list[str] = list(text)
 
     # i - for letter_indices
     # k - for indices_ij
-    for i, (letter_i, letter_j) in enumerate(indices):
+    for i, (letter_i, letter_j) in enumerate(square_indices):
         letter_index, lang = letter_indices[i]
 
         match lang:
-            case "ENG":
-                letters = ENG_INDEX_LETTER.get((letter_i, letter_j))
+            case "en":
+                letters = PS_ENG_INDEX_LETTER.get((letter_i, letter_j))
 
-            case "RUS":
-                letters = RUS_INDEX_LETTER.get((letter_i, letter_j))
+            case "ru":
+                letters = PS_RUS_INDEX_LETTER.get((letter_i, letter_j))
 
             case _:
-                raise Exception("Wrong language!")
+                raise PolybiusSquareError(f"Wrong language! -> {lang}")
 
-        letter = letters[round(random())] if len(letters) == 2 else letters[0]
+        new_letter = letters[randint(0, 1)] if len(letters) == 2 else letters[0]
+
         if list_text[letter_index].islower():
-            letter = letter.lower()
+            new_letter = new_letter.lower()
 
-        list_text[letter_index] = letter
+        list_text[letter_index] = new_letter
 
-    return ''.join(list_text)
+    return "".join(list_text)
 
 
-def method_2(text: str, processing_type: str = "Encrypt") -> str:
-    letter_indices, indices_i, indices_j = _get_indices(text)
+def method_2(text: str, mode: str = "encrypt") -> str:
+    """Polybius Square. Method 2. Function for encryption and decryption.
 
-    match processing_type:
-        case "Encrypt":
+    Args:
+        text: text to encrypt or decrypt.
+        mode: encryption or decryption (default "encrypt").
+
+    Returns:
+        Encrypted or decrypted string.
+    """
+    if not text:
+        raise PolybiusSquareError("Input text is empty!")
+
+    letter_indices, (indices_i, indices_j) = get_indices_from_square(text)
+
+    match mode:
+        case "encrypt":
             indices_ij = indices_i + indices_j
             indices = [(indices_ij[i], indices_ij[i + 1]) for i in range(0, len(indices_ij), 2)]
 
-        case "Decrypt":
+        case "decrypt":
             indices_ij = [index for pair in zip(indices_i, indices_j) for index in pair]
             k = len(indices_ij) // 2
             indices = list(zip(indices_ij[:k:], indices_ij[k::]))
 
         case _:
-            raise Exception("Invalid processing type!")
+            raise PolybiusSquareError(f"Invalid processing type! -> {mode}")
 
-    processed_text = _replace_letters(text, letter_indices, indices)
-
+    processed_text = replace_letters_by_indices(text, letter_indices, indices)
     return processed_text
 
 
-def method_3(text: str, shift: int = 1, processing_type: str = "Encrypt") -> str:
+def method_3(text: str, shift: int = 1, mode: str = "encrypt") -> str:
+    """Polybius Square. Method 3. Function for encryption and decryption.
+
+    Args:
+        text: text to encrypt or decrypt.
+        shift: odd number for third method (default 1).
+        mode: encryption or decryption (default "encrypt").
+
+    Returns:
+        Encrypted or decrypted string.
+    """
+    if not text:
+        raise PolybiusSquareError("Input text is empty!")
+
     if shift <= 0 or shift % 2 == 0:
-        raise Exception("Invalid shift value! Value must be odd!")
+        raise PolybiusSquareError("Invalid shift value! Value must be positive and odd!")
 
     shift %= len(text)
-    letter_indices, indices_i, indices_j = _get_indices(text)
+    letter_indices, (indices_i, indices_j) = get_indices_from_square(text)
 
-    match processing_type:
-        case "Encrypt":
+    match mode:
+        case "encrypt":
             indices_ij = indices_i + indices_j
             indices_ij = indices_ij[shift::] + indices_ij[:shift:]
             indices = [(indices_ij[i], indices_ij[i + 1]) for i in range(0, len(indices_ij), 2)]
 
-        case "Decrypt":
+        case "decrypt":
             indices_ij = [index for pair in zip(indices_i, indices_j) for index in pair]
             indices_ij = indices_ij[len(indices_ij) - shift:] + indices_ij[:len(indices_ij) - shift:]
             k = len(indices_ij) // 2
             indices = list(zip(indices_ij[:k:], indices_ij[k::]))
 
         case _:
-            raise Exception("Invalid processing type!")
+            raise PolybiusSquareError(f"Invalid processing type! -> {mode}")
 
-    processed_text = _replace_letters(text, letter_indices, indices)
-
+    processed_text = replace_letters_by_indices(text, letter_indices, indices)
     return processed_text
 
 
-def make(text: str,
-         method: str = "Method 1",
-         shift: int = 1,
-         processing_type: str = "Encrypt") -> str:
+def encrypt(text: str, shift: int = 1, method: str = "method 1") -> str:
+    """Polybius square cipher. Interface for calling encryption functions.
 
+    Args:
+        text: text to be encrypted.
+        shift: odd number for third method (default 1).
+        method: encryption method (default "method 1").
+
+    Returns:
+        Encrypted string.
+    """
     match method:
-        case "Method 1":
-            return method_1(text, processing_type)
+        case "method 1":
+            return method_1(text, "encrypt")
 
-        case "Method 2":
-            return method_2(text, processing_type)
+        case "method 2":
+            return method_2(text, "encrypt")
 
-        case "Method 3":
-            return method_3(text, shift, processing_type)
+        case "method 3":
+            return method_3(text, shift, "encrypt")
 
         case _:
-            raise Exception("Invalid method name!")
+            raise PolybiusSquareError(f"Invalid method type! -> {method}")
+
+
+def decrypt(text: str, shift: int = 1, method: str = "method 1") -> str:
+    """Polybius square cipher. Interface for calling decryption functions.
+
+    Args:
+        text: text to be decrypted.
+        shift: odd number for third method (default 1).
+        method: encryption method (default "method 1").
+
+    Returns:
+        Decrypted string.
+    """
+    match method:
+        case "method 1":
+            return method_1(text, "decrypt")
+
+        case "method 2":
+            return method_2(text, "decrypt")
+
+        case "method 3":
+            return method_3(text, shift, "decrypt")
+
+        case _:
+            raise PolybiusSquareError(f"Invalid method type! -> {method}")
+
+
+def make(
+        text: str,
+        shift: int = 1,
+        method: str = "method 1",
+        mode: str = "encrypt"
+) -> str:
+    """Polybius square cipher. Interface for calling encryption/decryption functions.
+
+    Args:
+        text: text to be encrypted/decrypted.
+        shift: odd number for third method (default 1).
+        method: encryption method (default "method 1").
+        mode: encryption or decryption (default "encrypt").
+
+    Returns:
+        Encrypted or decrypted string.
+    """
+    match mode:
+        case "encrypt":
+            return encrypt(text, shift, method)
+
+        case "decrypt":
+            return decrypt(text, shift, method)
+
+        case _:
+            raise PolybiusSquareError(f"Invalid processing type! -> {mode}")

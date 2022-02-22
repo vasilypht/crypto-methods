@@ -187,17 +187,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def page_3_button_make_clicked(self) -> None:
         """Polybius square | (Slot) Method for handling button click. (Encryption/decryption)"""
-        if not self.ui.page_3_text_edit_input.toPlainText():
-            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
-            return
+        try:
+            processed_text = polybius_square.make(
+                text=self.ui.page_3_text_edit_input.toPlainText(),
+                shift=self.ui.page_3_spin_box_shift.value(),
+                method=self.ui.page_3_combo_box_method.currentText().lower(),
+                mode=self.ui.page_3_combo_box_mode.currentText().lower()
+            )
+            self.ui.page_3_text_edit_output.setText(processed_text)
 
-        processed_text = polybius_square.make(
-            text=self.ui.page_3_text_edit_input.toPlainText(),
-            method=self.ui.page_3_combo_box_method.currentText(),
-            shift=self.ui.page_3_spin_box_shift.value(),
-            processing_type=self.ui.page_3_combo_box_mode.currentText()
-        )
-        self.ui.page_3_text_edit_output.setText(processed_text)
+        except polybius_square.PolybiusSquareError as e:
+            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
 
     def page_4_button_make_clicked(self) -> None:
         """Caesar | (Slot) Method for handling button click. (Encryption/decryption)"""

@@ -217,8 +217,8 @@ class MainWindow(QtWidgets.QMainWindow):
         k = self.ui.page_5_spin_box_dim_stencil.value()
         stencil = cardan_grille.gen_stencil(k)
 
-        self.ui.page_5_table_widget_stencil.setRowCount(2*k)
-        self.ui.page_5_table_widget_stencil.setColumnCount(2*k)
+        self.ui.page_5_table_widget_stencil.setRowCount(2 * k)
+        self.ui.page_5_table_widget_stencil.setColumnCount(2 * k)
 
         for i in range(2*k):
             for j in range(2*k):
@@ -238,8 +238,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_5_table_widget_stencil.setRowCount(2 * k)
         self.ui.page_5_table_widget_stencil.setColumnCount(2 * k)
 
-        for i in range(2*k):
-            for j in range(2*k):
+        for i in range(2 * k):
+            for j in range(2 * k):
                 item = QtWidgets.QTableWidgetItem(str(stencil[i, j].value))
                 self.ui.page_5_table_widget_stencil.setItem(i, j, item)
 
@@ -256,17 +256,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def page_5_button_make_clicked(self) -> None:
         """Cardan grille | (Slot) Method for handling button click. (Encryption/decryption)"""
-        if not self.ui.page_5_text_edit_input.toPlainText():
-            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
-            return
-
-        if self.ui.page_5_table_widget_stencil.rowCount() == 0:
-            QtWidgets.QMessageBox.warning(self, "Warning!", "The stencil field is empty! Generate a stencil.")
-            return
 
         # clear preview table
         self.ui.page_5_table_widget_preview.clear()
 
+        # Creating and filling a stencil from a widget.
         n = self.ui.page_5_table_widget_stencil.rowCount()
         square = np.empty(shape=(n, n), dtype=cardan_grille.Field)
 
@@ -278,35 +272,36 @@ class MainWindow(QtWidgets.QMainWindow):
                     item.background() == QtGui.QColor("orange")
                 )
 
-        # check stencil
-        if not cardan_grille.check_correct_stencil(square):
-            QtWidgets.QMessageBox.warning(self, "Warning!", "The stencil is incorrect!")
+        try:
+            processed_text = cardan_grille.make(
+                text=self.ui.page_5_text_edit_input.toPlainText(),
+                stencil=square,
+                litter_type=self.ui.page_5_combo_box_trash.currentText().lower(),
+                mode=self.ui.page_5_combo_box_mode.currentText().lower()
+            )
+
+        except cardan_grille.CarganGrilleError as e:
+            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
-        processed_text = cardan_grille.make(
-            text=self.ui.page_5_text_edit_input.toPlainText(),
-            stencil=square,
-            litter_type=self.ui.page_5_combo_box_trash.currentText(),
-            processing_type=self.ui.page_5_combo_box_mode.currentText()
-        )
         self.ui.page_5_text_edit_output.setText(processed_text)
 
-        texts = [processed_text[i:i+n**2] for i in range(0, len(processed_text), n**2)]
+        text_blocks = [processed_text[i:i+n**2] for i in range(0, len(processed_text), n**2)]
 
         self.ui.page_5_table_widget_preview.setColumnCount(n)
-        self.ui.page_5_table_widget_preview.setRowCount(n * len(texts) + len(texts))
+        self.ui.page_5_table_widget_preview.setRowCount(n * len(text_blocks) + len(text_blocks))
 
         # Output of processed text after stencil
         offset_i = 0
         row_labels = []
-        for text in texts:
-            text += " " * (n**2 - len(text))
+        for text_block in text_blocks:
+            text_block += " " * (n**2 - len(text_block))
 
             for i in range(n):
                 row_labels.append(str(i + 1))
 
                 for j in range(n):
-                    item = QtWidgets.QTableWidgetItem(text[i * n + j])
+                    item = QtWidgets.QTableWidgetItem(text_block[i * n + j])
                     self.ui.page_5_table_widget_preview.setItem(i + offset_i, j, item)
 
             row_labels.append("")

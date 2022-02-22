@@ -91,7 +91,7 @@ def get_indices_from_square(text: str) -> tuple[list, tuple[list, list]]:
 
     Returns:
         A list containing pairs (the index of a letter in the source text and its language),
-        as well as a tuple with the indices of these letters in squares.
+            as well as a tuple with the indices of these letters in squares.
     """
     # pair (letter_index, lang), (...), ...
     letter_indices = []

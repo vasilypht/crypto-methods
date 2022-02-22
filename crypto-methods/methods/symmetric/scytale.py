@@ -4,18 +4,17 @@ class ScytaleError(Exception):
 
 
 def encrypt(text: str, n: int, m: int, auto_m: bool = True) -> str:
+    """Scytale cipher. Encryption function.
+
+    Args:
+        text: text to be encrypted.
+        n: number of rows.
+        m: number of columns.
+        auto_m: calculate number of columns automatically (default True).
+
+    Returns:
+        Encrypted string.
     """
-     Scytale cipher. Encryption function.
-
-     Parameters:
-         text (str): text to be encrypted.
-         n (int): number of rows.
-         m (int): number of columns.
-         auto_m (bool): calculate number of columns automatically (default True).
-
-     Returns:
-         text (str): encrypted text.
-     """
     if not text:
         raise ScytaleError("Input text is empty!")
 
@@ -37,15 +36,14 @@ def encrypt(text: str, n: int, m: int, auto_m: bool = True) -> str:
 
 
 def decrypt(text: str, n: int) -> str:
-    """
-    Scytale cipher. Decryption function.
+    """Scytale cipher. Decryption function.
 
-    Parameters:
-        text (str): text to be decrypted.
-        n (int): number of rows.
+    Args:
+        text: ext to be decrypted.
+        n: number of rows.
 
     Returns:
-        text (str): decrypted text.
+        Decrypted string.
     """
     if not text:
         raise ScytaleError("Input text is empty!")
@@ -69,18 +67,17 @@ def make(
         auto_m: bool = True,
         mode: str = "encrypt",
 ) -> str:
-    """
-    Scytale cipher. Interface for calling encryption/decryption functions.
+    """Scytale cipher. Interface for calling encryption/decryption functions.
 
-    Parameters:
-        text (str): text to be encrypted/decrypted.
-        n (int): number of rows.
-        m (int): number of columns.
-        auto_m (bool): calculate number of columns automatically (default True).
-        mode (str): encryption or decryption (default "encrypt").
+    Args:
+        text: ext to be encrypted/decrypted.
+        n: number of rows.
+        m: number of columns.
+        auto_m: calculate number of columns automatically (default True).
+        mode: encryption or decryption (default "encrypt").
 
     Returns:
-        text (str): encrypted/decrypted text.
+        Encrypted or decrypted string.
     """
     match mode:
         case "encrypt":

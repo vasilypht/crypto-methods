@@ -8,14 +8,13 @@ class AtbashError(Exception):
 
 
 def transform(text: str) -> str:
-    """
-    Atbash cipher. Encryption/decryption function.
+    """Atbash cipher. Encryption/decryption function.
 
-    Parameters:
-        text (str): text to be encrypted/decrypted.
+    Args:
+        text: text to be encrypted/decrypted.
 
     Returns:
-        text (str): encrypted/decrypted text.
+        Encrypted or decrypted string.
     """
 
     if not text:
@@ -42,13 +41,12 @@ def transform(text: str) -> str:
 
 
 def make(text: str) -> str:
-    """
-    Atbash cipher. Interface for calling encryption/decryption functions.
+    """Atbash cipher. Interface for calling encryption/decryption functions.
 
-    Parameters:
-        text (str): text to be encrypted/decrypted.
+    Args:
+        text: text to be encrypted/decrypted.
 
     Returns:
-        text (str): encrypted/decrypted text.
+        Encrypted or decrypted string.
     """
     return transform(text)

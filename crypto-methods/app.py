@@ -208,8 +208,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 mode=self.ui.page_4_combo_box_mode.currentText().lower()
             )
             self.ui.page_4_text_edit_output.setText(processed_text)
-        except _:
-            pass
+
+        except caesar.CaesarError as e:
+            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
 
     def page_5_button_gen_stencil_clicked(self) -> None:
         """Cardan grille | (Slot) Method for creating a stencil on button click"""

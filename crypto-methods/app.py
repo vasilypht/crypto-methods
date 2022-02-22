@@ -319,39 +319,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def page_6_button_make_clicked(self) -> None:
         """Richelieu | (Slot) Method for handling button click. (Encryption/decryption)"""
-        if not self.ui.page_6_text_edit_input.toPlainText():
-            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
+        try:
+            processed_text = richelieu.make(
+                text=self.ui.page_6_text_edit_input.toPlainText(),
+                key=self.ui.page_6_line_edit_key.text(),
+                mode=self.ui.page_6_combo_box_mode.currentText().lower()
+            )
+
+        except richelieu.RichelieuError as e:
+            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
-        key_text = self.ui.page_6_line_edit_key.text()
-        input_text = self.ui.page_6_text_edit_input.toPlainText()
-
-        if not key_text:
-            QtWidgets.QMessageBox.warning(self, "Warning!", "The key field is empty. Enter the key!")
-            return
-
-        if not re.match(r"^\(\d+(,\d+|\)\(\d+)*\)$", key_text):
-            QtWidgets.QMessageBox.warning(self, "Warning!", "Invalid key entered!")
-            return
-
-        # parse key str
-        key_list = key_text.strip("()").split(")(")
-        for i in range(len(key_list)):
-            subkey = key_list[i].split(",")
-            key_list[i] = list(map(int, subkey))
-
-        # check range
-        for subkey in key_list:
-            for i in range(1, len(subkey) + 1):
-                if i not in subkey:
-                    QtWidgets.QMessageBox.warning(self, "Warning!", "Invalid key entered!")
-                    return
-
-        processed_text = richelieu.make(
-            text=input_text,
-            key=key_list,
-            processing_type=self.ui.page_6_combo_box_mode.currentText().lower()
-        )
         self.ui.page_6_text_edit_output.setText(processed_text)
 
     def page_8_button_make_clicked(self) -> None:

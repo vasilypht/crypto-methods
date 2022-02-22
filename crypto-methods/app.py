@@ -201,16 +201,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def page_4_button_make_clicked(self) -> None:
         """Caesar | (Slot) Method for handling button click. (Encryption/decryption)"""
-        if not self.ui.page_4_text_edit_input.toPlainText():
-            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
-            return
-
-        processed_text = caesar.make(
-            text=self.ui.page_4_text_edit_input.toPlainText(),
-            shift=self.ui.page_4_spin_box_shift.value(),
-            processing_type=self.ui.page_4_combo_box_mode.currentText().lower()
-        )
-        self.ui.page_4_text_edit_output.setText(processed_text)
+        try:
+            processed_text = caesar.make(
+                text=self.ui.page_4_text_edit_input.toPlainText(),
+                shift=self.ui.page_4_spin_box_shift.value(),
+                mode=self.ui.page_4_combo_box_mode.currentText().lower()
+            )
+            self.ui.page_4_text_edit_output.setText(processed_text)
+        except _:
+            pass
 
     def page_5_button_gen_stencil_clicked(self) -> None:
         """Cardan grille | (Slot) Method for creating a stencil on button click"""

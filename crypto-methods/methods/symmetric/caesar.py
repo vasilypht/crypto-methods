@@ -3,18 +3,24 @@ from ..utils import (
 )
 
 
-def transform(text: str, shift: int = 1, mode: bool = True) -> str:
-    """
-    Caesar's cipher. Encryption/decryption function.
+class CaesarError(Exception):
+    pass
 
-    Parameters:
-        text (str): text to be encrypted.
-        shift (int): alphabet shift (default 1).
-        mode (bool): True - encrypt, False - decrypt (default True).
+
+def transform(text: str, shift: int = 1, mode: str = "encrypt") -> str:
+    """Caesar's cipher. Encryption/decryption function.
+
+    Args:
+        text: text to be encrypted/decrypted.
+        shift: alphabet shift (default 1).
+        mode: encryption or decryption (default "encrypt").
 
     Returns:
-        text (str): encrypted text.
+        Encrypted or decrypted string.
     """
+    if not text:
+        raise CaesarError("Input text is empty!")
+
     text_list: list[str] = list(text)
 
     for i in range(len(text)):
@@ -26,7 +32,15 @@ def transform(text: str, shift: int = 1, mode: bool = True) -> str:
         letter_text_index = alphabet_letter_text.index(letter_text.lower())
 
         # choice of sign
-        sign = 1 if mode else -1
+        match mode:
+            case "encrypt":
+                sign = 1
+
+            case "decrypt":
+                sign = -1
+
+            case _:
+                raise CaesarError(f"Invalid processing type! -> {mode}")
 
         new_letter_text_index = (letter_text_index + shift * sign) % len(alphabet_letter_text)
         new_letter_text = alphabet_letter_text[new_letter_text_index]
@@ -40,46 +54,43 @@ def transform(text: str, shift: int = 1, mode: bool = True) -> str:
 
 
 def encrypt(text: str, shift: int = 1) -> str:
-    """
-    Caesar's cipher. Encryption function.
+    """Caesar cipher. Interface for calling encryption functions.
 
-    Parameters:
-        text (str): text to be encrypted.
-        shift (int): alphabet shift (default 1).
+    Args:
+        text: text to be encrypted.
+        shift: alphabet shift (default 1).
 
     Returns:
-        text (str): encrypted text.
+        Encrypted string.
     """
-    return transform(text, shift, True)
+    return transform(text, shift, "encrypt")
 
 
 def decrypt(text: str, shift: int = 1) -> str:
-    """
-    Caesar's cipher. Decryption function.
+    """Caesar cipher. Interface for calling decryption functions.
 
-    Parameters:
-        text (str): text to be decrypted.
-        shift (int): alphabet shift (default 1).
-
-    Returns:
-        text (str): decrypted text.
-    """
-    return transform(text, shift, False)
-
-
-def make(text: str, shift: int = 1, processing_type: str = "encrypt") -> str:
-    """
-    Caesar's cipher. Interface for calling encryption/decryption functions.
-
-    Parameters:
-        text (str): text to be encrypted/decrypted.
-        shift (int): alphabet shift (default 1).
-        processing_type (str): encryption or decryption (default "encrypt").
+    Args:
+        text: text to be decrypted.
+        shift: alphabet shift (default 1).
 
     Returns:
-        text (str): encrypted/decrypted text.
+        Decrypted string.
     """
-    match processing_type:
+    return transform(text, shift, "decrypt")
+
+
+def make(text: str, shift: int = 1, mode: str = "encrypt") -> str:
+    """Caesar cipher. Interface for calling encryption/decryption functions.
+
+    Args:
+        text: text to be encrypted/decrypted.
+        shift: alphabet shift (default 1).
+        mode:
+
+    Returns:
+        Encrypted or decrypted string.
+    """
+    match mode:
         case "encrypt":
             return encrypt(text, shift)
 
@@ -87,4 +98,4 @@ def make(text: str, shift: int = 1, processing_type: str = "encrypt") -> str:
             return decrypt(text, shift)
 
         case _:
-            raise Exception("Invalid processing type!")
+            raise CaesarError(f"Invalid processing type! -> {mode}")

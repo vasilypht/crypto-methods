@@ -2,6 +2,8 @@
 
 Laboratory work on cryptographic methods of information protection.
 
+![crypto-methods-image1](/resources/screenshots/image1.png)
+
 ## Installation
 
 We clone the repository and go to the project:

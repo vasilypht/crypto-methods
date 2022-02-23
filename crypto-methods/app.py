@@ -334,26 +334,16 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def page_8_button_make_clicked(self) -> None:
         """Gronsfeld | (Slot) Method for handling button click. (Encryption/decryption)"""
-        if not self.ui.page_8_text_edit_input.toPlainText():
-            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
+        try:
+            processed_text = gronsfeld.make(
+                text=self.ui.page_8_text_edit_input.toPlainText(),
+                key=self.ui.page_8_line_edit_key.text(),
+                mode=self.ui.page_8_combo_box_mode.currentText().lower()
+            )
+
+        except gronsfeld.GronsfeldError as e:
+            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
             return
-
-        if not self.ui.page_8_line_edit_key.text():
-            QtWidgets.QMessageBox.warning(self, "Warning!", "The key field is empty. Enter something!")
-            return
-
-        input_text = self.ui.page_8_text_edit_input.toPlainText()
-        key_text = self.ui.page_8_line_edit_key.text()
-
-        if not re.match(r"^\d*$", key_text):
-            QtWidgets.QMessageBox.warning(self, "Warning!", "Invalid key entered!")
-            return
-
-        processed_text = gronsfeld.make(
-            text=input_text,
-            key=key_text,
-            mode=self.ui.page_8_combo_box_mode.currentText().lower()
-        )
 
         self.ui.page_8_text_edit_output.setText(processed_text)
 

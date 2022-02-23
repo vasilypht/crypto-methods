@@ -1,20 +1,34 @@
+import re
+
 from ..utils import (
     get_alphabet_by_letter
 )
 
 
-def transform(text: str, key: str, mode: bool = True) -> str:
-    """
-    Gronsfeld cipher. Encryption/Decryption function.
+class GronsfeldError(Exception):
+    pass
 
-    Parameters:
-        text (str): text to be encrypted.
-        key (str): set of positive numbers.
-        mode (bool): True - encrypt, False - decrypt
+
+def transform(text: str, key: str, mode: str = "encrypt") -> str:
+    """Gronsfeld cipher. Encryption/Decryption function.
+
+    Args:
+        text: text to be encrypted/decrypted.
+        key: set of positive numbers.
+        mode: encryption or decryption (default "encrypt").
 
     Returns:
-        text (str): encrypted text.
+        Encrypted or decrypted string.
     """
+    if not text:
+        raise GronsfeldError("Input text is empty!")
+
+    if not key:
+        raise GronsfeldError("The key is missing!")
+
+    if not re.match(r"^\d*$", key):
+        raise GronsfeldError("Invalid key!")
+
     text_list: list[str] = list(text)
 
     for i in range(len(text)):
@@ -28,7 +42,15 @@ def transform(text: str, key: str, mode: bool = True) -> str:
         shift = int(key[i % len(key)])
 
         # choice of sign
-        sign = 1 if mode else -1
+        match mode:
+            case "encrypt":
+                sign = 1
+
+            case "decrypt":
+                sign = -1
+
+            case _:
+                raise GronsfeldError(f"Invalid processing type! -> {mode}")
 
         new_letter_index = (letter_text_index + shift * sign) % len(alphabet_letter)
         new_letter_text = alphabet_letter[new_letter_index]
@@ -42,11 +64,29 @@ def transform(text: str, key: str, mode: bool = True) -> str:
 
 
 def encrypt(text: str, key: str) -> str:
-    return transform(text, key, True)
+    """Gronsfeld cipher. Interface for calling encryption functions.
+
+    Args:
+        text: text to be encrypted.
+        key: set of positive numbers.
+
+    Returns:
+        Encrypted string.
+    """
+    return transform(text, key, "encrypt")
 
 
 def decrypt(text: str, key: str) -> str:
-    return transform(text, key, False)
+    """Gronsfeld cipher. Interface for calling decryption functions.
+
+    Args:
+        text: text to be decrypted.
+        key: set of positive numbers.
+
+    Returns:
+        Decrypted string.
+    """
+    return transform(text, key, "decrypt")
 
 
 def make(
@@ -54,16 +94,15 @@ def make(
         key: str,
         mode: str = "encrypt"
 ):
-    """
-    Gronsfeld cipher. Interface for calling encryption/decryption functions.
+    """Gronsfeld cipher. Interface for calling encryption/decryption functions.
 
-    Parameters:
-        text (str): text to be encrypted/decrypted.
-        key (str): set of positive numbers.
-        mode (str): encryption or decryption (default "encrypt").
+    Args:
+        text: text to be encrypted/decrypted.
+        key: set of positive numbers.
+        mode: encryption or decryption (default "encrypt").
 
     Returns:
-        text (str): encrypted/decrypted text.
+        Encrypted or decrypted string.
     """
     match mode:
         case "encrypt":
@@ -73,4 +112,4 @@ def make(
             return decrypt(text, key)
 
         case _:
-            raise Exception("Invalid processing type!")
+            raise GronsfeldError(f"Invalid processing type! -> {mode}")

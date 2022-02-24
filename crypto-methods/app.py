@@ -364,26 +364,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def page_10_button_make_clicked(self):
         """Playfair | (Slot) Method for handling button click. (Encryption/decryption)"""
-        if not self.ui.page_10_text_edit_input.toPlainText():
-            QtWidgets.QMessageBox.warning(self, "Warning!", "The field is empty. Enter something!")
+        try:
+            processed_text = playfair.make(
+                text=self.ui.page_10_text_edit_input.toPlainText(),
+                key=self.ui.page_10_line_edit_key.text(),
+                mode=self.ui.page_10_combo_box_mode.currentText().lower()
+            )
+
+        except playfair.PlayfairError as e:
+            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
-        if not self.ui.page_10_line_edit_key.text():
-            QtWidgets.QMessageBox.warning(self, "Warning!", "The key field is empty. Enter something!")
-            return
-
-        input_text = self.ui.page_10_text_edit_input.toPlainText()
-        key_text = self.ui.page_10_line_edit_key.text()
-
-        if not re.match(r"(^[а-яА-ЯёЁ]*$)|(^[a-zA-Z]*$)", key_text):
-            QtWidgets.QMessageBox.warning(self, "Warning!", "Invalid key entered!")
-            return
-
-        processed_text = playfair.make(
-            text=input_text,
-            key=key_text,
-            mode=self.ui.page_10_combo_box_mode.currentText().lower()
-        )
         self.ui.page_10_text_edit_output.setText(processed_text)
 
 

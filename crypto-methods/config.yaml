@@ -1,19 +1,23 @@
 app name: Crypto methods
 
 task names:
-    Basic concepts and history of cryptography:
-        - Atbash
-        - Scytale
-        - Polybius Square
-        - Caesar
-        - Cardan grille
-        - Richelieu
+    Symmetric encryption:
+        Basic concepts and history of cryptography:
+            - Atbash
+            - Scytale
+            - Polybius Square
+            - Caesar
+            - Cardan grille
+            - Richelieu
 
-    Classical symmetric cryptosystems:
-        - Alberti disc
-        - Gronsfeld
-        - Vigenere
-        - Playfair
+        Classical symmetric cryptosystems:
+            - Alberti disc
+            - Gronsfeld
+            - Vigenere
+            - Playfair
+
+    Asymmetric encryption:
+
 
 task id:
     Default: 0

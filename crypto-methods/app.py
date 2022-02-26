@@ -47,13 +47,14 @@ class MainWindow(QMainWindow):
         self.config = {}
 
         self.load_config()
+        self.init_tree_widget()
 
         # General settings
-        self.setWindowTitle(self.config["app name"])
+        self.setWindowTitle(self.config.get("app name", "Crypto methods"))
+        self.ui.stackedWidget.setCurrentIndex(self.config["task id"].get("Default", 0))
         self.ui.splitter.setStretchFactor(1, 1)
         self.ui.tree_widget_list_apps.clicked.connect(self.tree_widget_item_clicked)
         self.ui.group_box_right.setTitle("Cryptographic methods")
-        self.ui.stackedWidget.setCurrentIndex(0)
 
         # page 0 - Default
         self.ui.page_0_button_vk.setIcon(QIcon("icons:icon-vk.png"))
@@ -118,8 +119,6 @@ class MainWindow(QMainWindow):
         )
         self.ui.page_10_button_make.clicked.connect(self.page_10_button_make_clicked)
 
-        self.init_tree_widget()
-
     def load_config(self) -> None:
         """Method for reading config."""
         try:
@@ -132,50 +131,46 @@ class MainWindow(QMainWindow):
 
     def init_tree_widget(self) -> None:
         """Method for initializing the list of program names."""
-        items = []
+        def fill_item(parent: QTreeWidgetItem, data):
+            match data:
+                case list():
+                    for value in data:
+                        fill_item(parent, value)
 
-        try:
-            for header, tasks in self.config["task names"].items():
-                # chapter
-                item = QTreeWidgetItem((header,))
-                item.setIcon(0, QIcon("icons:icon-folder.png"))
+                case dict():
+                    for key, value in data.items():
+                        child = QTreeWidgetItem((str(key),))
+                        child.setIcon(0, QIcon("icons:icon-folder.png"))
+                        parent.addChild(child)
+                        fill_item(child, value)
 
-                for task_name in tasks:
-                    child = QTreeWidgetItem((task_name,))
+                case _:
+                    child = QTreeWidgetItem((str(data),))
                     child.setIcon(0, QIcon("icons:icon-doc.png"))
-                    item.addChild(child)
+                    parent.addChild(child)
 
-                items.append(item)
+        self.ui.tree_widget_list_apps.clear()
+        try:
+            fill_item(self.ui.tree_widget_list_apps.invisibleRootItem(), self.config["task names"])
 
-        except (TypeError, AttributeError):
-            QMessageBox.critical(self, "Error!", "Config read error.")
-            sys.exit(1)
-
-        self.ui.tree_widget_list_apps.insertTopLevelItems(0, items)
+        except KeyError:
+            QMessageBox.critical(self, "Error!", "Error reading config!\n"
+                                                 "Check key 'task names'!")
 
     def tree_widget_item_clicked(self) -> None:
         """(Slot) Method for switching widgets."""
         current_item = self.ui.tree_widget_list_apps.currentItem()
-        parent_item = current_item.parent()
 
         try:
-
-            if parent_item is None:
-                self.ui.group_box_right.setTitle("./Default")
-                self.ui.stackedWidget.setCurrentIndex(
-                    self.config["task id"]["Default"]
-                )
-                return
-
-            self.ui.group_box_right.setTitle(
-                f"./{parent_item.text(0)}/{current_item.text(0)}"
+            widget_index = self.config["task id"].get(
+                current_item.text(0), self.config["task id"].get("Default", 0)
             )
-            self.ui.stackedWidget.setCurrentIndex(
-                self.config["task id"][current_item.text(0)]
-            )
-        except (KeyError, AttributeError):
-            QMessageBox.critical(self, "Error!", "Config read error.")
-            sys.exit(1)
+            self.ui.stackedWidget.setCurrentIndex(widget_index)
+            self.ui.group_box_right.setTitle(current_item.text(0))
+
+        except KeyError:
+            QMessageBox.critical(self, "Error!", "Error reading config!\n"
+                                                 "Check key 'task id'!")
 
     def page_1_button_make_clicked(self) -> None:
         """Atbash | (Slot) Method for handling button click. (Encryption/decryption)"""

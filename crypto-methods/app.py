@@ -133,39 +133,49 @@ class MainWindow(QMainWindow):
     def init_tree_widget(self) -> None:
         """Method for initializing the list of program names."""
         items = []
-        pages = self.config["page settings"]["tasks"]
 
-        for header, tasks in pages.items():
-            # chapter
-            item = QTreeWidgetItem((header,))
-            item.setIcon(0, QIcon("icons:icon-folder.png"))
+        try:
+            for header, tasks in self.config["task names"].items():
+                # chapter
+                item = QTreeWidgetItem((header,))
+                item.setIcon(0, QIcon("icons:icon-folder.png"))
 
-            for task_name in tasks.keys():
-                child = QTreeWidgetItem((task_name,))
-                child.setIcon(0, QIcon("icons:icon-doc.png"))
-                item.addChild(child)
+                for task_name in tasks:
+                    child = QTreeWidgetItem((task_name,))
+                    child.setIcon(0, QIcon("icons:icon-doc.png"))
+                    item.addChild(child)
 
-            items.append(item)
+                items.append(item)
+
+        except (TypeError, AttributeError):
+            QMessageBox.critical(self, "Error!", "Config read error.")
+            sys.exit(1)
 
         self.ui.tree_widget_list_apps.insertTopLevelItems(0, items)
 
     def tree_widget_item_clicked(self) -> None:
         """(Slot) Method for switching widgets."""
-        page_settings = self.config["page settings"]
-
         current_item = self.ui.tree_widget_list_apps.currentItem()
         parent_item = current_item.parent()
 
         try:
+
+            if parent_item is None:
+                self.ui.group_box_right.setTitle("./Default")
+                self.ui.stackedWidget.setCurrentIndex(
+                    self.config["task id"]["Default"]
+                )
+                return
+
             self.ui.group_box_right.setTitle(
                 f"./{parent_item.text(0)}/{current_item.text(0)}"
             )
             self.ui.stackedWidget.setCurrentIndex(
-                page_settings["tasks"][parent_item.text(0)][current_item.text(0)]
+                self.config["task id"][current_item.text(0)]
             )
         except (KeyError, AttributeError):
-            self.ui.group_box_right.setTitle("./Default")
-            self.ui.stackedWidget.setCurrentIndex(page_settings["default page"])
+            QMessageBox.critical(self, "Error!", "Config read error.")
+            sys.exit(1)
 
     def page_1_button_make_clicked(self) -> None:
         """Atbash | (Slot) Method for handling button click. (Encryption/decryption)"""

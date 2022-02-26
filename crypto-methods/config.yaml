@@ -1,19 +1,32 @@
 app name: Crypto methods
 
-page settings:
-    default page: 0
+task names:
+    Basic concepts and history of cryptography:
+        - Atbash
+        - Scytale
+        - Polybius Square
+        - Caesar
+        - Cardan grille
+        - Richelieu
 
-    tasks:
-        Basic concepts and history of cryptography:
-            Atbash: 1
-            Scytale: 2
-            Polybius Square: 3
-            Caesar: 4
-            Cardan grille: 5
-            Richelieu: 6
+    Classical symmetric cryptosystems:
+        - Alberti disc
+        - Gronsfeld
+        - Vigenere
+        - Playfair
 
-        Classical symmetric cryptosystems:
-            Alberti disc: 7
-            Gronsfeld: 8
-            Vigenere: 9
-            Playfair: 10
+task id:
+    Default: 0
+
+    Atbash: 1
+    Scytale: 2
+    Polybius Square: 3
+    Caesar: 4
+    Cardan grille: 5
+    Richelieu: 6
+
+    Alberti disc: 7
+    Gronsfeld: 8
+    Vigenere: 9
+    Playfair: 10
+

@@ -131,9 +131,9 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>10</number>
+           <number>7</number>
           </property>
-          <widget class="QWidget" name="page_0">
+          <widget class="QWidget" name="page_0_default">
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
              <layout class="QHBoxLayout" name="page_0_horizontal_layout_links">
@@ -271,7 +271,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_1">
+          <widget class="QWidget" name="page_1_atbash">
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <property name="spacing">
              <number>12</number>
@@ -390,7 +390,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_2">
+          <widget class="QWidget" name="page_2_scytale">
            <layout class="QVBoxLayout" name="verticalLayout_10">
             <property name="spacing">
              <number>12</number>
@@ -652,7 +652,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_3">
+          <widget class="QWidget" name="page_3_polybius_square">
            <layout class="QVBoxLayout" name="verticalLayout_13">
             <property name="spacing">
              <number>12</number>
@@ -880,7 +880,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_4">
+          <widget class="QWidget" name="page_4_caesar">
            <layout class="QVBoxLayout" name="verticalLayout_16">
             <property name="spacing">
              <number>12</number>
@@ -1071,7 +1071,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_5">
+          <widget class="QWidget" name="page_5_cardan_grille">
            <layout class="QVBoxLayout" name="verticalLayout_26">
             <property name="spacing">
              <number>12</number>
@@ -1442,7 +1442,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_6">
+          <widget class="QWidget" name="page_6_richelieu">
            <layout class="QVBoxLayout" name="verticalLayout_19">
             <property name="spacing">
              <number>12</number>
@@ -1633,8 +1633,244 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_7"/>
-          <widget class="QWidget" name="page_8">
+          <widget class="QWidget" name="page_7_alberti">
+           <layout class="QVBoxLayout" name="verticalLayout_36">
+            <property name="spacing">
+             <number>12</number>
+            </property>
+            <property name="leftMargin">
+             <number>4</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>4</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QGroupBox" name="page_7_group_box_input">
+              <property name="title">
+               <string>Input text</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_34">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QTextEdit" name="page_7_text_edit_input"/>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="page_7_horizontal_layout_1">
+              <property name="spacing">
+               <number>12</number>
+              </property>
+              <property name="leftMargin">
+               <number>8</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="page_7_label_key">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Key:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="page_7_line_edit_key"/>
+              </item>
+              <item>
+               <spacer name="page_7_horizontal_spacer_1">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QComboBox" name="page_7_combo_box_mode">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Encrypt</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Decrypt</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="page_7_horizontal_layout_2">
+              <property name="spacing">
+               <number>12</number>
+              </property>
+              <property name="leftMargin">
+               <number>8</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="page_7_label_key_alphabet_shift">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Key alphabet shift</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="page_7_spin_box_key_alphabet_shift"/>
+              </item>
+              <item>
+               <spacer name="page_7_horizontal_spacer_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="page_7_horizontal_layout_3">
+              <property name="spacing">
+               <number>12</number>
+              </property>
+              <property name="leftMargin">
+               <number>8</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="page_7_label_iteration_step">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Iteration step</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="page_7_spin_box_iteration_step">
+                <property name="minimum">
+                 <number>-99</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="page_7_horizontal_spacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="page_7_button_make">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Make</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="page_7_group_box_output">
+              <property name="title">
+               <string>Output text</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_35">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QTextEdit" name="page_7_text_edit_output">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_8_gronsfeld">
            <layout class="QVBoxLayout" name="verticalLayout_27">
             <property name="spacing">
              <number>12</number>
@@ -1802,7 +2038,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_9">
+          <widget class="QWidget" name="page_9_vigenere">
            <layout class="QVBoxLayout" name="verticalLayout_30">
             <property name="spacing">
              <number>12</number>
@@ -1973,7 +2209,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_10">
+          <widget class="QWidget" name="page_10_playfair">
            <layout class="QVBoxLayout" name="verticalLayout_33">
             <property name="spacing">
              <number>12</number>

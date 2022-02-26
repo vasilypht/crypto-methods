@@ -6,5 +6,6 @@ from . import (
     cardan_grille,
     richelieu,
     gronsfeld,
-    vigenere
+    vigenere,
+    alberti_disc
 )

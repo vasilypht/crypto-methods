@@ -1,11 +1,16 @@
 import sys
-import re
 import webbrowser
 
 from PyQt6 import (
     QtWidgets,
     QtGui,
     QtCore
+)
+from PyQt6.QtGui import (
+    QRegularExpressionValidator as QRegExpVal,
+)
+from PyQt6.QtCore import (
+    QRegularExpression as QRegExp,
 )
 import yaml
 import numpy as np
@@ -20,7 +25,8 @@ from methods.symmetric import (
     richelieu,
     gronsfeld,
     vigenere,
-    playfair
+    playfair,
+    alberti_disc
 )
 
 QtCore.QDir.addSearchPath("icons", "resources/icons")
@@ -79,6 +85,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.page_6_button_make.clicked.connect(self.page_6_button_make_clicked)
 
         # page 7
+        self.ui.page_7_line_edit_key.setValidator(
+            QRegExpVal(QRegExp(r"(^[а-яё]*$)|(^[a-z]*$)", QRegExp.PatternOption.CaseInsensitiveOption))
+        )
+        self.ui.page_7_button_make.clicked.connect(self.page_7_button_make_clicked)
 
         # page 8
         self.ui.page_8_line_edit_key.setValidator(
@@ -331,6 +341,23 @@ class MainWindow(QtWidgets.QMainWindow):
             return
 
         self.ui.page_6_text_edit_output.setText(processed_text)
+
+    def page_7_button_make_clicked(self) -> None:
+        """Alberti disc | (Slot) Method for handling button click. (Encryption/decryption)"""
+        try:
+            processed_text = alberti_disc.make(
+                text=self.ui.page_7_text_edit_input.toPlainText(),
+                key=self.ui.page_7_line_edit_key.text(),
+                step=self.ui.page_7_spin_box_iteration_step.value(),
+                shift=self.ui.page_7_spin_box_key_alphabet_shift.value(),
+                mode=self.ui.page_7_combo_box_mode.currentText().lower()
+            )
+
+        except alberti_disc.AlbertiError as e:
+            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+        self.ui.page_7_text_edit_output.setText(processed_text)
 
     def page_8_button_make_clicked(self) -> None:
         """Gronsfeld | (Slot) Method for handling button click. (Encryption/decryption)"""

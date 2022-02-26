@@ -8,6 +8,7 @@ task names:
         - Richelieu
 
     Classical symmetric cryptosystems:
+        - Alberti disc
         - Gronsfeld
         - Vigenere
         - Playfair
@@ -25,6 +26,7 @@ task id:
     Cardan grille: 5
     Richelieu: 6
 
+    Alberti disc: 7
     Gronsfeld: 8
     Vigenere: 9
     Playfair: 10

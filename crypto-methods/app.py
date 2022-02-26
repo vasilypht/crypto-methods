@@ -44,10 +44,12 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.__config = None
+        self.config = {}
+
+        self.load_config()
 
         # General settings
-        self.setWindowTitle("Crypto methods")
+        self.setWindowTitle(self.config["app name"])
         self.ui.splitter.setStretchFactor(1, 1)
         self.ui.tree_widget_list_apps.clicked.connect(self.tree_widget_item_clicked)
         self.ui.group_box_right.setTitle("Cryptographic methods")
@@ -116,48 +118,54 @@ class MainWindow(QMainWindow):
         )
         self.ui.page_10_button_make.clicked.connect(self.page_10_button_make_clicked)
 
-        self.load_config()
         self.init_tree_widget()
-
-    def tree_widget_item_clicked(self) -> None:
-        """(Slot) Method for switching widgets."""
-        item = self.ui.tree_widget_list_apps.currentItem()
-        parent = item.parent()
-
-        try:
-            path = f"./{parent.text(0)}/{item.text(0)}"
-        except AttributeError:
-            path = f"./{item.text(0)}"
-
-        self.ui.group_box_right.setTitle(path)
-        self.ui.stackedWidget.setCurrentIndex(self.__config["task id"].get(item.text(0), 0))
 
     def load_config(self) -> None:
         """Method for reading config."""
         try:
             with open("config.yaml", "r") as cfg:
-                self.__config = yaml.safe_load(cfg)
+                self.config = yaml.safe_load(cfg)
 
-        except IOError:
-            QMessageBox.critical(self, "Error!", "Failed to open config!")
-            sys.exit(0)
+        except OSError:
+            QMessageBox.critical(self, "Error!", "Failed to open or read file.")
+            sys.exit(1)
 
     def init_tree_widget(self) -> None:
         """Method for initializing the list of program names."""
         items = []
+        pages = self.config["page settings"]["tasks"]
 
-        for key, values in self.__config["task names"].items():
-            item = QTreeWidgetItem((key,))
+        for header, tasks in pages.items():
+            # chapter
+            item = QTreeWidgetItem((header,))
             item.setIcon(0, QIcon("icons:icon-folder.png"))
 
-            for value in values:
-                child = QTreeWidgetItem((value,))
+            for task_name in tasks.keys():
+                child = QTreeWidgetItem((task_name,))
                 child.setIcon(0, QIcon("icons:icon-doc.png"))
                 item.addChild(child)
 
             items.append(item)
 
         self.ui.tree_widget_list_apps.insertTopLevelItems(0, items)
+
+    def tree_widget_item_clicked(self) -> None:
+        """(Slot) Method for switching widgets."""
+        page_settings = self.config["page settings"]
+
+        current_item = self.ui.tree_widget_list_apps.currentItem()
+        parent_item = current_item.parent()
+
+        try:
+            self.ui.group_box_right.setTitle(
+                f"./{parent_item.text(0)}/{current_item.text(0)}"
+            )
+            self.ui.stackedWidget.setCurrentIndex(
+                page_settings["tasks"][parent_item.text(0)][current_item.text(0)]
+            )
+        except (KeyError, AttributeError):
+            self.ui.group_box_right.setTitle("./Default")
+            self.ui.stackedWidget.setCurrentIndex(page_settings["default page"])
 
     def page_1_button_make_clicked(self) -> None:
         """Atbash | (Slot) Method for handling button click. (Encryption/decryption)"""

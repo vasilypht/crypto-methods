@@ -1,16 +1,22 @@
 import sys
 import webbrowser
 
-from PyQt6 import (
-    QtWidgets,
-    QtGui,
-    QtCore
+from PyQt6.QtWidgets import (
+    QMainWindow,
+    QApplication,
+    QAbstractItemView,
+    QMessageBox,
+    QTreeWidgetItem,
+    QTableWidgetItem
 )
 from PyQt6.QtGui import (
     QRegularExpressionValidator as QRegExpVal,
+    QIcon,
+    QColor
 )
 from PyQt6.QtCore import (
     QRegularExpression as QRegExp,
+    QDir
 )
 import yaml
 import numpy as np
@@ -29,10 +35,10 @@ from methods.symmetric import (
     alberti_disc
 )
 
-QtCore.QDir.addSearchPath("icons", "resources/icons")
+QDir.addSearchPath("icons", "resources/icons")
 
 
-class MainWindow(QtWidgets.QMainWindow):
+class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
@@ -47,64 +53,66 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.group_box_right.setTitle("Cryptographic methods")
         self.ui.stackedWidget.setCurrentIndex(0)
 
-        # page 0
-        self.ui.page_0_button_vk.setIcon(QtGui.QIcon("icons:icon-vk.png"))
-        self.ui.page_0_button_vk.clicked.connect(lambda: webbrowser.open(f"https://{self.ui.page_0_button_vk.text()}"))
+        # page 0 - Default
+        self.ui.page_0_button_vk.setIcon(QIcon("icons:icon-vk.png"))
+        self.ui.page_0_button_vk.clicked.connect(
+            lambda: webbrowser.open(f"https://{self.ui.page_0_button_vk.text()}")
+        )
 
-        self.ui.page_0_button_tg.setIcon(QtGui.QIcon("icons:icon-telegram.png"))
-        self.ui.page_0_button_tg.clicked.connect(lambda: webbrowser.open(f"https://{self.ui.page_0_button_tg.text()}"))
+        self.ui.page_0_button_tg.setIcon(QIcon("icons:icon-telegram.png"))
+        self.ui.page_0_button_tg.clicked.connect(
+            lambda: webbrowser.open(f"https://{self.ui.page_0_button_tg.text()}")
+        )
 
-        self.ui.page_0_button_github.setIcon(QtGui.QIcon("icons:icon-github.png"))
-        self.ui.page_0_button_github.clicked.connect(lambda: webbrowser.open(f"https://{self.ui.page_0_button_github.text()}"))
+        self.ui.page_0_button_github.setIcon(QIcon("icons:icon-github.png"))
+        self.ui.page_0_button_github.clicked.connect(
+            lambda: webbrowser.open(f"https://{self.ui.page_0_button_github.text()}")
+        )
 
-        # page 1
+        # page 1 - Atbash
         self.ui.page_1_button_make.clicked.connect(self.page_1_button_make_clicked)
 
-        # page 2
+        # page 2 - Scytale
         self.ui.page_2_check_box_columns.stateChanged.connect(self.page_2_check_box_check)
         self.ui.page_2_button_make.clicked.connect(self.page_2_button_make_clicked)
 
-        # page 3
+        # page 3 - Polybius Square
         self.ui.page_3_combo_box_method.currentIndexChanged.connect(self.page_3_combo_box_check)
         self.ui.page_3_button_make.clicked.connect(self.page_3_button_make_clicked)
 
-        # page 4
+        # page 4 - Caesar
         self.ui.page_4_button_make.clicked.connect(self.page_4_button_make_clicked)
 
-        # page 5
+        # page 5 - Cardan grille
         self.ui.page_5_button_gen_stencil.clicked.connect(self.page_5_button_gen_stencil_clicked)
         self.ui.page_5_button_make.clicked.connect(self.page_5_button_make_clicked)
-        self.ui.page_5_table_widget_stencil.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode(0))
+        self.ui.page_5_table_widget_stencil.setSelectionMode(QAbstractItemView.SelectionMode(0))
         self.ui.page_5_table_widget_stencil.clicked.connect(self.page_5_table_widget_change)
         self.ui.page_5_button_clean_stencil.clicked.connect(self.page_5_button_clean_stencil)
 
-        # page 6
-        self.ui.page_6_line_edit_key.setValidator(
-            QtGui.QRegularExpressionValidator(QtCore.QRegularExpression(r"^[(),\d]*$"))
-        )
+        # page 6 - Richelieu
+        self.ui.page_6_line_edit_key.setValidator(QRegExpVal(QRegExp(r"^[(),\d]*$")))
         self.ui.page_6_button_make.clicked.connect(self.page_6_button_make_clicked)
 
-        # page 7
+        # page 7 - Alberti disc
         self.ui.page_7_line_edit_key.setValidator(
             QRegExpVal(QRegExp(r"(^[а-яё]*$)|(^[a-z]*$)", QRegExp.PatternOption.CaseInsensitiveOption))
         )
         self.ui.page_7_button_make.clicked.connect(self.page_7_button_make_clicked)
 
-        # page 8
-        self.ui.page_8_line_edit_key.setValidator(
-            QtGui.QRegularExpressionValidator(QtCore.QRegularExpression(r"^\d*$"))
-        )
+        # page 8 - Gronsfeld
+        self.ui.page_8_line_edit_key.setValidator(QRegExpVal(QRegExp(r"^\d*$")))
         self.ui.page_8_button_make.clicked.connect(self.page_8_button_make_clicked)
 
-        # page 9
+        # page 9 - Vigenere
         self.ui.page_9_line_edit_key.setValidator(
-            QtGui.QRegularExpressionValidator(QtCore.QRegularExpression(r"^[а-яА-ЯёЁa-zA-Z]*$"))
+            QRegExpVal(QRegExp(r"^[а-яёa-z]*$", QRegExp.PatternOption.CaseInsensitiveOption))
         )
         self.ui.page_9_button_make.clicked.connect(self.page_9_button_make_clicked)
 
-        # page 10
+        # page 10 - Playfair
         self.ui.page_10_line_edit_key.setValidator(
-            QtGui.QRegularExpressionValidator(QtCore.QRegularExpression(r"(^[а-яА-ЯёЁ]*$)|(^[a-zA-Z]*$)"))
+            QRegExpVal(QRegExp(r"(^[а-яё]*$)|(^[a-z]*$)", QRegExp.PatternOption.CaseInsensitiveOption))
         )
         self.ui.page_10_button_make.clicked.connect(self.page_10_button_make_clicked)
 
@@ -131,7 +139,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.__config = yaml.safe_load(cfg)
 
         except IOError:
-            QtWidgets.QMessageBox.critical(self, "Error!", "Failed to open config!")
+            QMessageBox.critical(self, "Error!", "Failed to open config!")
             sys.exit(0)
 
     def init_tree_widget(self) -> None:
@@ -139,12 +147,12 @@ class MainWindow(QtWidgets.QMainWindow):
         items = []
 
         for key, values in self.__config["task names"].items():
-            item = QtWidgets.QTreeWidgetItem((key,))
-            item.setIcon(0, QtGui.QIcon("icons:icon-folder.png"))
+            item = QTreeWidgetItem((key,))
+            item.setIcon(0, QIcon("icons:icon-folder.png"))
 
             for value in values:
-                child = QtWidgets.QTreeWidgetItem((value,))
-                child.setIcon(0, QtGui.QIcon("icons:icon-doc.png"))
+                child = QTreeWidgetItem((value,))
+                child.setIcon(0, QIcon("icons:icon-doc.png"))
                 item.addChild(child)
 
             items.append(item)
@@ -160,7 +168,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.page_1_text_edit_output.setText(processed_text)
 
         except atbash.AtbashError as e:
-            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
+            QMessageBox.warning(self, "Warning!", e.args[0])
 
     def page_2_check_box_check(self) -> None:
         """Scytale | (Slot) Method for activating/deactivating a checkbox."""
@@ -183,7 +191,7 @@ class MainWindow(QtWidgets.QMainWindow):
             )
 
         except scytale.ScytaleError as e:
-            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
+            QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
         self.ui.page_2_text_edit_output.setText(processed_text)
@@ -208,7 +216,7 @@ class MainWindow(QtWidgets.QMainWindow):
             )
 
         except polybius_square.PolybiusSquareError as e:
-            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
+            QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
         self.ui.page_3_text_edit_output.setText(processed_text)
@@ -223,7 +231,7 @@ class MainWindow(QtWidgets.QMainWindow):
             )
 
         except caesar.CaesarError as e:
-            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
+            QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
         self.ui.page_4_text_edit_output.setText(processed_text)
@@ -238,9 +246,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         for i in range(2*k):
             for j in range(2*k):
-                item = QtWidgets.QTableWidgetItem(str(stencil[i, j].value))
+                item = QTableWidgetItem(str(stencil[i, j].value))
                 if stencil[i, j].cond:
-                    item.setBackground(QtGui.QColor("orange"))
+                    item.setBackground(QColor("orange"))
                 self.ui.page_5_table_widget_stencil.setItem(i, j, item)
 
         self.ui.page_5_table_widget_stencil.resizeRowsToContents()
@@ -256,7 +264,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         for i in range(2 * k):
             for j in range(2 * k):
-                item = QtWidgets.QTableWidgetItem(str(stencil[i, j].value))
+                item = QTableWidgetItem(str(stencil[i, j].value))
                 self.ui.page_5_table_widget_stencil.setItem(i, j, item)
 
         self.ui.page_5_table_widget_stencil.resizeRowsToContents()
@@ -265,10 +273,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def page_5_table_widget_change(self) -> None:
         """Cardan grille | (Slot) Method to change table cell color when cell is clicked."""
         item = self.ui.page_5_table_widget_stencil.currentItem()
-        if item.background() == QtGui.QColor("orange"):
-            item.setBackground(QtGui.QColor(0, 0, 0, 0))
+        if item.background() == QColor("orange"):
+            item.setBackground(QColor(0, 0, 0, 0))
         else:
-            item.setBackground(QtGui.QColor("orange"))
+            item.setBackground(QColor("orange"))
 
     def page_5_button_make_clicked(self) -> None:
         """Cardan grille | (Slot) Method for handling button click. (Encryption/decryption)"""
@@ -285,7 +293,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 item = self.ui.page_5_table_widget_stencil.item(i, j)
                 square[i, j] = cardan_grille.Field(
                     int(item.text()),
-                    item.background() == QtGui.QColor("orange")
+                    item.background() == QColor("orange")
                 )
 
         try:
@@ -297,7 +305,7 @@ class MainWindow(QtWidgets.QMainWindow):
             )
 
         except cardan_grille.CarganGrilleError as e:
-            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
+            QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
         self.ui.page_5_text_edit_output.setText(processed_text)
@@ -317,7 +325,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 row_labels.append(str(i + 1))
 
                 for j in range(n):
-                    item = QtWidgets.QTableWidgetItem(text_block[i * n + j])
+                    item = QTableWidgetItem(text_block[i * n + j])
                     self.ui.page_5_table_widget_preview.setItem(i + offset_i, j, item)
 
             row_labels.append("")
@@ -337,7 +345,7 @@ class MainWindow(QtWidgets.QMainWindow):
             )
 
         except richelieu.RichelieuError as e:
-            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
+            QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
         self.ui.page_6_text_edit_output.setText(processed_text)
@@ -354,7 +362,7 @@ class MainWindow(QtWidgets.QMainWindow):
             )
 
         except alberti_disc.AlbertiError as e:
-            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
+            QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
         self.ui.page_7_text_edit_output.setText(processed_text)
@@ -369,7 +377,7 @@ class MainWindow(QtWidgets.QMainWindow):
             )
 
         except gronsfeld.GronsfeldError as e:
-            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
+            QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
         self.ui.page_8_text_edit_output.setText(processed_text)
@@ -384,12 +392,12 @@ class MainWindow(QtWidgets.QMainWindow):
             )
 
         except vigenere.VigenereError as e:
-            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
+            QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
         self.ui.page_9_text_edit_output.setText(processed_text)
 
-    def page_10_button_make_clicked(self):
+    def page_10_button_make_clicked(self) -> None:
         """Playfair | (Slot) Method for handling button click. (Encryption/decryption)"""
         try:
             processed_text = playfair.make(
@@ -399,15 +407,15 @@ class MainWindow(QtWidgets.QMainWindow):
             )
 
         except playfair.PlayfairError as e:
-            QtWidgets.QMessageBox.warning(self, "Warning!", e.args[0])
+            QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
         self.ui.page_10_text_edit_output.setText(processed_text)
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    app.setWindowIcon(QtGui.QIcon("icons:icon-app.png"))
+    app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon("icons:icon-app.png"))
     app.setStyleSheet(open("gui/stylesheet.css").read())
     window = MainWindow()
     window.show()

@@ -70,7 +70,7 @@ def make(
     """Scytale cipher. Interface for calling encryption/decryption functions.
 
     Args:
-        text: ext to be encrypted/decrypted.
+        text: text to be encrypted/decrypted.
         n: number of rows.
         m: number of columns.
         auto_m: calculate number of columns automatically (default True).

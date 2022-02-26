@@ -156,6 +156,7 @@ class MainWindow(QMainWindow):
         except KeyError:
             QMessageBox.critical(self, "Error!", "Error reading config!\n"
                                                  "Check key 'task names'!")
+            sys.exit(1)
 
     def tree_widget_item_clicked(self) -> None:
         """(Slot) Method for switching widgets."""
@@ -171,6 +172,7 @@ class MainWindow(QMainWindow):
         except KeyError:
             QMessageBox.critical(self, "Error!", "Error reading config!\n"
                                                  "Check key 'task id'!")
+            sys.exit(1)
 
     def page_1_button_make_clicked(self) -> None:
         """Atbash | (Slot) Method for handling button click. (Encryption/decryption)"""

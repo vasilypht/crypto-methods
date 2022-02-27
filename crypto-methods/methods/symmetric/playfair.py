@@ -3,35 +3,13 @@ import re
 import numpy as np
 
 from ..utils import (
-    get_alphabet_by_letter
+    get_alphabet_by_letter,
+    get_substr_from_alphabet
 )
 
 
 class PlayfairError(Exception):
     pass
-
-
-def split_into_bigrams(text: str, alphabet: str) -> tuple[list, list]:
-    """Function for dividing text into bigrams of the same alphabet. First, all letters
-    of the same alphabet are extracted, and then divided into bigrams.
-
-    Args:
-        text: text to be split into bigrams
-        alphabet: the alphabet by which the letters will be searched.
-
-    Returns:
-        List with bigrams and list with indices in source text.
-    """
-    indices = []
-    letters = ""
-
-    for i, letter in enumerate(text):
-        if letter.lower() in alphabet:
-            letters += letter
-            indices.append(i)
-
-    bigrams = [letters[i:i + 2] for i in range(0, len(letters), 2)]
-    return bigrams, indices
 
 
 def transform(text: str, key: str, mode: str = "encrypt") -> str:
@@ -96,7 +74,9 @@ def transform(text: str, key: str, mode: str = "encrypt") -> str:
 
     key_matrix = np.array(unique_letters).reshape(shape)
 
-    bigrams, indices = split_into_bigrams(text, alphabet)
+    # split to bigrams
+    letters, indices = get_substr_from_alphabet(text, alphabet)
+    bigrams = [letters[i:i + 2] for i in range(0, len(letters), 2)]
 
     if not bigrams:
         return text
@@ -136,15 +116,10 @@ def transform(text: str, key: str, mode: str = "encrypt") -> str:
         transformed_letters += new_firs_letter.upper() if first_letter.isupper() else new_firs_letter
         transformed_letters += new_second_letter.upper() if second_letter.isupper() else new_second_letter
 
-    text_list: list[str] = list(text)
+    text_list: list[str] = list(text + transformed_letters[len(indices)::])
 
     for i, letter_index in enumerate(indices):
         text_list[letter_index] = transformed_letters[i]
-
-    # If we add an additional element to the last bigram, then we need to add
-    # a new second letter to the end so that we can decipher it later.
-    if len(indices) % 2 != 0:
-        text_list.append(transformed_letters[-1])
 
     return "".join(text_list)
 

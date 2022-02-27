@@ -15,3 +15,13 @@ def get_alphabet_by_letter(letter: str) -> tuple[str, str] or None:
     return None
 
 
+def get_substr_from_alphabet(string: str, alphabet: str) -> tuple[str, list[int]]:
+    indices = []
+
+    letters = ""
+    for i, letter in enumerate(string):
+        if letter.lower() in alphabet:
+            letters += letter
+            indices.append(i)
+
+    return letters, indices

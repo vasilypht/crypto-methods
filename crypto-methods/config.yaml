@@ -15,6 +15,7 @@ task names:
             - Gronsfeld
             - Vigenere
             - Playfair
+            - Hill
 
     Asymmetric encryption:
 
@@ -33,4 +34,5 @@ task id:
     Gronsfeld: 8
     Vigenere: 9
     Playfair: 10
+    Hill: 11
 

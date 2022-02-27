@@ -1,5 +1,6 @@
 import sys
 import webbrowser
+import string
 
 from PyQt6.QtWidgets import (
     QMainWindow,
@@ -32,7 +33,8 @@ from methods.symmetric import (
     gronsfeld,
     vigenere,
     playfair,
-    alberti_disc
+    alberti_disc,
+    hill
 )
 
 QDir.addSearchPath("icons", "resources/icons")
@@ -118,6 +120,10 @@ class MainWindow(QMainWindow):
             QRegExpVal(QRegExp(r"(^[а-яё]*$)|(^[a-z]*$)", QRegExp.PatternOption.CaseInsensitiveOption))
         )
         self.ui.page_10_button_make.clicked.connect(self.page_10_button_make_clicked)
+
+        # page 11 - Hill
+        self.ui.page_11_line_edit_alphabet.setText(string.ascii_lowercase + "!?,")
+        self.ui.page_11_button_make.clicked.connect(self.page_11_button_make_clicked)
 
     def load_config(self) -> None:
         """Method for reading config."""
@@ -426,6 +432,22 @@ class MainWindow(QMainWindow):
             return
 
         self.ui.page_10_text_edit_output.setText(processed_text)
+
+    def page_11_button_make_clicked(self) -> None:
+        """Hill | (Slot) Method for handling button click. (Encryption/decryption)"""
+        try:
+            processed_text = hill.make(
+                text=self.ui.page_11_text_edit_input.toPlainText(),
+                key=self.ui.page_11_line_edit_key.text(),
+                alphabet=self.ui.page_11_line_edit_alphabet.text(),
+                mode=self.ui.page_11_combo_box_mode.currentText().lower()
+            )
+
+        except hill.HillError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+        self.ui.page_11_text_edit_output.setText(processed_text)
 
 
 if __name__ == "__main__":

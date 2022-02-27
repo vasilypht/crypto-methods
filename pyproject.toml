@@ -9,6 +9,7 @@ python = "^3.10"
 PyQt6 = "^6.2.3"
 numpy = "^1.22.2"
 PyYAML = "^6.0"
+sympy = "^1.9"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.1"

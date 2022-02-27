@@ -7,5 +7,6 @@ from . import (
     richelieu,
     gronsfeld,
     vigenere,
-    alberti_disc
+    alberti_disc,
+    hill
 )

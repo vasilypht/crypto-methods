@@ -16,6 +16,7 @@ task names:
             - Vigenere
             - Playfair
             - Hill
+            - Vernam
 
     Asymmetric encryption:
 
@@ -35,4 +36,5 @@ task id:
     Vigenere: 9
     Playfair: 10
     Hill: 11
+    Vernam: 12
 

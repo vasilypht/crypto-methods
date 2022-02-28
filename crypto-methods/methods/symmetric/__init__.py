@@ -8,5 +8,6 @@ from . import (
     gronsfeld,
     vigenere,
     alberti_disc,
-    hill
+    hill,
+    vernam
 )

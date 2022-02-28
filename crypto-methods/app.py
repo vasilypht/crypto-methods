@@ -34,7 +34,8 @@ from methods.symmetric import (
     vigenere,
     playfair,
     alberti_disc,
-    hill
+    hill,
+    vernam
 )
 
 QDir.addSearchPath("icons", "resources/icons")
@@ -124,6 +125,9 @@ class MainWindow(QMainWindow):
         # page 11 - Hill
         self.ui.page_11_line_edit_alphabet.setText(string.ascii_lowercase + "!?,")
         self.ui.page_11_button_make.clicked.connect(self.page_11_button_make_clicked)
+
+        # page 12 - Vernam
+        self.ui.page_12_button_make.clicked.connect(self.page_12_button_make_clicked)
 
     def load_config(self) -> None:
         """Method for reading config."""
@@ -448,6 +452,20 @@ class MainWindow(QMainWindow):
             return
 
         self.ui.page_11_text_edit_output.setText(processed_text)
+
+    def page_12_button_make_clicked(self) -> None:
+        """Vernam | (Slot) Method for handling button click. (Encryption/decryption)"""
+        try:
+            processed_text = vernam.make(
+                text=self.ui.page_12_text_edit_input.toPlainText(),
+                key=self.ui.page_12_line_edit_key.text()
+            )
+
+        except vernam.VernamError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+        self.ui.page_12_text_edit_output.setText(processed_text)
 
 
 if __name__ == "__main__":

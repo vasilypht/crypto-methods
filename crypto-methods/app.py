@@ -223,7 +223,7 @@ class MainWindow(QMainWindow):
 
     def page_3_combo_box_check(self) -> None:
         """Polybius square | (Slot) Method for activating/deactivating a spinbox."""
-        if self.ui.page_3_combo_box_method.currentText() == "Method 3":
+        if self.ui.page_3_combo_box_method.currentText() == "Method 2":
             self.ui.page_3_spin_box_shift.setDisabled(False)
             self.ui.page_3_label_shift.setStyleSheet("color: white")
         else:

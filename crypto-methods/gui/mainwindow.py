@@ -291,7 +291,6 @@ class Ui_MainWindow(object):
         self.page_3_combo_box_method.setObjectName("page_3_combo_box_method")
         self.page_3_combo_box_method.addItem("")
         self.page_3_combo_box_method.addItem("")
-        self.page_3_combo_box_method.addItem("")
         self.page_3_horizontal_layout_1.addWidget(self.page_3_combo_box_method)
         spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.page_3_horizontal_layout_1.addItem(spacerItem5)
@@ -322,8 +321,9 @@ class Ui_MainWindow(object):
         self.page_3_spin_box_shift = QtWidgets.QSpinBox(self.page_3_polybius_square)
         self.page_3_spin_box_shift.setEnabled(False)
         self.page_3_spin_box_shift.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.page_3_spin_box_shift.setMinimum(1)
-        self.page_3_spin_box_shift.setSingleStep(2)
+        self.page_3_spin_box_shift.setMinimum(0)
+        self.page_3_spin_box_shift.setSingleStep(1)
+        self.page_3_spin_box_shift.setProperty("value", 1)
         self.page_3_spin_box_shift.setObjectName("page_3_spin_box_shift")
         self.page_3_horizontal_layout_2.addWidget(self.page_3_spin_box_shift)
         spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
@@ -1116,7 +1116,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(12)
+        self.stackedWidget.setCurrentIndex(3)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -1143,7 +1143,6 @@ class Ui_MainWindow(object):
         self.page_3_group_box_input.setTitle(_translate("MainWindow", "Input text"))
         self.page_3_combo_box_method.setItemText(0, _translate("MainWindow", "Method 1"))
         self.page_3_combo_box_method.setItemText(1, _translate("MainWindow", "Method 2"))
-        self.page_3_combo_box_method.setItemText(2, _translate("MainWindow", "Method 3"))
         self.page_3_combo_box_mode.setItemText(0, _translate("MainWindow", "Encrypt"))
         self.page_3_combo_box_mode.setItemText(1, _translate("MainWindow", "Decrypt"))
         self.page_3_label_shift.setText(_translate("MainWindow", "Shift:"))

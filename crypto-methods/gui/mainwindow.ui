@@ -131,7 +131,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>12</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="page_0_default">
            <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -725,11 +725,6 @@
                   <string>Method 2</string>
                  </property>
                 </item>
-                <item>
-                 <property name="text">
-                  <string>Method 3</string>
-                 </property>
-                </item>
                </widget>
               </item>
               <item>
@@ -800,10 +795,13 @@
                  <set>Qt::AlignCenter</set>
                 </property>
                 <property name="minimum">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
                 <property name="singleStep">
-                 <number>2</number>
+                 <number>1</number>
+                </property>
+                <property name="value">
+                 <number>1</number>
                 </property>
                </widget>
               </item>

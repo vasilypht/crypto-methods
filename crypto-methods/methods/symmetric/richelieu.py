@@ -30,10 +30,9 @@ def transform(
         raise RichelieuError("Invalid key entered!")
 
     # parse key str
-    key_list = key.strip("()").split(")(")
-    for i in range(len(key_list)):
-        subkey = key_list[i].split(",")
-        key_list[i] = list(map(int, subkey))
+    key_list = []
+    for subkey in key.strip("()").split(")("):
+        key_list.append(tuple(map(int, subkey.split(","))))
 
     # check range
     for subkey in key_list:

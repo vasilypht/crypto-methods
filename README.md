@@ -13,16 +13,12 @@
 # :gear: Dependencies
 <br>
 
-
-- `python`
+- `python-3.10+`
 - `PyQt6`
 - `numpy`
 - `sympy`
 - `PyYAML`
 
-<br>
-
-> Python version must be 3.10+
 
 ## Installation
 

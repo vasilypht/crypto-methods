@@ -19,7 +19,7 @@
 - `PyYAML`
 
 
-# :hammer_and_spanner: Installation
+# :hammer_and_wrench: Installation
 
 We clone the repository and go to the project:
 

@@ -12,7 +12,7 @@
 
 # :gear: Dependencies
 <br>
-> Python version must be 3.10+
+
 
 - `python`
 - `PyQt6`
@@ -21,6 +21,8 @@
 - `PyYAML`
 
 <br>
+
+> Python version must be 3.10+
 
 ## Installation
 

@@ -1,7 +1,10 @@
 <p align="center">
-    <img src="/resources/icons/icon-app.png" alt="preview">
+    <img src="/resources/icons/icon-app-128px.png" alt="preview">
 </p>
-
+<div>
+    <h1 align="center">Crypto-methods</h1>
+    <h2 align="center">Encrypt | Decrypt</h2>
+</div>
 # Cryptographic methods labs
 
 Laboratory work on cryptographic methods of information protection.

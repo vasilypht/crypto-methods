@@ -9,6 +9,19 @@
 
 ![crypto-methods-image1](/resources/screenshots/image1.png)
 
+
+# :gear: Dependencies
+<br>
+> Python version must be 3.10+
+
+- `python`
+- `PyQt6`
+- `numpy`
+- `sympy`
+- `PyYAML`
+
+<br>
+
 ## Installation
 
 We clone the repository and go to the project:
@@ -17,10 +30,6 @@ We clone the repository and go to the project:
 git clone https://github.com/vasilypht/Cryptographic-methods
 cd Cryptographic-methods
 ```
-
-### Dependencies
-
-> For the program to work, you must have Python version 3.10+
 
 Next, you need to install the dependencies. This can be done in one of the following ways:
 

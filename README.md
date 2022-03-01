@@ -7,11 +7,10 @@
     <p align="center">Laboratory work on cryptographic methods of information protection</p>
 </div>
 
-![crypto-methods-image1](/resources/screenshots/image1.png)
+![crypto-methods-image1](/resources/screenshots/image-app.png)
 
 
 # :gear: Dependencies
-<br>
 
 - `python-3.10+`
 - `PyQt6`
@@ -20,7 +19,7 @@
 - `PyYAML`
 
 
-## Installation
+# :hammer_and_spanner: Installation
 
 We clone the repository and go to the project:
 

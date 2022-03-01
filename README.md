@@ -4,10 +4,8 @@
 <div>
     <h1 align="center">Crypto-methods</h1>
     <h2 align="center">Encrypt | Decrypt</h2>
+    <p align="center">Laboratory work on cryptographic methods of information protection</p>
 </div>
-# Cryptographic methods labs
-
-Laboratory work on cryptographic methods of information protection.
 
 ![crypto-methods-image1](/resources/screenshots/image1.png)
 

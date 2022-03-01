@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="/resources/icons/icon-app.png" alt="preview">
+</p>
+
 # Cryptographic methods labs
 
 Laboratory work on cryptographic methods of information protection.

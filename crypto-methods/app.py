@@ -470,7 +470,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon("icons:icon.png"))
+    app.setWindowIcon(QIcon("icons:256x256/crypto-methods.png"))
     app.setStyleSheet(open("gui/stylesheet.css").read())
     window = MainWindow()
     window.show()

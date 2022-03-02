@@ -7,7 +7,9 @@
     <p align="center">Laboratory work on cryptographic methods of information protection</p>
 </div>
 
-![crypto-methods-image1](/resources/screenshots/image-app.png)
+![image-app](/resources/screenshots/image-app.png)
+
+![image-vernam](/resources/screenshots/image-vernam.png)
 
 
 # :books: Contents

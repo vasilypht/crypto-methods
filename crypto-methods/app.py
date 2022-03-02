@@ -141,6 +141,7 @@ class MainWindow(QMainWindow):
 
     def init_tree_widget(self) -> None:
         """Method for initializing the list of program names."""
+
         def fill_item(parent: QTreeWidgetItem, data):
             match data:
                 case list():
@@ -269,8 +270,8 @@ class MainWindow(QMainWindow):
         self.ui.page_5_table_widget_stencil.setRowCount(2 * k)
         self.ui.page_5_table_widget_stencil.setColumnCount(2 * k)
 
-        for i in range(2*k):
-            for j in range(2*k):
+        for i in range(2 * k):
+            for j in range(2 * k):
                 item = QTableWidgetItem(str(stencil[i, j].value))
                 if stencil[i, j].cond:
                     item.setBackground(QColor("orange"))
@@ -335,7 +336,7 @@ class MainWindow(QMainWindow):
 
         self.ui.page_5_text_edit_output.setText(processed_text)
 
-        text_blocks = [processed_text[i:i+n**2] for i in range(0, len(processed_text), n**2)]
+        text_blocks = [processed_text[i:i + n ** 2] for i in range(0, len(processed_text), n ** 2)]
 
         self.ui.page_5_table_widget_preview.setColumnCount(n)
         self.ui.page_5_table_widget_preview.setRowCount(n * len(text_blocks) + len(text_blocks))
@@ -344,7 +345,7 @@ class MainWindow(QMainWindow):
         offset_i = 0
         row_labels = []
         for text_block in text_blocks:
-            text_block += " " * (n**2 - len(text_block))
+            text_block += " " * (n ** 2 - len(text_block))
 
             for i in range(n):
                 row_labels.append(str(i + 1))

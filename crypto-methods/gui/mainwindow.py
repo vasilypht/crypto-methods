@@ -59,6 +59,14 @@ class Ui_MainWindow(object):
         self.page_0_default.setObjectName("page_0_default")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.page_0_default)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.verticalLayout_4.addItem(spacerItem)
+        self.page_0_label_topic = QtWidgets.QLabel(self.page_0_default)
+        self.page_0_label_topic.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.page_0_label_topic.setObjectName("page_0_label_topic")
+        self.verticalLayout_4.addWidget(self.page_0_label_topic)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.verticalLayout_4.addItem(spacerItem1)
         self.page_0_horizontal_layout_links = QtWidgets.QHBoxLayout()
         self.page_0_horizontal_layout_links.setObjectName("page_0_horizontal_layout_links")
         self.page_0_button_vk = QtWidgets.QPushButton(self.page_0_default)
@@ -92,31 +100,6 @@ class Ui_MainWindow(object):
         self.page_0_button_github.setObjectName("page_0_button_github")
         self.page_0_horizontal_layout_links.addWidget(self.page_0_button_github)
         self.verticalLayout_4.addLayout(self.page_0_horizontal_layout_links)
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
-        self.verticalLayout_4.addItem(spacerItem)
-        self.page_0_label_topic = QtWidgets.QLabel(self.page_0_default)
-        font = QtGui.QFont()
-        font.setPointSize(44)
-        font.setBold(False)
-        self.page_0_label_topic.setFont(font)
-        self.page_0_label_topic.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.page_0_label_topic.setObjectName("page_0_label_topic")
-        self.verticalLayout_4.addWidget(self.page_0_label_topic)
-        self.page_0_label_subtopic = QtWidgets.QLabel(self.page_0_default)
-        font = QtGui.QFont()
-        font.setPointSize(20)
-        self.page_0_label_subtopic.setFont(font)
-        self.page_0_label_subtopic.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.page_0_label_subtopic.setObjectName("page_0_label_subtopic")
-        self.verticalLayout_4.addWidget(self.page_0_label_subtopic)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
-        self.verticalLayout_4.addItem(spacerItem1)
-        self.page_0_label_author = QtWidgets.QLabel(self.page_0_default)
-        font = QtGui.QFont()
-        self.page_0_label_author.setFont(font)
-        self.page_0_label_author.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.page_0_label_author.setObjectName("page_0_label_author")
-        self.verticalLayout_4.addWidget(self.page_0_label_author)
         self.stackedWidget.addWidget(self.page_0_default)
         self.page_1_atbash = QtWidgets.QWidget()
         self.page_1_atbash.setObjectName("page_1_atbash")
@@ -1116,7 +1099,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(3)
+        self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -1124,12 +1107,18 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.group_box_left.setTitle(_translate("MainWindow", "Encryption algorithms"))
         self.group_box_right.setTitle(_translate("MainWindow", "Default"))
+        self.page_0_label_topic.setText(_translate("MainWindow", "<p align=\"center\">\n"
+"    <img src=\"resources/icons/128x128/crypto-methods.png\" alt=\"preview\">\n"
+"</p>\n"
+"\n"
+"<div>\n"
+"    <h1 align=\"center\">Crypto-methods</h1>\n"
+"    <h2 align=\"center\">Encrypt | Decrypt</h2>\n"
+"    <p align=\"center\">Laboratory work on cryptographic methods of information protection</p>\n"
+"</div>"))
         self.page_0_button_vk.setText(_translate("MainWindow", "vk.com/vasilypht"))
         self.page_0_button_tg.setText(_translate("MainWindow", "t.me/vasilypht"))
         self.page_0_button_github.setText(_translate("MainWindow", "github.com/vasilypht"))
-        self.page_0_label_topic.setText(_translate("MainWindow", "Cryptographic methods"))
-        self.page_0_label_subtopic.setText(_translate("MainWindow", "Laboratory works"))
-        self.page_0_label_author.setText(_translate("MainWindow", "Powered by Vasily Perekhrest"))
         self.page_1_group_box_input.setTitle(_translate("MainWindow", "Input text"))
         self.page_1_button_make.setText(_translate("MainWindow", "Make"))
         self.page_1_group_box_output.setTitle(_translate("MainWindow", "Output text"))

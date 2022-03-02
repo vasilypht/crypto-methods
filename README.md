@@ -10,15 +10,31 @@
 ![crypto-methods-image1](/resources/screenshots/image-app.png)
 
 
+# :books: Contents
+
+* [**Supported ciphers**](#supported-ciphers)
+* [**Dependencies**](#dependencies)
+* [**Installation**](#installation)
+* [**Usage**](#usage)
+
+
 # :fire: Supported ciphers
 
 
-| Method    | Name            | Module                                                       | Description                                                      |
-|-----------|-----------------|--------------------------------------------------------------|------------------------------------------------------------------|
-| Symmetric | Atbash          | [atbash.py](/crypto-methods/methods/symmetric/atbash.py)     | [Atbash cipher](https://en.wikipedia.org/wiki/Atbash)            |
-|           | Scytale         | [scytale.py](/crypto-methods/methods/symmetric/scytale.py)   | [Scytale cipher](https://en.wikipedia.org/wiki/Scytale)          |
-|           | Polybius square | [polybius.py](/crypto-methods/methods/symmetric/polybius.py) | [Polybius square](https://en.wikipedia.org/wiki/Polybius_square) |
-|           | Caesar cipher   | [caesar.py](/crypto-methods/methods/symmetric/caesar.py)     | [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher)     |
+| Method    | Module                                                            | Description                                                           |
+|-----------|-------------------------------------------------------------------|-----------------------------------------------------------------------|
+| Symmetric | [`atbash.py`](/crypto-methods/methods/symmetric/atbash.py)        | [Atbash cipher](https://en.wikipedia.org/wiki/Atbash)                 |
+|           | [`scytale.py`](/crypto-methods/methods/symmetric/scytale.py)      | [Scytale cipher](https://en.wikipedia.org/wiki/Scytale)               |
+|           | [`polybius.py`](/crypto-methods/methods/symmetric/polybius.py)    | [Polybius square](https://en.wikipedia.org/wiki/Polybius_square)      |
+|           | [`caesar.py`](/crypto-methods/methods/symmetric/caesar.py)        | [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher)          |
+|           | [`cardano.py`](/crypto-methods/methods/symmetric/cardano.py)      | [Cardan grille](https://en.wikipedia.org/wiki/Cardan_grille)          |
+|           | [`richelieu.py`](/crypto-methods/methods/symmetric/richelieu.py)  | Richelieu cipher                                                      |
+|           | [`alberti.py`](/crypto-methods/methods/symmetric/alberti.py)      | [Alberti cipher](https://en.wikipedia.org/wiki/Alberti_cipher)        |
+|           | [`gronsfeld.py`](/crypto-methods/methods/symmetric/gronsfeld.py)  | Gronsfeld cipher                                                      |
+|           | [`vigenere.py`](/crypto-methods/methods/symmetric/vigenere.py)    | [Vigenère cipher](https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher) |
+|           | [`playfair.py`](/crypto-methods/methods/symmetric/playfair.py)    | [Playfair cipher](https://en.wikipedia.org/wiki/Playfair_cipher)      |
+|           | [`hill.py`](/crypto-methods/methods/symmetric/hill.py)            | [Hill cipher](https://en.wikipedia.org/wiki/Hill_cipher)              |
+|           | [`vernam.py`](/crypto-methods/methods/symmetric/vernam.py)        | [Vernam cipher](https://en.wikipedia.org/wiki/One-time_pad)           |
 
 
 # :gear: Dependencies

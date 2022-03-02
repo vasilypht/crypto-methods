@@ -18,6 +18,7 @@
 - [**Dependencies**](#gear-dependencies)
 - [**Installation**](#hammer_and_wrench-installation)
 - [**Usage**](#usage)
+- [**Attribution links**](#link-attribution-links)
 
 <br>
 
@@ -103,3 +104,11 @@ cd crypto-methods
 python3 app.py
 ```
 
+# :link: Attribution links
+
+- <a href="https://www.flaticon.com/free-icons/cyber-security" title="cyber security icons">Cyber security icons created by Graphix's Art - Flaticon</a>
+- <a href="https://www.flaticon.com/free-icons/telegram" title="telegram icons">Telegram icons created by Freepik - Flaticon</a>
+- <a href="https://www.flaticon.com/free-icons/vk" title="VK icons">VK icons created by Fathema Khanom - Flaticon</a>
+- <a href="https://www.flaticon.com/free-icons/github" title="github icons">Github icons created by Pixel perfect - Flaticon</a>
+- <a href="https://www.flaticon.com/free-icons/paper" title="paper icons">Paper icons created by inipagistudio - Flaticon</a>
+- <a href="https://www.flaticon.com/free-icons/files-and-folders" title="files and folders icons">Files and folders icons created by inipagistudio - Flaticon</a>

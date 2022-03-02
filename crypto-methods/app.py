@@ -233,14 +233,14 @@ class MainWindow(QMainWindow):
     def page_3_button_make_clicked(self) -> None:
         """Polybius square | (Slot) Method for handling button click. (Encryption/decryption)"""
         try:
-            processed_text = polybius_square.make(
+            processed_text = polybius.make(
                 text=self.ui.page_3_text_edit_input.toPlainText(),
                 shift=self.ui.page_3_spin_box_shift.value(),
                 method=self.ui.page_3_combo_box_method.currentText().lower(),
                 mode=self.ui.page_3_combo_box_mode.currentText().lower()
             )
 
-        except polybius_square.PolybiusSquareError as e:
+        except polybius.PolybiusSquareError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -264,7 +264,7 @@ class MainWindow(QMainWindow):
     def page_5_button_gen_stencil_clicked(self) -> None:
         """Cardan grille | (Slot) Method for creating a stencil on button click"""
         k = self.ui.page_5_spin_box_dim_stencil.value()
-        stencil = cardan_grille.gen_stencil(k)
+        stencil = cardano.gen_stencil(k)
 
         self.ui.page_5_table_widget_stencil.setRowCount(2 * k)
         self.ui.page_5_table_widget_stencil.setColumnCount(2 * k)
@@ -282,7 +282,7 @@ class MainWindow(QMainWindow):
     def page_5_button_clean_stencil(self) -> None:
         """Cardan grille | (Slot) Method for creating a clean stencil on button click."""
         k = self.ui.page_5_spin_box_dim_stencil.value()
-        stencil = cardan_grille.gen_stencil(k)
+        stencil = cardano.gen_stencil(k)
 
         self.ui.page_5_table_widget_stencil.setRowCount(2 * k)
         self.ui.page_5_table_widget_stencil.setColumnCount(2 * k)
@@ -311,25 +311,25 @@ class MainWindow(QMainWindow):
 
         # Creating and filling a stencil from a widget.
         n = self.ui.page_5_table_widget_stencil.rowCount()
-        square = np.empty(shape=(n, n), dtype=cardan_grille.Field)
+        square = np.empty(shape=(n, n), dtype=cardano.Field)
 
         for i in range(n):
             for j in range(n):
                 item = self.ui.page_5_table_widget_stencil.item(i, j)
-                square[i, j] = cardan_grille.Field(
+                square[i, j] = cardano.Field(
                     int(item.text()),
                     item.background() == QColor("orange")
                 )
 
         try:
-            processed_text = cardan_grille.make(
+            processed_text = cardano.make(
                 text=self.ui.page_5_text_edit_input.toPlainText(),
                 stencil=square,
                 litter_type=self.ui.page_5_combo_box_trash.currentText().lower(),
                 mode=self.ui.page_5_combo_box_mode.currentText().lower()
             )
 
-        except cardan_grille.CarganGrilleError as e:
+        except cardano.CarganGrilleError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -378,7 +378,7 @@ class MainWindow(QMainWindow):
     def page_7_button_make_clicked(self) -> None:
         """Alberti disc | (Slot) Method for handling button click. (Encryption/decryption)"""
         try:
-            processed_text = alberti_disc.make(
+            processed_text = alberti.make(
                 text=self.ui.page_7_text_edit_input.toPlainText(),
                 key=self.ui.page_7_line_edit_key.text(),
                 step=self.ui.page_7_spin_box_iteration_step.value(),
@@ -386,7 +386,7 @@ class MainWindow(QMainWindow):
                 mode=self.ui.page_7_combo_box_mode.currentText().lower()
             )
 
-        except alberti_disc.AlbertiError as e:
+        except alberti.AlbertiError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

@@ -6,7 +6,7 @@ block_cipher = None
 datas = [
     ("crypto-methods/methods", "methods"),
     ("crypto-methods/gui", "gui"),
-    ("crypto-methods/resources", "resources"),
+    ("crypto-methods/resources", "resources")
     ("crypto-methods/config.yaml", ".")
 ]
 

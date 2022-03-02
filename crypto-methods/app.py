@@ -26,7 +26,7 @@ from gui.mainwindow import Ui_MainWindow
 from methods.symmetric import (
     atbash,
     scytale,
-    polybius_square,
+    polybius,
     caesar,
     cardano,
     richelieu,

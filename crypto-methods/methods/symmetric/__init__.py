@@ -1,7 +1,7 @@
 from . import (
     atbash,
     scytale,
-    polybius_square,
+    polybius,
     caesar,
     cardano,
     richelieu,

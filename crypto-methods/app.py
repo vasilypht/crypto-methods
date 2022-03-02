@@ -38,7 +38,7 @@ from methods.symmetric import (
     vernam
 )
 
-QDir.addSearchPath("icons", "../resources/icons")
+QDir.addSearchPath("icons", "resources/icons")
 
 
 class MainWindow(QMainWindow):

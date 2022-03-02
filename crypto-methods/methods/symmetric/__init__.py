@@ -3,7 +3,7 @@ from . import (
     scytale,
     polybius_square,
     caesar,
-    cardan_grille,
+    cardano,
     richelieu,
     gronsfeld,
     vigenere,

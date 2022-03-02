@@ -13,9 +13,12 @@
 # :fire: Supported ciphers
 
 
-| Name   | Module                                                   |
-|--------|----------------------------------------------------------|
-| Atbash | [atbash.py](/crypto-methods/methods/symmetric/atbash.py) |
+| Method    | Name            | Module                                                       | Description                                                      |
+|-----------|-----------------|--------------------------------------------------------------|------------------------------------------------------------------|
+| Symmetric | Atbash          | [atbash.py](/crypto-methods/methods/symmetric/atbash.py)     | [Atbash cipher](https://en.wikipedia.org/wiki/Atbash)            |
+|           | Scytale         | [scytale.py](/crypto-methods/methods/symmetric/scytale.py)   | [Scytale cipher](https://en.wikipedia.org/wiki/Scytale)          |
+|           | Polybius square | [polybius.py](/crypto-methods/methods/symmetric/polybius.py) | [Polybius square](https://en.wikipedia.org/wiki/Polybius_square) |
+|           | Caesar cipher   | [caesar.py](/crypto-methods/methods/symmetric/caesar.py)     | [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher)     |
 
 
 # :gear: Dependencies

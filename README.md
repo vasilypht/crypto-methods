@@ -10,6 +10,14 @@
 ![crypto-methods-image1](/resources/screenshots/image-app.png)
 
 
+# :fire: Supported ciphers
+
+
+| Name   | Module                                                   |
+|--------|----------------------------------------------------------|
+| Atbash | [atbash.py](/crypto-methods/methods/symmetric/atbash.py) |
+
+
 # :gear: Dependencies
 
 - `python-3.10+`

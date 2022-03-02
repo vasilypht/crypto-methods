@@ -12,11 +12,12 @@
 
 # :books: Contents
 
-* [**Supported ciphers**](#supported-ciphers)
-* [**Dependencies**](#dependencies)
-* [**Installation**](#installation)
-* [**Usage**](#usage)
+- [**Supported ciphers**](#fire-supported-ciphers)
+- [**Dependencies**](#gear-dependencies)
+- [**Installation**](#hammer_and_wrench-installation)
+- [**Usage**](#usage)
 
+<br>
 
 # :fire: Supported ciphers
 
@@ -36,6 +37,7 @@
 |           | [`hill.py`](/crypto-methods/methods/symmetric/hill.py)            | [Hill cipher](https://en.wikipedia.org/wiki/Hill_cipher)              |
 |           | [`vernam.py`](/crypto-methods/methods/symmetric/vernam.py)        | [Vernam cipher](https://en.wikipedia.org/wiki/One-time_pad)           |
 
+<br>
 
 # :gear: Dependencies
 
@@ -45,6 +47,7 @@
 - `sympy`
 - `PyYAML`
 
+<br>
 
 # :hammer_and_wrench: Installation
 
@@ -86,6 +89,8 @@ Next, you need to install the dependencies. This can be done in one of the follo
     pip install -U pip
     pip install -r requirements.txt
     ```
+
+<br>
 
 ## Usage
 

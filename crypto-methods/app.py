@@ -33,7 +33,7 @@ from methods.symmetric import (
     gronsfeld,
     vigenere,
     playfair,
-    alberti_disc,
+    alberti,
     hill,
     vernam
 )

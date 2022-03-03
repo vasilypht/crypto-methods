@@ -152,7 +152,7 @@
              <widget class="QLabel" name="page_0_label_topic">
               <property name="text">
                <string>&lt;p align=&quot;center&quot;&gt;
-	&lt;img src=&quot;resources/icons/128x128/crypto-methods.png&quot; alt=&quot;preview&quot;&gt;
+	&lt;img src=&quot;resources/icons/crypto-methods.png&quot; alt=&quot;preview&quot; height=&quot;128&quot; width=&quot;128&quot;&gt;
 &lt;/p&gt;
 
 &lt;div&gt;

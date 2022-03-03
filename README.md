@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="/resources/crypto-methods.png" alt="preview">
+    <img src="/resources/crypto-methods.png" alt="preview" height="128" width="128">
 </p>
 <div>
     <h1 align="center">Crypto-methods</h1>

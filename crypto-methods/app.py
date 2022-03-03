@@ -60,17 +60,17 @@ class MainWindow(QMainWindow):
         self.ui.group_box_right.setTitle("Cryptographic methods")
 
         # page 0 - Default
-        self.ui.page_0_button_vk.setIcon(QIcon("icons:16x16/vk.png"))
+        self.ui.page_0_button_vk.setIcon(QIcon("icons:vk.png"))
         self.ui.page_0_button_vk.clicked.connect(
             lambda: webbrowser.open(f"https://{self.ui.page_0_button_vk.text()}")
         )
 
-        self.ui.page_0_button_tg.setIcon(QIcon("icons:16x16/telegram.png"))
+        self.ui.page_0_button_tg.setIcon(QIcon("icons:telegram.png"))
         self.ui.page_0_button_tg.clicked.connect(
             lambda: webbrowser.open(f"https://{self.ui.page_0_button_tg.text()}")
         )
 
-        self.ui.page_0_button_github.setIcon(QIcon("icons:16x16/github.png"))
+        self.ui.page_0_button_github.setIcon(QIcon("icons:github.png"))
         self.ui.page_0_button_github.clicked.connect(
             lambda: webbrowser.open(f"https://{self.ui.page_0_button_github.text()}")
         )
@@ -151,13 +151,13 @@ class MainWindow(QMainWindow):
                 case dict():
                     for key, value in data.items():
                         child = QTreeWidgetItem((str(key),))
-                        child.setIcon(0, QIcon("icons:16x16/folder.png"))
+                        child.setIcon(0, QIcon("icons:folder.png"))
                         parent.addChild(child)
                         fill_item(child, value)
 
                 case _:
                     child = QTreeWidgetItem((str(data),))
-                    child.setIcon(0, QIcon("icons:16x16/file.png"))
+                    child.setIcon(0, QIcon("icons:file.png"))
                     parent.addChild(child)
 
         self.ui.tree_widget_list_apps.clear()
@@ -471,7 +471,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon("icons:256x256/crypto-methods.png"))
+    app.setWindowIcon(QIcon("icons:crypto-methods.png"))
     app.setStyleSheet(open("gui/stylesheet.css").read())
     window = MainWindow()
     window.show()

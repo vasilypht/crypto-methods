@@ -1108,7 +1108,7 @@ class Ui_MainWindow(object):
         self.group_box_left.setTitle(_translate("MainWindow", "Encryption algorithms"))
         self.group_box_right.setTitle(_translate("MainWindow", "Default"))
         self.page_0_label_topic.setText(_translate("MainWindow", "<p align=\"center\">\n"
-"    <img src=\"resources/icons/128x128/crypto-methods.png\" alt=\"preview\">\n"
+"    <img src=\"resources/icons/crypto-methods.png\" alt=\"preview\" height=\"128\" width=\"128\">\n"
 "</p>\n"
 "\n"
 "<div>\n"

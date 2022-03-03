@@ -3,6 +3,9 @@ import re
 from ..utils import (
     get_alphabet_by_letter
 )
+from ..const import (
+    ALPHABETS
+)
 
 
 class VigenereError(Exception):
@@ -33,11 +36,11 @@ def transform(text: str, key: str, mode: str = "encrypt") -> str:
 
     for i in range(len(text)):
         letter_text = text_list[i]
-        if (alphabet_lang_text := get_alphabet_by_letter(letter_text)) is None:
+        if (alphabet_lang_text := get_alphabet_by_letter(letter_text, ALPHABETS)) is None:
             continue
 
         letter_key = key[i % len(key)]
-        if (alphabet_lang_key := get_alphabet_by_letter(letter_key)) is None:
+        if (alphabet_lang_key := get_alphabet_by_letter(letter_key, ALPHABETS)) is None:
             continue
 
         alphabet_letter_text, _ = alphabet_lang_text

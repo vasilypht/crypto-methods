@@ -6,6 +6,9 @@ from ..utils import (
     get_alphabet_by_letter,
     get_substr_from_alphabet
 )
+from ..const import (
+    ALPHABETS
+)
 
 
 class PlayfairError(Exception):
@@ -42,7 +45,7 @@ def transform(text: str, key: str, mode: str = "encrypt") -> str:
         case _:
             raise PlayfairError(f"Invalid processing type! -> {mode}")
 
-    alphabet, lang = get_alphabet_by_letter(key[0])
+    alphabet, lang = get_alphabet_by_letter(key[0], ALPHABETS)
 
     match lang:
         case "en":

@@ -1,14 +1,10 @@
-from .const import (
-    ENG_LCASE,
-    RUS_LCASE
-)
-
-
-def get_alphabet_by_letter(letter: str) -> tuple[str, str] or None:
+def get_alphabet_by_letter(
+        letter: str,
+        alphabets: tuple[tuple[str, str]]
+) -> tuple[str, str] or None:
     letter = letter.lower()
 
-    for alphabet, lang in ((ENG_LCASE, "en"),
-                           (RUS_LCASE, "ru")):
+    for alphabet, lang in alphabets:
         if letter in alphabet:
             return alphabet, lang
 

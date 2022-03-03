@@ -1,6 +1,9 @@
 from ..utils import (
     get_alphabet_by_letter
 )
+from ..const import (
+    ALPHABETS
+)
 
 
 class AtbashError(Exception):
@@ -25,7 +28,7 @@ def transform(text: str) -> str:
     for i in range(len(text)):
         letter_text = letters_list[i]
 
-        if (alpha_lang := get_alphabet_by_letter(letter_text)) is None:
+        if (alpha_lang := get_alphabet_by_letter(letter_text, ALPHABETS)) is None:
             continue
 
         alphabet, _ = alpha_lang

@@ -3,6 +3,9 @@ import re
 from ..utils import (
     get_alphabet_by_letter
 )
+from ..const import (
+    ALPHABETS
+)
 
 
 class GronsfeldError(Exception):
@@ -34,7 +37,7 @@ def transform(text: str, key: str, mode: str = "encrypt") -> str:
     for i in range(len(text)):
         letter_text = text_list[i]
 
-        if (alphabet_lang := get_alphabet_by_letter(letter_text)) is None:
+        if (alphabet_lang := get_alphabet_by_letter(letter_text, ALPHABETS)) is None:
             continue
 
         alphabet_letter, _ = alphabet_lang

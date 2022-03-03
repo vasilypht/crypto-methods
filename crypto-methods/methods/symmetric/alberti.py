@@ -3,6 +3,9 @@ import re
 from ..utils import (
     get_alphabet_by_letter
 )
+from ..const import (
+    ALPHABETS
+)
 
 
 class AlbertiError(Exception):
@@ -37,7 +40,7 @@ def transform(
     if not re.match(r"(^[а-яё]*$)|(^[a-z]*$)", key, re.IGNORECASE):
         raise AlbertiError("Invalid key!")
 
-    external_alphabet, lang = get_alphabet_by_letter(key[0])
+    external_alphabet, _ = get_alphabet_by_letter(key[0], ALPHABETS)
 
     internal_alphabet = ""
     for letter in key.lower() + external_alphabet:

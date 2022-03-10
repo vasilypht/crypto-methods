@@ -1,3 +1,7 @@
+from ..const import (
+    KOI8R_STOPBYTES
+)
+
 
 class VernamError(Exception):
     pass
@@ -35,6 +39,8 @@ def transform(text: str, key: str) -> str:
 
     for i in range(len(text_bytes)):
         text_bytes[i] ^= key_bytes[i % len(key_bytes)]
+        if text_bytes[i] in KOI8R_STOPBYTES:
+            raise VernamError("Service byte received! Change the key or text.")
 
     try:
         modified_text = text_bytes.decode("KOI8-r")

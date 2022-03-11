@@ -11,6 +11,7 @@ from .gronsfeld.gronsfeld_widget import GronsfeldWidget
 from .vigenere.vigenere_widget import VigenereWidget
 from .playfair.playfair_widget import PlayfairWidget
 from .hill.hill_widget import HillWidget
+from .vernam.vernam_widget import VernamWidget
 
 WIDGETS_CIPHERS: Final = (
     AtbashWidget,
@@ -23,5 +24,6 @@ WIDGETS_CIPHERS: Final = (
     GronsfeldWidget,
     VigenereWidget,
     PlayfairWidget,
-    HillWidget
+    HillWidget,
+    VernamWidget
 )

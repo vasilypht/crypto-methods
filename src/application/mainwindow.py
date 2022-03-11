@@ -7,6 +7,7 @@ from PyQt6.QtGui import (
 )
 
 from src.application.mainwindow_ui import Ui_MainWindow
+from src.application.modules import InfoWidget
 from src.modules import WIDGETS_CIPHERS
 
 
@@ -15,10 +16,13 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.setWindowTitle("Crypto methods")
 
         self.ui.splitter.setStretchFactor(1, 1)
 
         self.ui.tree_widget.clicked.connect(self.tree_widget_item_clicked)
+        self.ui.stacked_widget.addWidget(InfoWidget())
+
         self.load_modules()
 
     def load_modules(self):

@@ -6,14 +6,29 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>500</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>12</number>
+   </property>
+   <property name="leftMargin">
+    <number>4</number>
+   </property>
+   <property name="topMargin">
+    <number>4</number>
+   </property>
+   <property name="rightMargin">
+    <number>4</number>
+   </property>
+   <property name="bottomMargin">
+    <number>4</number>
+   </property>
    <item>
     <widget class="QGroupBox" name="group_box_input">
      <property name="title">
@@ -51,6 +66,9 @@
      </property>
      <item>
       <widget class="QCheckBox" name="check_box_columns">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -61,7 +79,7 @@
         <enum>Qt::LeftToRight</enum>
        </property>
        <property name="styleSheet">
-        <string notr="true"/>
+        <string notr="true">color: grey</string>
        </property>
        <property name="text">
         <string>Custom number of columns:</string>

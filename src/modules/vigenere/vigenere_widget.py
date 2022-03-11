@@ -21,13 +21,12 @@ class VigenereWidget(QWidget):
 
         self.title = "Vigenere"
 
-        # page 9 - Vigenere
         self.ui.line_edit_key.setValidator(
             QRegExpVal(QRegExp(r"^[а-яёa-z]*$", QRegExp.PatternOption.CaseInsensitiveOption))
         )
-        self.ui.button_make.clicked.connect(self.page_9_button_make_clicked)
+        self.ui.button_make.clicked.connect(self.button_make_clicked)
 
-    def page_9_button_make_clicked(self) -> None:
+    def button_make_clicked(self) -> None:
         """Vigenere | (Slot) Method for handling button click. (Encryption/decryption)"""
         try:
             processed_text = vigenere.make(

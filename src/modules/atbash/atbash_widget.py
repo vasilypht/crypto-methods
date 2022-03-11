@@ -23,7 +23,10 @@ class AtbashWidget(QWidget):
             processed_text = atbash.make(
                 text=self.ui.text_edit_input.toPlainText()
             )
-            self.ui.text_edit_output.setText(processed_text)
 
         except atbash.AtbashError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+        self.ui.text_edit_output.setText(processed_text)
+

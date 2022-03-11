@@ -7,16 +7,7 @@ from PyQt6.QtGui import (
 )
 
 from src.application.mainwindow_ui import Ui_MainWindow
-
-from src.modules import (
-    AtbashWidget,
-    ScytaleWidget
-)
-
-MODULES_WIDGETS = (
-    AtbashWidget,
-    ScytaleWidget
-)
+from src.modules import WIDGETS_CIPHERS
 
 
 class MainWindow(QMainWindow):
@@ -33,7 +24,7 @@ class MainWindow(QMainWindow):
     def load_modules(self):
         items = []
 
-        for widget in MODULES_WIDGETS:
+        for widget in WIDGETS_CIPHERS:
             widget = widget()
             self.ui.stacked_widget.addWidget(widget)
 

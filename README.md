@@ -27,18 +27,18 @@
 
 | Method    | Module                                                            | Description                                                           |
 |-----------|-------------------------------------------------------------------|-----------------------------------------------------------------------|
-| Symmetric | [`atbash.py`](/crypto-methods/methods/symmetric/atbash.py)        | [Atbash cipher](https://en.wikipedia.org/wiki/Atbash)                 |
-|           | [`scytale.py`](/crypto-methods/methods/symmetric/scytale.py)      | [Scytale cipher](https://en.wikipedia.org/wiki/Scytale)               |
-|           | [`polybius.py`](/crypto-methods/methods/symmetric/polybius.py)    | [Polybius square](https://en.wikipedia.org/wiki/Polybius_square)      |
-|           | [`caesar.py`](/crypto-methods/methods/symmetric/caesar.py)        | [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher)          |
-|           | [`cardano.py`](/crypto-methods/methods/symmetric/cardano.py)      | [Cardan grille](https://en.wikipedia.org/wiki/Cardan_grille)          |
-|           | [`richelieu.py`](/crypto-methods/methods/symmetric/richelieu.py)  | Richelieu cipher                                                      |
-|           | [`alberti.py`](/crypto-methods/methods/symmetric/alberti.py)      | [Alberti cipher](https://en.wikipedia.org/wiki/Alberti_cipher)        |
-|           | [`gronsfeld.py`](/crypto-methods/methods/symmetric/gronsfeld.py)  | Gronsfeld cipher                                                      |
-|           | [`vigenere.py`](/crypto-methods/methods/symmetric/vigenere.py)    | [Vigenère cipher](https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher) |
-|           | [`playfair.py`](/crypto-methods/methods/symmetric/playfair.py)    | [Playfair cipher](https://en.wikipedia.org/wiki/Playfair_cipher)      |
-|           | [`hill.py`](/crypto-methods/methods/symmetric/hill.py)            | [Hill cipher](https://en.wikipedia.org/wiki/Hill_cipher)              |
-|           | [`vernam.py`](/crypto-methods/methods/symmetric/vernam.py)        | [Vernam cipher](https://en.wikipedia.org/wiki/One-time_pad)           |
+| Symmetric | [`atbash.py`](/src/crypto/symmetric/atbash.py)        | [Atbash cipher](https://en.wikipedia.org/wiki/Atbash)                 |
+|           | [`scytale.py`](/src/crypto/symmetric/scytale.py)      | [Scytale cipher](https://en.wikipedia.org/wiki/Scytale)               |
+|           | [`polybius.py`](/src/crypto/symmetric/polybius.py)    | [Polybius square](https://en.wikipedia.org/wiki/Polybius_square)      |
+|           | [`caesar.py`](/src/crypto/symmetric/caesar.py)        | [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher)          |
+|           | [`cardano.py`](/src/crypto/symmetric/cardano.py)      | [Cardan grille](https://en.wikipedia.org/wiki/Cardan_grille)          |
+|           | [`richelieu.py`](/src/crypto/symmetric/richelieu.py)  | Richelieu cipher                                                      |
+|           | [`alberti.py`](/src/crypto/symmetric/alberti.py)      | [Alberti cipher](https://en.wikipedia.org/wiki/Alberti_cipher)        |
+|           | [`gronsfeld.py`](/src/crypto/symmetric/gronsfeld.py)  | Gronsfeld cipher                                                      |
+|           | [`vigenere.py`](/src/crypto/symmetric/vigenere.py)    | [Vigenère cipher](https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher) |
+|           | [`playfair.py`](/src/crypto/symmetric/playfair.py)    | [Playfair cipher](https://en.wikipedia.org/wiki/Playfair_cipher)      |
+|           | [`hill.py`](/src/crypto/symmetric/hill.py)            | [Hill cipher](https://en.wikipedia.org/wiki/Hill_cipher)              |
+|           | [`vernam.py`](/src/crypto/symmetric/vernam.py)        | [Vernam cipher](https://en.wikipedia.org/wiki/One-time_pad)           |
 
 <br>
 
@@ -58,7 +58,7 @@ We clone the repository and go to the project:
 
 ```zsh
 git clone https://github.com/vasilypht/Cryptographic-methods
-cd Cryptographic-methods
+cd Cryptographic-crypto
 ```
 
 Next, you need to install the dependencies. This can be done in one of the following ways:
@@ -100,7 +100,7 @@ Next, you need to install the dependencies. This can be done in one of the follo
 To run the program, go to the source folder and run the file ***app.py***:
 
 ```zsh
-cd crypto-methods
+cd src
 python3 app.py
 ```
 

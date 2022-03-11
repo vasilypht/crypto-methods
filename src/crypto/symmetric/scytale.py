@@ -4,7 +4,7 @@ class ScytaleError(Exception):
 
 
 def encrypt(text: str, n: int, m: int, auto_m: bool = True) -> str:
-    """Scytale cipher. Encryption function.
+    """scytale cipher. Encryption function.
 
     Args:
         text: text to be encrypted.
@@ -36,7 +36,7 @@ def encrypt(text: str, n: int, m: int, auto_m: bool = True) -> str:
 
 
 def decrypt(text: str, n: int) -> str:
-    """Scytale cipher. Decryption function.
+    """scytale cipher. Decryption function.
 
     Args:
         text: text to be decrypted.
@@ -67,7 +67,7 @@ def make(
         auto_m: bool = True,
         mode: str = "encrypt",
 ) -> str:
-    """Scytale cipher. Interface for calling encryption/decryption functions.
+    """scytale cipher. Interface for calling encryption/decryption functions.
 
     Args:
         text: text to be encrypted/decrypted.

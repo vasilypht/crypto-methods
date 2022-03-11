@@ -9,7 +9,7 @@ from .richelieu.richelieu_widget import RichelieuWidget
 from .alberti_disc.alberti_disc_widget import AlbertiDiscWidget
 from .gronsfeld.gronsfeld_widget import GronsfeldWidget
 from .vigenere.vigenere_widget import VigenereWidget
-
+from .playfair.playfair_widget import PlayfairWidget
 
 WIDGETS_CIPHERS: Final = (
     AtbashWidget,
@@ -20,5 +20,6 @@ WIDGETS_CIPHERS: Final = (
     RichelieuWidget,
     AlbertiDiscWidget,
     GronsfeldWidget,
-    VigenereWidget
+    VigenereWidget,
+    PlayfairWidget
 )

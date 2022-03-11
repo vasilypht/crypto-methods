@@ -6,6 +6,7 @@ from .polybius_square.polybius_square_widget import PolybiusSquareWidget
 from .caesar.caesar_widget import CaesarWidget
 from .cardan_grille.cardan_grille_widget import CardanGrilleWidget
 from .richelieu.richelieu_widget import RichelieuWidget
+from .alberti_disc.alberti_disc_widget import AlbertiDiscWidget
 
 
 WIDGETS_CIPHERS: Final = (
@@ -14,5 +15,6 @@ WIDGETS_CIPHERS: Final = (
     PolybiusSquareWidget,
     CaesarWidget,
     CardanGrilleWidget,
-    RichelieuWidget
+    RichelieuWidget,
+    AlbertiDiscWidget
 )

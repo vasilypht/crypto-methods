@@ -29,9 +29,9 @@
 |-----------|-------------------------------------------------------------------|-----------------------------------------------------------------------|
 | Symmetric | [`atbash.py`](/src/crypto/symmetric/atbash.py)        | [Atbash cipher](https://en.wikipedia.org/wiki/Atbash)                 |
 |           | [`scytale.py`](/src/crypto/symmetric/scytale.py)      | [Scytale cipher](https://en.wikipedia.org/wiki/Scytale)               |
-|           | [`polybius.py`](/src/crypto/symmetric/polybius.py)    | [Polybius square](https://en.wikipedia.org/wiki/Polybius_square)      |
+|           | [`polybius.py`](/src/crypto/symmetric/polybius_square.py)    | [Polybius square](https://en.wikipedia.org/wiki/Polybius_square)      |
 |           | [`caesar.py`](/src/crypto/symmetric/caesar.py)        | [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher)          |
-|           | [`cardano.py`](/src/crypto/symmetric/cardano.py)      | [Cardan grille](https://en.wikipedia.org/wiki/Cardan_grille)          |
+|           | [`cardano.py`](/src/crypto/symmetric/cardan_grille.py)      | [Cardan grille](https://en.wikipedia.org/wiki/Cardan_grille)          |
 |           | [`richelieu.py`](/src/crypto/symmetric/richelieu.py)  | Richelieu cipher                                                      |
 |           | [`alberti.py`](/src/crypto/symmetric/alberti.py)      | [Alberti cipher](https://en.wikipedia.org/wiki/Alberti_cipher)        |
 |           | [`gronsfeld.py`](/src/crypto/symmetric/gronsfeld.py)  | Gronsfeld cipher                                                      |

@@ -1,9 +1,9 @@
 from . import (
     atbash,
     scytale,
-    polybius,
+    polybius_square,
     caesar,
-    cardano,
+    cardan_grille,
     richelieu,
     gronsfeld,
     vigenere,

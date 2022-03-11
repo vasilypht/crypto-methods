@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import (
 )
 
 from src.modules.polybius_square.polybius_square_ui import Ui_polybius_square
-from src.crypto.symmetric import polybius
+from src.crypto.symmetric import polybius_square
 
 
 class PolybiusSquareWidget(QWidget):

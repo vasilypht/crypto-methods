@@ -8,6 +8,7 @@ from .cardan_grille.cardan_grille_widget import CardanGrilleWidget
 from .richelieu.richelieu_widget import RichelieuWidget
 from .alberti_disc.alberti_disc_widget import AlbertiDiscWidget
 from .gronsfeld.gronsfeld_widget import GronsfeldWidget
+from .vigenere.vigenere_widget import VigenereWidget
 
 
 WIDGETS_CIPHERS: Final = (
@@ -18,5 +19,6 @@ WIDGETS_CIPHERS: Final = (
     CardanGrilleWidget,
     RichelieuWidget,
     AlbertiDiscWidget,
-    GronsfeldWidget
+    GronsfeldWidget,
+    VigenereWidget
 )

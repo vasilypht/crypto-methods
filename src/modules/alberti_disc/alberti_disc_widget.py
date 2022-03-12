@@ -10,7 +10,7 @@ from PyQt6.QtGui import (
 )
 
 from src.modules.alberti_disc.alberti_disc_ui import Ui_alberti_disc
-from src.crypto.symmetric import alberti
+from src.crypto.symmetric import alberti_disc
 
 
 class AlbertiDiscWidget(QWidget):

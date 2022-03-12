@@ -7,7 +7,7 @@ from . import (
     richelieu,
     gronsfeld,
     vigenere,
-    alberti,
+    alberti_disc,
     hill,
     vernam
 )

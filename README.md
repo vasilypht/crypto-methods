@@ -12,7 +12,7 @@
 
 # :books: Contents
 
-- [**Supported ciphers**](#fire-supported-ciphers)
+- [**Supported ciphers**](#fire-features)
 - [**Dependencies**](#gear-dependencies)
 - [**Installation**](#hammer_and_wrench-installation)
 - [**Attribution links**](#link-attribution-links)

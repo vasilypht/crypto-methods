@@ -10,7 +10,7 @@ from PyQt6.QtCore import (
     QDir
 )
 
-from src.application.mainwindow import MainWindow
+from src.gui.mainwindow import MainWindow
 
 QDir.addSearchPath("icons", "resources/icons")
 

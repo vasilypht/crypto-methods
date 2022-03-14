@@ -9,36 +9,35 @@
 
 ![image-app](/resources/screenshots/image-app.png)
 
-![image-vernam](/resources/screenshots/image-vernam.png)
-
 
 # :books: Contents
 
 - [**Supported ciphers**](#fire-supported-ciphers)
 - [**Dependencies**](#gear-dependencies)
 - [**Installation**](#hammer_and_wrench-installation)
-- [**Usage**](#usage)
 - [**Attribution links**](#link-attribution-links)
 
 <br>
 
-# :fire: Supported ciphers
+# :fire: Features
 
 
-| Method    | Module                                                           | Description                                                           |
-|-----------|------------------------------------------------------------------|-----------------------------------------------------------------------|
-| Symmetric | [`atbash.py`](/src/crypto/symmetric/atbash.py)                   | [Atbash cipher](https://en.wikipedia.org/wiki/Atbash)                 |
-|           | [`scytale.py`](/src/crypto/symmetric/scytale.py)                 | [Scytale cipher](https://en.wikipedia.org/wiki/Scytale)               |
-|           | [`polybius_square.py`](/src/crypto/symmetric/polybius_square.py) | [Polybius square](https://en.wikipedia.org/wiki/Polybius_square)      |
-|           | [`caesar.py`](/src/crypto/symmetric/caesar.py)                   | [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher)          |
-|           | [`cardan_grille.py`](/src/crypto/symmetric/cardan_grille.py)     | [Cardan grille](https://en.wikipedia.org/wiki/Cardan_grille)          |
-|           | [`richelieu.py`](/src/crypto/symmetric/richelieu.py)             | Richelieu cipher                                                      |
-|           | [`alberti_disc.py`](/src/crypto/symmetric/alberti_disc.py)       | [Alberti cipher](https://en.wikipedia.org/wiki/Alberti_cipher)        |
-|           | [`gronsfeld.py`](/src/crypto/symmetric/gronsfeld.py)             | Gronsfeld cipher                                                      |
-|           | [`vigenere.py`](/src/crypto/symmetric/vigenere.py)               | [Vigenère cipher](https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher) |
-|           | [`playfair.py`](/src/crypto/symmetric/playfair.py)               | [Playfair cipher](https://en.wikipedia.org/wiki/Playfair_cipher)      |
-|           | [`hill.py`](/src/crypto/symmetric/hill.py)                       | [Hill cipher](https://en.wikipedia.org/wiki/Hill_cipher)              |
-|           | [`vernam.py`](/src/crypto/symmetric/vernam.py)                   | [Vernam cipher](https://en.wikipedia.org/wiki/One-time_pad)           |
+| Category           | Module                                                           | Description                                                           |
+|--------------------|------------------------------------------------------------------|-----------------------------------------------------------------------|
+| Symmetric ciphers  | [`atbash.py`](/src/crypto/symmetric/atbash.py)                   | [Atbash cipher](https://en.wikipedia.org/wiki/Atbash)                 |
+|                    | [`scytale.py`](/src/crypto/symmetric/scytale.py)                 | [Scytale cipher](https://en.wikipedia.org/wiki/Scytale)               |
+|                    | [`polybius_square.py`](/src/crypto/symmetric/polybius_square.py) | [Polybius square](https://en.wikipedia.org/wiki/Polybius_square)      |
+|                    | [`caesar.py`](/src/crypto/symmetric/caesar.py)                   | [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher)          |
+|                    | [`cardan_grille.py`](/src/crypto/symmetric/cardan_grille.py)     | [Cardan grille](https://en.wikipedia.org/wiki/Cardan_grille)          |
+|                    | [`richelieu.py`](/src/crypto/symmetric/richelieu.py)             | Richelieu cipher                                                      |
+|                    | [`alberti_disc.py`](/src/crypto/symmetric/alberti_disc.py)       | [Alberti cipher](https://en.wikipedia.org/wiki/Alberti_cipher)        |
+|                    | [`gronsfeld.py`](/src/crypto/symmetric/gronsfeld.py)             | Gronsfeld cipher                                                      |
+|                    | [`vigenere.py`](/src/crypto/symmetric/vigenere.py)               | [Vigenère cipher](https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher) |
+|                    | [`playfair.py`](/src/crypto/symmetric/playfair.py)               | [Playfair cipher](https://en.wikipedia.org/wiki/Playfair_cipher)      |
+|                    | [`hill.py`](/src/crypto/symmetric/hill.py)                       | [Hill cipher](https://en.wikipedia.org/wiki/Hill_cipher)              |
+|                    | [`vernam.py`](/src/crypto/symmetric/vernam.py)                   | [Vernam cipher](https://en.wikipedia.org/wiki/One-time_pad)           |
+| Asymmetric ciphers | ...                                                              | ...                                                                   |
+| Crypto tools       | ...                                                              | ...                                                                   |
 
 <br>
 

@@ -62,3 +62,4 @@ Coming soon...
 - <a href="https://www.flaticon.com/free-icons/github" title="github icons">Github icons created by Pixel perfect - Flaticon</a>
 - <a href="https://www.flaticon.com/free-icons/paper" title="paper icons">Paper icons created by inipagistudio - Flaticon</a>
 - <a href="https://www.flaticon.com/free-icons/files-and-folders" title="files and folders icons">Files and folders icons created by inipagistudio - Flaticon</a>
+- <a href="https://www.flaticon.com/free-icons/more" title="more icons">More icons created by Freepik - Flaticon</a>

@@ -9,7 +9,6 @@ from PyQt6.QtGui import (
 from PyQt6.QtCore import (
     QDir
 )
-
 from src.gui.mainwindow import MainWindow
 
 QDir.addSearchPath("icons", "resources/icons")
@@ -18,6 +17,9 @@ QDir.addSearchPath("icons", "resources/icons")
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon("icons:crypto-methods.png"))
+    with open("gui/style.css") as f_style:
+        app.setStyleSheet(f_style.read())
+
     window = MainWindow()
     window.show()
 

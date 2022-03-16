@@ -4,11 +4,8 @@ from PyQt6.QtWidgets import (
     QMenu,
     QFileDialog
 )
-from PyQt6.QtGui import (
-    QIcon,
-)
 from PyQt6.QtCore import (
-    QSize
+    Qt
 )
 import numpy as np
 
@@ -24,15 +21,13 @@ class VernamWidget(QWidget):
         self.ui = Ui_vernam()
         self.ui.setupUi(self)
         self.title = "Vernam"
-        self.__init_style()
 
         self.ui.button_make.clicked.connect(self.button_make_clicked)
 
-        self.ui.button_settings.setIconSize(QSize(24, 24))
-        self.ui.button_settings.setIcon(QIcon("icons:dots.png"))
-
         # Context menu
         menu = QMenu()
+        menu.setWindowFlag(Qt.WindowType.FramelessWindowHint)
+        menu.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         menu.addAction("Generate key", self.action_clicked_gen_key)
         menu.addSeparator()
         menu.addAction("Save key", self.action_clicked_save_key)
@@ -99,13 +94,3 @@ class VernamWidget(QWidget):
             return
 
         self.ui.text_edit_output.setText(processed_text)
-
-    def __init_style(self):
-        self.setStyleSheet("""
-            QPushButton#button_settings {
-                background: transparent;
-            }
-            QPushButton::menu-indicator {
-                image: none;
-            }
-        """)

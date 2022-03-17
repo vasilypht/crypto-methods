@@ -61,7 +61,7 @@ class VernamWidget(QWidget):
                 f_out.write(self.ui.line_edit_key.text())
 
         except OSError as e:
-            QMessageBox.warning(self, "Warning!", e.args[0])
+            QMessageBox.warning(self, "Warning!", "Failed to save file!")
             return
 
     def action_clicked_load_key(self):
@@ -78,7 +78,7 @@ class VernamWidget(QWidget):
                 self.ui.line_edit_key.setText(f_out.read(MAX_BYTES_READ))
 
         except OSError as e:
-            QMessageBox.warning(self, "Warning!", e.args[0])
+            QMessageBox.warning(self, "Warning!", "Failed to open file!")
             return
 
     def button_make_clicked(self) -> None:

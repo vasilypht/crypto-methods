@@ -1,6 +1,10 @@
 from PyQt6.QtWidgets import (
     QWidget,
-    QMessageBox
+    QMessageBox,
+    QStyledItemDelegate
+)
+from PyQt6.QtCore import (
+    Qt
 )
 
 from .polybius_square_ui import Ui_polybius_square
@@ -14,6 +18,10 @@ class PolybiusSquareWidget(QWidget):
         self.ui.setupUi(self)
 
         self.title = "Polybius square"
+
+        self.ui.combo_box_mode.setItemDelegate(QStyledItemDelegate())
+        self.ui.combo_box_mode.view().window().setWindowFlag(Qt.WindowType.FramelessWindowHint)
+        self.ui.combo_box_mode.view().window().setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
         self.ui.combo_box_method.currentIndexChanged.connect(self.combo_box_check)
         self.ui.button_make.clicked.connect(self.button_make_clicked)

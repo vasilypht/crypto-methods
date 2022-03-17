@@ -2,10 +2,14 @@ from PyQt6.QtWidgets import (
     QWidget,
     QMessageBox,
     QAbstractItemView,
-    QTableWidgetItem
+    QTableWidgetItem,
+    QStyledItemDelegate
 )
 from PyQt6.QtGui import (
     QColor
+)
+from PyQt6.QtCore import (
+    Qt
 )
 import numpy as np
 
@@ -22,6 +26,9 @@ class CardanGrilleWidget(QWidget):
         self.title = "Cardan grille"
 
         self.ui.table_widget_stencil.setSelectionMode(QAbstractItemView.SelectionMode(0))
+        self.ui.combo_box_mode.setItemDelegate(QStyledItemDelegate())
+        self.ui.combo_box_mode.view().window().setWindowFlag(Qt.WindowType.FramelessWindowHint)
+        self.ui.combo_box_mode.view().window().setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
         self.ui.button_gen_stencil.clicked.connect(self.button_gen_stencil_clicked)
         self.ui.button_make.clicked.connect(self.button_make_clicked)

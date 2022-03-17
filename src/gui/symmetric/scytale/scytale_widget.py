@@ -1,10 +1,6 @@
 from PyQt6.QtWidgets import (
     QWidget,
-    QMessageBox,
-    QStyledItemDelegate
-)
-from PyQt6.QtCore import (
-    Qt
+    QMessageBox
 )
 
 from .scytale_ui import Ui_scytale
@@ -19,10 +15,6 @@ class ScytaleWidget(QWidget):
 
         self.title = "Scytale"
 
-        self.ui.combo_box_mode.setItemDelegate(QStyledItemDelegate())
-        self.ui.combo_box_mode.view().window().setWindowFlag(Qt.WindowType.FramelessWindowHint)
-        self.ui.combo_box_mode.view().window().setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-
         self.ui.check_box_columns.stateChanged.connect(self.check_box_check)
         self.ui.button_make.clicked.connect(self.button_make_clicked)
 
@@ -30,7 +22,7 @@ class ScytaleWidget(QWidget):
         """Scytale | (Slot) Method for activating/deactivating a checkbox."""
         if self.ui.check_box_columns.isChecked():
             self.ui.spin_box_columns.setDisabled(False)
-            self.ui.check_box_columns.setStyleSheet("color: white")
+            self.ui.check_box_columns.setStyleSheet("color: palette(window-text)")
         else:
             self.ui.spin_box_columns.setDisabled(True)
             self.ui.check_box_columns.setStyleSheet("color: grey")

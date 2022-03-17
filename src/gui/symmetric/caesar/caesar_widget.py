@@ -3,9 +3,6 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QStyledItemDelegate,
 )
-from PyQt6.QtCore import (
-    Qt
-)
 
 from .caesar_ui import Ui_caesar
 from src.crypto.symmetric import caesar
@@ -18,10 +15,6 @@ class CaesarWidget(QWidget):
         self.ui.setupUi(self)
 
         self.title = "Caesar"
-
-        self.ui.combo_box_mode.setItemDelegate(QStyledItemDelegate())
-        self.ui.combo_box_mode.view().window().setWindowFlag(Qt.WindowType.FramelessWindowHint)
-        self.ui.combo_box_mode.view().window().setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
         self.ui.button_make.clicked.connect(self.button_make_clicked)
 

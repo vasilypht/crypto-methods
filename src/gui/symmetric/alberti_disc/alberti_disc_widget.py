@@ -1,11 +1,9 @@
 from PyQt6.QtCore import (
-    QRegularExpression as QRegExp,
-    Qt
+    QRegularExpression as QRegExp
 )
 from PyQt6.QtWidgets import (
     QWidget,
-    QMessageBox,
-    QStyledItemDelegate
+    QMessageBox
 )
 from PyQt6.QtGui import (
     QRegularExpressionValidator as QRegExpVal
@@ -22,10 +20,6 @@ class AlbertiDiscWidget(QWidget):
         self.ui.setupUi(self)
 
         self.title = "Alberti disc"
-
-        self.ui.combo_box_mode.setItemDelegate(QStyledItemDelegate())
-        self.ui.combo_box_mode.view().window().setWindowFlag(Qt.WindowType.FramelessWindowHint)
-        self.ui.combo_box_mode.view().window().setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
         self.ui.line_edit_key.setValidator(
             QRegExpVal(QRegExp(r"(^[а-яё]*$)|(^[a-z]*$)", QRegExp.PatternOption.CaseInsensitiveOption))

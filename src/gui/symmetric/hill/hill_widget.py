@@ -2,11 +2,7 @@ import string
 
 from PyQt6.QtWidgets import (
     QWidget,
-    QMessageBox,
-    QStyledItemDelegate
-)
-from PyQt6.QtCore import (
-    Qt
+    QMessageBox
 )
 
 from .hill_ui import Ui_hill
@@ -20,10 +16,6 @@ class HillWidget(QWidget):
         self.ui.setupUi(self)
 
         self.title = "Hill"
-
-        self.ui.combo_box_mode.setItemDelegate(QStyledItemDelegate())
-        self.ui.combo_box_mode.view().window().setWindowFlag(Qt.WindowType.FramelessWindowHint)
-        self.ui.combo_box_mode.view().window().setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
         self.ui.line_edit_alphabet.setText(string.ascii_lowercase + "!?,")
         self.ui.button_make.clicked.connect(self.button_make_clicked)

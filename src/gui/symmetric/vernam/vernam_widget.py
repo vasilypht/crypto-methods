@@ -4,9 +4,6 @@ from PyQt6.QtWidgets import (
     QMenu,
     QFileDialog
 )
-from PyQt6.QtCore import (
-    Qt
-)
 import numpy as np
 
 from .vernam_ui import Ui_vernam
@@ -26,8 +23,6 @@ class VernamWidget(QWidget):
 
         # Context menu
         menu = QMenu()
-        menu.setWindowFlag(Qt.WindowType.FramelessWindowHint)
-        menu.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         menu.addAction("Generate key", self.action_clicked_gen_key)
         menu.addSeparator()
         menu.addAction("Save key", self.action_clicked_save_key)

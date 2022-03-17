@@ -1,6 +1,7 @@
 
 QPushButton#button_vk, QPushButton#button_tg, QPushButton#button_github {
     background: transparent;
+    color: palette(window-text);
 }
 
 QPushButton#button_settings {

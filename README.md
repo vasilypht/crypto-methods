@@ -63,4 +63,3 @@ Coming soon...
 - <a href="https://www.flaticon.com/free-icons/paper" title="paper icons">Paper icons created by inipagistudio - Flaticon</a>
 - <a href="https://www.flaticon.com/free-icons/files-and-folders" title="files and folders icons">Files and folders icons created by inipagistudio - Flaticon</a>
 - <a href="https://www.flaticon.com/free-icons/more" title="more icons">More icons created by Freepik - Flaticon</a>
-- <a href="https://www.flaticon.com/free-icons/down-arrow" title="down arrow icons">Down arrow icons created by Pixel perfect - Flaticon</a>

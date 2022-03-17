@@ -1,0 +1,23 @@
+
+QPushButton#button_vk, QPushButton#button_tg, QPushButton#button_github {
+    background: transparent;
+}
+
+QPushButton#button_settings {
+    background: transparent;
+    width: 24px;
+    height: 24px;
+    image: url("resources/icons/dots.png");
+}
+
+QPushButton::menu-indicator {
+    width: 0;
+}
+
+
+QPushButton {
+    background-color: rgb(83, 142, 242);
+    color: white;
+    border-radius: 10px;
+    padding: 2px 15px;
+}

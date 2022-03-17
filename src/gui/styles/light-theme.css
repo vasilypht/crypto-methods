@@ -95,7 +95,7 @@ QLineEdit:focus {
 
 
 QPushButton::menu-indicator {
-    width: 0px;
+    width: 0;
 }
 
 QPushButton#button_settings {

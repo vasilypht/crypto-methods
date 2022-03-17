@@ -87,7 +87,7 @@
         </sizepolicy>
        </property>
        <property name="styleSheet">
-        <string notr="true">background: transparent;</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>vk.com/vasilypht</string>
@@ -103,7 +103,7 @@
         </sizepolicy>
        </property>
        <property name="styleSheet">
-        <string notr="true">background: transparent;</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>t.me/vasilypht</string>
@@ -131,7 +131,7 @@
         </sizepolicy>
        </property>
        <property name="styleSheet">
-        <string notr="true">background: transparent;</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>github.com/vasilypht</string>

@@ -51,6 +51,9 @@ class VernamWidget(QWidget):
             initialFilter="Text File (*.txt)"
         )
 
+        if not filename:
+            return
+
         try:
             with open(filename, "w") as f_out:
                 f_out.write(self.ui.line_edit_key.text())
@@ -67,6 +70,9 @@ class VernamWidget(QWidget):
             filter="Text File (*.txt)",
             initialFilter="Text File (*.txt)"
         )
+
+        if not filename:
+            return
 
         try:
             with open(filename, "r") as f_out:

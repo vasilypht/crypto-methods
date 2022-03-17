@@ -67,6 +67,7 @@ class Ui_vernam(object):
         self.verticalLayout_41.setSpacing(0)
         self.verticalLayout_41.setObjectName("verticalLayout_41")
         self.text_edit_output = QtWidgets.QTextEdit(self.group_box_output)
+        self.text_edit_output.setReadOnly(True)
         self.text_edit_output.setObjectName("text_edit_output")
         self.verticalLayout_41.addWidget(self.text_edit_output)
         self.verticalLayout.addWidget(self.group_box_output)

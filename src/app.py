@@ -1,6 +1,8 @@
 import sys
 import os
 
+sys.path.append(os.path.dirname(os.getcwd()))
+
 from PyQt6.QtWidgets import (
     QApplication
 )
@@ -11,8 +13,6 @@ from PyQt6.QtCore import (
     QDir
 )
 import darkdetect
-
-sys.path.append(os.path.dirname(os.getcwd()))
 
 from src.gui.mainwindow import MainWindow
 

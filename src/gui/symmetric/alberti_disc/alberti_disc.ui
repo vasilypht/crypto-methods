@@ -137,7 +137,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="spin_box_key_alphabet_shift"/>
+      <widget class="QSpinBox" name="spin_box_key_alphabet_shift">
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="buttonSymbols">
+        <enum>QAbstractSpinBox::NoButtons</enum>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer name="horizontal_spacer_2">
@@ -177,6 +184,12 @@
      </item>
      <item>
       <widget class="QSpinBox" name="spin_box_iteration_step">
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="buttonSymbols">
+        <enum>QAbstractSpinBox::NoButtons</enum>
+       </property>
        <property name="minimum">
         <number>-99</number>
        </property>

@@ -91,5 +91,5 @@ class Ui_gronsfeld(object):
         self.label_key.setText(_translate("gronsfeld", "Key:"))
         self.combo_box_mode.setItemText(0, _translate("gronsfeld", "Encrypt"))
         self.combo_box_mode.setItemText(1, _translate("gronsfeld", "Decrypt"))
-        self.button_make.setText(_translate("gronsfeld", "Calculate"))
+        self.button_make.setText(_translate("gronsfeld", "Make"))
         self.group_box_output.setTitle(_translate("gronsfeld", "Output text"))

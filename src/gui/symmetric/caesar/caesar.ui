@@ -86,7 +86,7 @@
         <set>Qt::AlignCenter</set>
        </property>
        <property name="buttonSymbols">
-        <enum>QAbstractSpinBox::UpDownArrows</enum>
+        <enum>QAbstractSpinBox::NoButtons</enum>
        </property>
        <property name="minimum">
         <number>-50</number>

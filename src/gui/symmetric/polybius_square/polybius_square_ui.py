@@ -71,6 +71,7 @@ class Ui_polybius_square(object):
         self.spin_box_shift = QtWidgets.QSpinBox(polybius_square)
         self.spin_box_shift.setEnabled(False)
         self.spin_box_shift.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.spin_box_shift.setButtonSymbols(QtWidgets.QAbstractSpinBox.ButtonSymbols.NoButtons)
         self.spin_box_shift.setMinimum(0)
         self.spin_box_shift.setSingleStep(1)
         self.spin_box_shift.setProperty("value", 1)

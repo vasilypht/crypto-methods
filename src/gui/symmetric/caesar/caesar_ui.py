@@ -41,7 +41,7 @@ class Ui_caesar(object):
         self.horizontal_layout_1.addWidget(self.label_shift)
         self.spin_box_shift = QtWidgets.QSpinBox(caesar)
         self.spin_box_shift.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.spin_box_shift.setButtonSymbols(QtWidgets.QAbstractSpinBox.ButtonSymbols.UpDownArrows)
+        self.spin_box_shift.setButtonSymbols(QtWidgets.QAbstractSpinBox.ButtonSymbols.NoButtons)
         self.spin_box_shift.setMinimum(-50)
         self.spin_box_shift.setMaximum(50)
         self.spin_box_shift.setObjectName("spin_box_shift")

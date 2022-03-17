@@ -246,6 +246,9 @@
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
+       <property name="buttonSymbols">
+        <enum>QAbstractSpinBox::NoButtons</enum>
+       </property>
        <property name="minimum">
         <number>2</number>
        </property>

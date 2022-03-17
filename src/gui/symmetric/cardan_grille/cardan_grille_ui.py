@@ -107,6 +107,7 @@ class Ui_cardan_grille(object):
         self.horizontal_layout_3.addWidget(self.label_dim_stencil)
         self.spin_box_dim_stencil = QtWidgets.QSpinBox(cardan_grille)
         self.spin_box_dim_stencil.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.spin_box_dim_stencil.setButtonSymbols(QtWidgets.QAbstractSpinBox.ButtonSymbols.NoButtons)
         self.spin_box_dim_stencil.setMinimum(2)
         self.spin_box_dim_stencil.setMaximum(100)
         self.spin_box_dim_stencil.setObjectName("spin_box_dim_stencil")

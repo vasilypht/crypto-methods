@@ -8,8 +8,9 @@ import numpy as np
 
 from .vernam_ui import Ui_vernam
 from src.crypto.symmetric import vernam
-
-MAX_BYTES_READ = 1024
+from src.gui.const import (
+    MAX_TEXT_LENGTH
+)
 
 
 class VernamWidget(QWidget):
@@ -58,7 +59,7 @@ class VernamWidget(QWidget):
             with open(filename, "w") as f_out:
                 f_out.write(self.ui.line_edit_key.text())
 
-        except OSError as e:
+        except OSError:
             QMessageBox.warning(self, "Warning!", "Failed to save file!")
             return
 
@@ -76,9 +77,9 @@ class VernamWidget(QWidget):
 
         try:
             with open(filename, "r") as f_out:
-                self.ui.line_edit_key.setText(f_out.read(MAX_BYTES_READ))
+                self.ui.line_edit_key.setText(f_out.read())
 
-        except OSError as e:
+        except OSError:
             QMessageBox.warning(self, "Warning!", "Failed to open file!")
             return
 

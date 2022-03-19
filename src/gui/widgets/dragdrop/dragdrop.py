@@ -1,0 +1,121 @@
+from PyQt6.QtWidgets import (
+    QWidget,
+    QHBoxLayout,
+    QStackedWidget,
+    QFileDialog
+)
+from PyQt6.QtCore import (
+    QFileInfo,
+    pyqtSignal,
+    QUrl
+)
+from PyQt6.QtGui import (
+    QDragEnterEvent,
+    QDragMoveEvent,
+    QDropEvent,
+    QPixmap
+)
+
+from .selected_file_widget_ui import Ui_SelectedFileWidget
+from .dragdrop_upload_widget_ui import Ui_DragDropUploadWidget
+
+from src.gui.const import (
+    FILTER_EXTENSIONS,
+    SUPPORT_EXTENSIONS
+)
+
+
+class DragDropUploadWidget(QWidget):
+    dropped = pyqtSignal(QUrl)
+
+    def __init__(self):
+        super(DragDropUploadWidget, self).__init__()
+        self.ui = Ui_DragDropUploadWidget()
+        self.ui.setupUi(self)
+        self.setAcceptDrops(True)
+        self.ui.button_dragdrop.clicked.connect(self.action_clicked_choose_file)
+
+    def action_clicked_choose_file(self):
+        filename, _ = QFileDialog.getOpenFileName(
+            parent=self,
+            caption="Open a key file",
+            directory="",
+            filter=";;".join(FILTER_EXTENSIONS),
+            initialFilter=FILTER_EXTENSIONS[0]
+        )
+
+        if not filename:
+            return
+
+        self.dropped.emit(QUrl(filename))
+
+    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
+        if event.mimeData().hasUrls():
+            file_path = event.mimeData().urls()[0].toLocalFile()
+            file_ext = QFileInfo(file_path).completeSuffix()
+
+            if file_ext in SUPPORT_EXTENSIONS:
+                event.accept()
+        else:
+            event.ignore()
+
+    def dragMoveEvent(self, event: QDragMoveEvent) -> None:
+        if event.mimeData().hasUrls():
+            file_path = event.mimeData().urls()[0].toLocalFile()
+            file_ext = QFileInfo(file_path).completeSuffix()
+
+            if file_ext in SUPPORT_EXTENSIONS:
+                event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event: QDropEvent) -> None:
+        if event.mimeData().hasUrls():
+            file = event.mimeData().urls()[0]
+            self.dropped.emit(file)
+            event.accept()
+        else:
+            event.ignore()
+
+
+class SelectedFileWidget(QWidget):
+    def __init__(self):
+        super(SelectedFileWidget, self).__init__()
+        self.ui = Ui_SelectedFileWidget()
+        self.ui.setupUi(self)
+        self.ui.label_icon.setPixmap(QPixmap("icons:file.png").scaled(32, 32))
+
+
+class DragDropWidget(QWidget):
+    dropped = pyqtSignal(QUrl)
+
+    def __init__(self):
+        super(DragDropWidget, self).__init__()
+        self.setAcceptDrops(True)
+        self.resize(400, 200)
+
+        self.file_path = ""
+
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.stacked_widget = QStackedWidget()
+        layout.addWidget(self.stacked_widget)
+        self.setLayout(layout)
+
+        self.widget_dragdrop = DragDropUploadWidget()
+        self.widget_loadedfile = SelectedFileWidget()
+
+        self.stacked_widget.addWidget(self.widget_dragdrop)
+        self.stacked_widget.addWidget(self.widget_loadedfile)
+
+        self.stacked_widget.setCurrentWidget(self.widget_dragdrop)
+
+        self.widget_loadedfile.ui.button_close.clicked.connect(
+            lambda: self.stacked_widget.setCurrentWidget(self.widget_dragdrop)
+        )
+        self.widget_dragdrop.dropped.connect(self.dropped_file)
+
+    def dropped_file(self, file: QUrl):
+        self.widget_loadedfile.ui.label_file.setText(file.fileName())
+        self.stacked_widget.setCurrentWidget(self.widget_loadedfile)
+        self.dropped.emit(file)

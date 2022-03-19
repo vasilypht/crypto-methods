@@ -8,9 +8,6 @@ import numpy as np
 
 from .vernam_ui import Ui_vernam
 from src.crypto.symmetric import vernam
-from src.gui.const import (
-    MAX_TEXT_LENGTH
-)
 
 
 class VernamWidget(QWidget):

@@ -1,5 +1,9 @@
 from typing import Final
 
-# Constants for Drag and Drop
-SUPPORT_EXTENSIONS = ("txt",)
-FILTER_EXTENSIONS: Final = ("Text files (*.txt)",)
+# files
+MAX_CHARS_READ: Final = 1024
+
+# Support file extensions
+CAESAR_SUPPORT_EXT: Final = "Text files (*.txt)"
+FREQ_ANALYSIS_SUPPORT_EXT: Final = "Text files (*.txt)"
+

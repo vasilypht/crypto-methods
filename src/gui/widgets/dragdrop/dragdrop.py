@@ -25,8 +25,8 @@ from .dragdrop_upload_widget_ui import Ui_DragDropUploadWidget
 class DragDropUploadWidget(QWidget):
     dropped = pyqtSignal(QUrl)
 
-    def __init__(self):
-        super(DragDropUploadWidget, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(DragDropUploadWidget, self).__init__(*args, **kwargs)
         self.ui = Ui_DragDropUploadWidget()
         self.ui.setupUi(self)
         self.setAcceptDrops(True)
@@ -81,8 +81,8 @@ class DragDropUploadWidget(QWidget):
 class SelectedFileWidget(QWidget):
     canceled = pyqtSignal(QUrl)
 
-    def __init__(self):
-        super(SelectedFileWidget, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(SelectedFileWidget, self).__init__(*args, **kwargs)
         self.ui = Ui_SelectedFileWidget()
         self.ui.setupUi(self)
         self.ui.label_icon.setPixmap(QPixmap("icons:file.png").scaled(32, 32))
@@ -93,18 +93,17 @@ class DragDropWidget(QWidget):
     dropped = pyqtSignal(QUrl)
     canceled = pyqtSignal(QUrl)
 
-    def __init__(self):
-        super(DragDropWidget, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(DragDropWidget, self).__init__(*args, **kwargs)
         self.setAcceptDrops(True)
         self.resize(400, 200)
 
         self.file_path = ""
 
-        layout = QHBoxLayout()
+        layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        self.stacked_widget = QStackedWidget()
+        self.stacked_widget = QStackedWidget(self)
         layout.addWidget(self.stacked_widget)
-        self.setLayout(layout)
 
         self.widget_dragdrop = DragDropUploadWidget()
         self.widget_loadedfile = SelectedFileWidget()
@@ -116,7 +115,7 @@ class DragDropWidget(QWidget):
 
         self.widget_loadedfile.canceled.connect(self.canceled_file)
         self.widget_dragdrop.dropped.connect(self.dropped_file)
-
+        
     def set_filter_extensions(self, extensions: str):
         ext_array = re.findall(r"(\*\.[\da-z]+)+", extensions, re.IGNORECASE)
         ext_array = tuple(map(lambda s: s[2::], ext_array))

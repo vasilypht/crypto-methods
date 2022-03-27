@@ -9,7 +9,7 @@ from sympy import (
 )
 
 from ..utils import (
-    get_substr_from_alphabet
+    get_letters_alphabetically
 )
 
 
@@ -72,7 +72,7 @@ def transform(
         case _:
             raise HillError(f"Invalid processing type! -> {mode}")
 
-    letters, indices = get_substr_from_alphabet(text, alphabet)
+    letters, indices = get_letters_alphabetically(text, alphabet)
 
     new_letters = ""
     for i in range(0, len(letters), n):

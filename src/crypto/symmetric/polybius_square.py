@@ -7,7 +7,7 @@ from ..const import (
     ENG_LCASE
 )
 from ..utils import (
-    get_substr_from_alphabet
+    get_letters_alphabetically
 )
 
 
@@ -125,7 +125,7 @@ def ps_method_2(text: str, shift: int = 0, mode: str = "encrypt") -> str:
     if not text:
         raise PolybiusSquareError("Input text is empty!")
 
-    letters, indices = get_substr_from_alphabet(text, ENG_LCASE + RUS_LCASE)
+    letters, indices = get_letters_alphabetically(text, ENG_LCASE + RUS_LCASE)
 
     indices_i = []
     indices_j = []

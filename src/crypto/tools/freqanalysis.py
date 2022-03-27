@@ -1,7 +1,7 @@
 from collections import Counter
 
 from src.crypto.utils import (
-    get_substr_from_alphabet
+    get_letters_alphabetically
 )
 from src.crypto.const import (
     FREQ_TABLES
@@ -20,7 +20,7 @@ def analysis(text: str, freq_table: dict) -> dict:
     if not text:
         raise FreqAnalysisError("Input string is empty!")
 
-    substr, _ = get_substr_from_alphabet(text, freq_table.keys())
+    substr, _ = get_letters_alphabetically(text, freq_table.keys())
 
     if not substr:
         raise FreqAnalysisError("The input string does not have characters of the selected alphabet!")

@@ -14,9 +14,10 @@ def get_alphabet_by_letter(
     return None
 
 
-def get_substr_from_alphabet(
+def get_letters_alphabetically(
         string: str,
-        alphabet: Iterable[str]) -> tuple[str, list[int]]:
+        alphabet: Iterable[str]
+) -> tuple[str, list[int]]:
     indices = []
 
     letters = ""

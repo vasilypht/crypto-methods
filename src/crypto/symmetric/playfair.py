@@ -4,7 +4,7 @@ import numpy as np
 
 from ..utils import (
     get_alphabet_by_letter,
-    get_substr_from_alphabet
+    get_letters_alphabetically
 )
 from ..const import (
     ALPHABETS
@@ -78,7 +78,7 @@ def transform(text: str, key: str, mode: str = "encrypt") -> str:
     key_matrix = np.array(unique_letters).reshape(shape)
 
     # split to bigrams
-    letters, indices = get_substr_from_alphabet(text, alphabet)
+    letters, indices = get_letters_alphabetically(text, alphabet)
     bigrams = [letters[i:i + 2] for i in range(0, len(letters), 2)]
 
     if not bigrams:

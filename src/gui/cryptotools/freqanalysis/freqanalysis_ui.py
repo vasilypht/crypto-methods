@@ -127,7 +127,7 @@ class Ui_freqanalysis(object):
         self.verticalLayout_5.addLayout(self.horizontal_layout_2)
 
         self.retranslateUi(freqanalysis)
-        self.tab_widget.setCurrentIndex(1)
+        self.tab_widget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(freqanalysis)
 
     def retranslateUi(self, freqanalysis):

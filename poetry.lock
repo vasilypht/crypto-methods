@@ -127,6 +127,17 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "pyqtgraph"
+version = "0.12.4"
+description = "Scientific Graphics and GUI Library for Python"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+numpy = ">=1.17.0"
+
+[[package]]
 name = "pytest"
 version = "7.0.1"
 description = "pytest: simple powerful testing with Python"
@@ -169,7 +180,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "6e9a632f43dd55ce482ed93c2b247bd96a16279befebfe5c36763d2eba19a2b1"
+content-hash = "f720e67915a2a1d1729198410586d754eaf5c0966d095bddd28e1ec61da24495"
 
 [metadata.files]
 atomicwrites = [
@@ -259,6 +270,10 @@ pyqt6-sip = [
     {file = "PyQt6_sip-13.2.1-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:f4226d4ab239d8655f94c42b397f23e6e85b246f614ff81162ef9321e47f7619"},
     {file = "PyQt6_sip-13.2.1-cp39-cp39-win_amd64.whl", hash = "sha256:4b119a8fd880ece15a5bdff583edccd89dbc79d49de2e11cbbd6bba72713d1f3"},
     {file = "PyQt6_sip-13.2.1.tar.gz", hash = "sha256:b7bce59900b2e0a04f70246de2ccf79ee7933036b6b9183cf039b62eeae2b858"},
+]
+pyqtgraph = [
+    {file = "pyqtgraph-0.12.4-py3-none-any.whl", hash = "sha256:d98c6e26e9eda6d1d1bba92d6df381ef77fca18b701f9e136759ce31a17c6217"},
+    {file = "pyqtgraph-0.12.4.tar.gz", hash = "sha256:c2c8f2b7e1d7f97a710f370acff6368d686c9d6cdc560f2d83dcf59185dfa19d"},
 ]
 pytest = [
     {file = "pytest-7.0.1-py3-none-any.whl", hash = "sha256:9ce3ff477af913ecf6321fe337b93a2c0dcf2a0a1439c43f5452112c1e4280db"},

@@ -1,0 +1,1 @@
+from .freqanalysis_widget import FreqAnalysisWidget

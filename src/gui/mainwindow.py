@@ -1,14 +1,10 @@
 from PyQt6.QtWidgets import (
     QMainWindow,
     QTreeWidgetItem,
-    QWidget,
-    QHBoxLayout
+    QWidget
 )
 from PyQt6.QtGui import (
     QIcon
-)
-from PyQt6.QtCore import (
-    Qt
 )
 
 from .mainwindow_ui import Ui_MainWindow
@@ -54,17 +50,11 @@ class MainWindow(QMainWindow):
             for widget in widgets:
                 widget = widget()
 
-                layout = QHBoxLayout()
-                layout.setContentsMargins(0, 0, 0, 0)
-                layout.addWidget(widget, alignment=Qt.AlignmentFlag.AlignTop)
-
-                widget_wrapper = QWidget()
-                widget_wrapper.setLayout(layout)
-                self.ui.stacked_widget.addWidget(widget_wrapper)
+                self.ui.stacked_widget.addWidget(widget)
 
                 child = QTreeWidgetItem((widget.title,))
                 child.setIcon(0, QIcon("icons:file.png"))
-                child.setData(1, 1, widget_wrapper)
+                child.setData(1, 1, widget)
                 children.append(child)
 
             parent.addChildren(children)

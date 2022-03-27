@@ -1,3 +1,6 @@
+from typing import Iterable
+
+
 def get_alphabet_by_letter(
         letter: str,
         alphabets: tuple[tuple[str, str]]
@@ -11,7 +14,9 @@ def get_alphabet_by_letter(
     return None
 
 
-def get_substr_from_alphabet(string: str, alphabet: str) -> tuple[str, list[int]]:
+def get_substr_from_alphabet(
+        string: str,
+        alphabet: Iterable[str]) -> tuple[str, list[int]]:
     indices = []
 
     letters = ""

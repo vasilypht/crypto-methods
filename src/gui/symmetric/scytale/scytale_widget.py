@@ -29,17 +29,22 @@ class ScytaleWidget(QWidget):
 
     def button_make_clicked(self) -> None:
         """Scytale | (Slot) Method for handling button click. (Encryption/decryption)"""
-        try:
-            processed_text = scytale.make(
-                text=self.ui.text_edit_input.toPlainText(),
-                n=self.ui.spin_box_rows.value(),
-                m=self.ui.spin_box_columns.value(),
-                auto_m=not self.ui.check_box_columns.isChecked(),
-                mode=self.ui.combo_box_mode.currentText().lower()
-            )
+        match self.ui.tab_widget.currentWidget():
+            case self.ui.tab_text:
+                try:
+                    processed_text = scytale.make(
+                        text=self.ui.text_edit_input.toPlainText(),
+                        n=self.ui.spin_box_rows.value(),
+                        m=self.ui.spin_box_columns.value(),
+                        auto_m=not self.ui.check_box_columns.isChecked(),
+                        mode=self.ui.combo_box_mode.currentText().lower()
+                    )
 
-        except scytale.ScytaleError as e:
-            QMessageBox.warning(self, "Warning!", e.args[0])
-            return
+                except scytale.ScytaleError as e:
+                    QMessageBox.warning(self, "Warning!", e.args[0])
+                    return
 
-        self.ui.text_edit_output.setText(processed_text)
+                self.ui.text_edit_output.setText(processed_text)
+
+            case _:
+                return

@@ -63,7 +63,7 @@ def gen_stencil(k: int) -> np.ndarray:
     Returns:
         Randomly generated stencil (numpy array).
     """
-    if k < 2:
+    if k < 1:
         raise CarganGrilleError("Error K value must be greater than 1!")
 
     square_1 = [list(Field(j) for j in range(i*k + 1, i*k + k + 1)) for i in range(k)]

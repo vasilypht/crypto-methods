@@ -32,22 +32,18 @@ def analysis(text: str, freq_table: dict) -> dict:
     return freq_text
 
 
-def decipher(text: str, freq_text: dict, freq_table: dict) -> str:
+def decipher(text: str, letter_match: dict) -> str:
     if not text:
         raise FreqAnalysisError("Input string is empty!")
-
-    freq_text_sorted_tuple = tuple(key for key, _ in sorted(freq_text.items(), key=lambda item: item[1]))
-    freq_table_sorted_tuple = tuple(key for key, _ in sorted(freq_table.items(), key=lambda item: item[1]))
 
     test_list: list[str] = list(text)
 
     for i in range(len(text)):
         letter = test_list[i]
-        if letter.lower() not in freq_table_sorted_tuple:
+        if letter.lower() not in letter_match.keys():
             continue
 
-        new_letter_index = freq_text_sorted_tuple.index(letter.lower())
-        new_letter = freq_table_sorted_tuple[new_letter_index]
+        new_letter = letter_match.get(letter.lower())
         if letter.isupper():
             new_letter = new_letter.upper()
 

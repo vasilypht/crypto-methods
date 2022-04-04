@@ -1,5 +1,3 @@
-import re
-
 from PyQt6.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -37,6 +35,8 @@ class FreqAnalysisWidget(QWidget):
 
         self.freq_text = {}
         self.freq_table = {}
+        # letter from text: letter from table
+        self.letter_match = {}
 
         # Add Drag and drop widget
         self.drag_drop_widget = DragDropWidget(self.ui.tab_document)
@@ -70,13 +70,13 @@ class FreqAnalysisWidget(QWidget):
         self.plot.addItem(self.bar_graph_freq_text)
         self.plot.addItem(self.bar_graph_freq_table)
 
-        # Freq. table
-        self.ui.freq_table_widget.horizontalHeader().setStretchLastSection(True)
+        # table match
+        self.ui.match_table_widget.horizontalHeader().setStretchLastSection(True)
 
         self.ui.button_analysis.clicked.connect(self.button_analysis_clicked)
         self.ui.button_dechipher.clicked.connect(self.button_decipher_clicked)
 
-        self.ui.freq_table_widget.itemChanged.connect(self.freq_table_item_changed)
+        self.ui.match_table_widget.itemChanged.connect(self.freq_table_item_changed)
 
         self.drag_drop_widget.dropped.connect(self.file_path_changed)
         self.drag_drop_widget.canceled.connect(self.file_path_changed)
@@ -142,19 +142,7 @@ class FreqAnalysisWidget(QWidget):
             self.freq_text[key] = self.freq_text[key] / num_of_letters * 100
 
         self.update_bar_graph(self.bar_graph_freq_text, self.freq_text)
-
-        self.ui.freq_table_widget.blockSignals(True)
-        self.ui.freq_table_widget.setRowCount(len(self.freq_text))
-        self.ui.freq_table_widget.setVerticalHeaderLabels(self.freq_text.keys())
-        self.ui.freq_table_widget.setColumnCount(1)
-        self.ui.freq_table_widget.setHorizontalHeaderLabels(("frequencies",))
-
-        for i, (_, freq) in enumerate(self.freq_text.items()):
-            item = QTableWidgetItem(f"{freq:.4f}")
-            item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.ui.freq_table_widget.setItem(i, 0, item)
-
-        self.ui.freq_table_widget.blockSignals(False)
+        self.update_table_match()
 
     def button_decipher_clicked(self):
         match self.ui.tab_widget.currentWidget():
@@ -163,8 +151,7 @@ class FreqAnalysisWidget(QWidget):
                     self.ui.text_edit_output.setText(
                         fa.decipher(
                             text=self.ui.text_edit_input.toPlainText(),
-                            freq_text=self.freq_text,
-                            freq_table=self.freq_table
+                            letter_match=self.letter_match
                         )
                     )
 
@@ -210,8 +197,7 @@ class FreqAnalysisWidget(QWidget):
                     while block := file_input.read(MAX_CHARS_READ):
                         processed_block = fa.decipher(
                             text=block,
-                            freq_text=self.freq_text,
-                            freq_table=self.freq_table
+                            letter_match=self.letter_match
                         )
                         file_output.write(processed_block)
 
@@ -237,13 +223,63 @@ class FreqAnalysisWidget(QWidget):
             height=list(freq_table.values())
         )
 
+    def update_table_match(self):
+        text_letter_sorted = tuple(letter for letter, freq in sorted(
+            self.freq_text.items(), key=lambda x: x[1], reverse=True
+        ))
+        table_letter_sorted = tuple(letter for letter, freq, in sorted(
+            self.freq_table.items(), key=lambda x: x[1], reverse=True
+        ))
+
+        letter_match = {text_letter: table_letter for text_letter, table_letter in zip(
+            text_letter_sorted,
+            table_letter_sorted
+        )}
+
+        self.letter_match = dict.fromkeys(self.freq_table.keys())
+        self.letter_match.update(letter_match)
+
+        self.ui.match_table_widget.blockSignals(True)
+        self.ui.match_table_widget.setRowCount(len(self.letter_match))
+        self.ui.match_table_widget.setVerticalHeaderLabels(self.letter_match.keys())
+        self.ui.match_table_widget.setColumnCount(1)
+        self.ui.match_table_widget.horizontalHeader().hide()
+
+        for i, (text_letter, table_letter) in enumerate(self.letter_match.items()):
+            item = QTableWidgetItem(table_letter)
+            item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.ui.match_table_widget.setItem(i, 0, item)
+        self.ui.match_table_widget.blockSignals(False)
+
     def freq_table_item_changed(self, item: QTableWidgetItem):
-        key = self.ui.freq_table_widget.verticalHeaderItem(item.row()).text()
+        current_row_label = self.ui.match_table_widget.verticalHeaderItem(item.row()).text()
+        current_text_letter = self.letter_match.get(current_row_label)
 
-        if not re.match(r"^[0-9]+\.?[0-9]*$", item.text()):
-            item.setText(self.freq_text.get(key, "0.0"))
+        self.ui.match_table_widget.blockSignals(True)
+        if item.text().lower() not in self.letter_match.keys():
+            item.setText(current_text_letter)
+            self.ui.match_table_widget.blockSignals(False)
+            return
 
-        self.freq_text.update({key: round(float(item.text()), 4)})
+        item.setText(item.text().lower())
+
+        other_table_letter_index = tuple(self.letter_match.values()).index(item.text())
+        other_text_letter = tuple(self.letter_match.keys())[other_table_letter_index]
+
+        table_match_index = tuple(self.freq_table.keys()).index(other_text_letter)
+        other_item = self.ui.match_table_widget.item(table_match_index, 0)
+        other_item.setText(current_text_letter)
+        self.ui.match_table_widget.blockSignals(False)
+
+        self.letter_match.update({
+            current_row_label: self.letter_match[other_text_letter],
+            other_text_letter: self.letter_match[current_row_label]
+        })
+        self.freq_text.update({
+            current_row_label: self.freq_text[other_text_letter],
+            other_text_letter: self.freq_text[current_row_label]
+        })
+
         self.update_bar_graph(self.bar_graph_freq_text, self.freq_text)
 
     def file_path_changed(self, file: QUrl):
@@ -255,3 +291,4 @@ class FreqAnalysisWidget(QWidget):
             text_type=text_style.lower()
         )
         self.update_bar_graph(self.bar_graph_freq_table, self.freq_table)
+        self.update_table_match()

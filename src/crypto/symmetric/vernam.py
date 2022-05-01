@@ -1,64 +1,68 @@
-from ..const import (
-    KOI8R_STOPBYTES
-)
+import numpy as np
 
 
 class VernamError(Exception):
     pass
 
 
-def transform(text: str, key: str) -> str:
-    """Vernam cipher (charset 'KOI8-r'). Encryption/decryption function.
+class Vernam:
+    def __init__(self, key: str):
+        try:
+            self.key = bytes.fromhex(key)
+        except ValueError:
+            raise VernamError("Wrong format key entered (Hex)")
 
-    Args:
-        text: text to be encrypted/decrypted.
-        key: arbitrary character set.
+    @staticmethod
+    def gen_key(size: int) -> str:
+        sample = tuple(np.random.randint(0, 256, size))
+        return bytes(sample).hex()
 
-    Returns:
-        Encrypted or decrypted string.
-    """
-    if not text:
-        raise VernamError("Input text is empty!")
+    def _transform(self, data: bytes or str, mode: str = "encrypt"):
+        if mode not in ("encrypt", "decrypt"):
+            raise VernamError("The processing type does not match the allowed values! ('encrypt' or 'decrypt')")
 
-    if not key:
-        raise VernamError("The key is missing!")
+        if not data:
+            raise VernamError("The input data is empty!")
 
-    # attempt to change the encoding of the input text
-    try:
-        text_bytes = bytearray(text, encoding="KOI8-r")
+        if not self.key:
+            raise VernamError("Encryption key not set!")
 
-    except UnicodeEncodeError:
-        raise VernamError("Invalid character in input text! (KOI8-r)")
+        # check input data
+        match mode, data:
+            case "encrypt", str():
+                data_bytes = bytearray(data, "utf-8")
 
-    # attempt to change key encoding
-    try:
-        key_bytes = bytearray(key, encoding="KOI8-r")
+            case "decrypt", str():
+                data_bytes = bytearray.fromhex(data)
 
-    except UnicodeEncodeError:
-        raise VernamError("Invalid character in key! (KOI8-r)")
+            case _, bytes():
+                data_bytes = bytearray(data)
 
-    for i in range(len(text_bytes)):
-        text_bytes[i] ^= key_bytes[i % len(key_bytes)]
-        if text_bytes[i] in KOI8R_STOPBYTES:
-            raise VernamError("Service byte received! Change the key or text.")
+            case _:
+                raise VernamError(f"Invalid processing type! -> {mode}")
 
-    try:
-        modified_text = text_bytes.decode("KOI8-r")
+        if len(self.key) != len(data_bytes):
+            raise VernamError(f"Key size ({len(self.key)}) and text size ({len(data_bytes)}) in bytes must match!")
 
-    except UnicodeDecodeError:
-        raise VernamError("Decoding error! (from 'KOI8-r')")
+        for i in range(len(data_bytes)):
+            data_bytes[i] ^= self.key[i % len(self.key)]
 
-    return modified_text
+        # manage output
+        match mode, data:
+            case "encrypt", str():
+                return data_bytes.hex()
 
+            case "decrypt", str():
+                return data_bytes.decode("utf-8")
 
-def make(text: str, key: str) -> str:
-    """Vernam cipher (charset 'KOI8-r'). Interface for calling encryption/decryption functions.
+            case _, bytes():
+                return bytes(data_bytes)
 
-    Args:
-        text: text to be encrypted/decrypted.
-        key: arbitrary character set.
+            case _:
+                raise VernamError(f"Invalid processing type! -> {mode}")
 
-    Returns:
-        Encrypted or decrypted string.
-    """
-    return transform(text, key)
+    def encrypt(self, data: str or bytes):
+        return self._transform(data, "encrypt")
+
+    def decrypt(self, data: str or bytes):
+        return self._transform(data, "decrypt")

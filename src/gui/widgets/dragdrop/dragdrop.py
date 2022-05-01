@@ -54,7 +54,7 @@ class DragDropUploadWidget(QWidget):
             file_path = event.mimeData().urls()[0].toLocalFile()
             file_ext = QFileInfo(file_path).completeSuffix()
 
-            if file_ext in self.extensions:
+            if file_ext in self.extensions or self.extensions == "all":
                 event.accept()
         else:
             event.ignore()
@@ -64,7 +64,7 @@ class DragDropUploadWidget(QWidget):
             file_path = event.mimeData().urls()[0].toLocalFile()
             file_ext = QFileInfo(file_path).completeSuffix()
 
-            if file_ext in self.extensions:
+            if file_ext in self.extensions or self.extensions == "all":
                 event.accept()
         else:
             event.ignore()
@@ -119,6 +119,10 @@ class DragDropWidget(QWidget):
     def set_filter_extensions(self, extensions: str):
         ext_array = re.findall(r"(\*\.[\da-z]+)+", extensions, re.IGNORECASE)
         ext_array = tuple(map(lambda s: s[2::], ext_array))
+
+        if not ext_array:
+            ext_array = "all"
+
         self.widget_dragdrop.extensions = ext_array
         self.widget_dragdrop.filter_extensions = extensions
 

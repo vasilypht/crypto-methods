@@ -1,17 +1,17 @@
 from typing import Final
 
-from .atbash.atbash_widget import AtbashWidget
-from .scytale.scytale_widget import ScytaleWidget
-from .polybius_square.polybius_square_widget import PolybiusSquareWidget
-from .caesar.caesar_widget import CaesarWidget
-from .cardan_grille.cardan_grille_widget import CardanGrilleWidget
-from .richelieu.richelieu_widget import RichelieuWidget
-from .alberti_disc.alberti_disc_widget import AlbertiDiscWidget
-from .gronsfeld.gronsfeld_widget import GronsfeldWidget
-from .vigenere.vigenere_widget import VigenereWidget
-from .playfair.playfair_widget import PlayfairWidget
-from .hill.hill_widget import HillWidget
-from .vernam.vernam_widget import VernamWidget
+from .atbash import AtbashWidget
+from .scytale import ScytaleWidget
+from .polybius_square import PolybiusSquareWidget
+from .caesar import CaesarWidget
+from .cardan_grille import CardanGrilleWidget
+from .richelieu import RichelieuWidget
+from .alberti_disc import AlbertiDiscWidget
+from .gronsfeld import GronsfeldWidget
+from .vigenere import VigenereWidget
+from .playfair import PlayfairWidget
+from .hill import HillWidget
+from .vernam import VernamWidget
 
 WIDGETS_SYMMETRIC: Final = (
     AtbashWidget,

@@ -47,7 +47,7 @@ class DragDropUploadWidget(QWidget):
         if not filename:
             return
 
-        self.dropped.emit(QUrl(filename))
+        self.dropped.emit(QUrl.fromLocalFile(filename))
 
     def dragEnterEvent(self, event: QDragEnterEvent) -> None:
         if event.mimeData().hasUrls():

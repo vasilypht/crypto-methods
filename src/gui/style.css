@@ -4,8 +4,8 @@ QPushButton#button_vk, QPushButton#button_tg, QPushButton#button_github {
     color: palette(window-text);
 }
 
-QPushButton#button_settings {
-    background: transparent;
+QPushButton#button_options {
+    background: rgba(255, 255, 255, 0.1);
     width: 24px;
     height: 24px;
     image: url("resources/icons/dots.png");
@@ -17,7 +17,7 @@ QPushButton::menu-indicator {
 
 
 QPushButton {
-    background-color: rgb(83, 142, 242);
+    background-color: rgb(58, 124, 255);
     color: white;
     border-radius: 10px;
     padding: 2px 15px;

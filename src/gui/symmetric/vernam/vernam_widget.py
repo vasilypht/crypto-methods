@@ -28,7 +28,7 @@ class VernamWidget(QWidget):
         menu.addSeparator()
         menu.addAction("Save key", self.action_clicked_save_key)
         menu.addAction("Load key", self.action_clicked_load_key)
-        self.ui.button_settings.setMenu(menu)
+        self.ui.button_options.setMenu(menu)
 
     def action_clicked_gen_key(self):
         if not self.ui.text_edit_input.toPlainText():

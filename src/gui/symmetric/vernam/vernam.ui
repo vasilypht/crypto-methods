@@ -148,8 +148,17 @@
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontal_layout_2">
+       <property name="spacing">
+        <number>-1</number>
+       </property>
        <item>
         <widget class="QComboBox" name="combo_box_mode">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
          <item>
           <property name="text">
            <string>Encrypt</string>
@@ -182,7 +191,25 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="button_settings">
+        <widget class="QPushButton" name="button_options">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
@@ -194,6 +221,12 @@
            <width>16</width>
            <height>16</height>
           </size>
+         </property>
+         <property name="default">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
          </property>
         </widget>
        </item>

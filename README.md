@@ -39,7 +39,7 @@
 |                    | [`xor.py`](/src/crypto/symmetric/xor.py)                         | [`xor_widget.py`](/src/gui/symmetric/xor/xor_widget.py)                                     | [XOR cipher](https://en.wikipedia.org/wiki/XOR_cipher)                 |
 | Asymmetric ciphers | ...                                                              | ...                                                                                         | ...                                                                    |
 | Crypto tools       | [`freqanalysis.py`](/src/crypto/tools/freqanalysis.py)           | [`freqanalysis_widget.py`](/src/gui/cryptotools/freqanalysis/freqanalysis_widget.py)        | [Frequency analysis](https://en.wikipedia.org/wiki/Frequency_analysis) |
-| PRNGs              | [`freqanalysis.py`](/src/crypto/prngs/rc4.py)                    |                                                                                             | [RC4](https://en.wikipedia.org/wiki/RC4)                               |
+| PRNGs              | [`rc4.py`](/src/crypto/prngs/rc4.py)                             |                                                                                             | [RC4](https://en.wikipedia.org/wiki/RC4)                               |
 
 <br>
 

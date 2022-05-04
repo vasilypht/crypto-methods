@@ -9,6 +9,17 @@ ALPHABETS: Final = (
     (RUS_LCASE, "ru")
 )
 
+# Remake constants
+_ALPHABETS: Final = {
+    "russian": RUS_LCASE,
+    "english": ENG_LCASE
+}
+
+IC_TABLE: Final = {
+    "russian": 0.0553,
+    "english": 0.0644
+}
+
 POLYBIUS_SQUARE_EN: Final = {
     (1, 1): ("A",), (2, 1): ("B",), (3, 1): ("C",), (4, 1): ("D",),     (5, 1): ("E",),
     (1, 2): ("F",), (2, 2): ("G",), (3, 2): ("H",), (4, 2): ("I", "J"), (5, 2): ("K",),

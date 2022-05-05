@@ -4,7 +4,7 @@ from ..utils import (
     get_alphabet_by_letter
 )
 from ..const import (
-    ALPHABETS
+    ALPHABET_TABLE
 )
 
 
@@ -37,11 +37,11 @@ def transform(text: str, key: str, mode: str = "encrypt") -> str:
     for i in range(len(text)):
         letter_text = text_list[i]
 
-        if (alphabet_lang := get_alphabet_by_letter(letter_text, ALPHABETS)) is None:
+        if (lang_alphabet := get_alphabet_by_letter(letter_text, ALPHABET_TABLE)) is None:
             continue
 
-        alphabet_letter, _ = alphabet_lang
-        letter_text_index = alphabet_letter.index(letter_text.lower())
+        _, alphabet = lang_alphabet
+        letter_text_index = alphabet.index(letter_text.lower())
         shift = int(key[i % len(key)])
 
         # choice of sign
@@ -55,8 +55,8 @@ def transform(text: str, key: str, mode: str = "encrypt") -> str:
             case _:
                 raise GronsfeldError(f"Invalid processing type! -> {mode}")
 
-        new_letter_index = (letter_text_index + shift * sign) % len(alphabet_letter)
-        new_letter_text = alphabet_letter[new_letter_index]
+        new_letter_index = (letter_text_index + shift * sign) % len(alphabet)
+        new_letter_text = alphabet[new_letter_index]
 
         if letter_text.isupper():
             new_letter_text = new_letter_text.upper()

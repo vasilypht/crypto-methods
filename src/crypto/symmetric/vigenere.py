@@ -4,7 +4,7 @@ from ..utils import (
     get_alphabet_by_letter
 )
 from ..const import (
-    ALPHABETS
+    ALPHABET_TABLE
 )
 
 
@@ -36,18 +36,18 @@ def transform(text: str, key: str, mode: str = "encrypt") -> str:
 
     for i in range(len(text)):
         letter_text = text_list[i]
-        if (alphabet_lang_text := get_alphabet_by_letter(letter_text, ALPHABETS)) is None:
+        if (lang_alphabet_text := get_alphabet_by_letter(letter_text, ALPHABET_TABLE)) is None:
             continue
 
         letter_key = key[i % len(key)]
-        if (alphabet_lang_key := get_alphabet_by_letter(letter_key, ALPHABETS)) is None:
+        if (lang_alphabet_key := get_alphabet_by_letter(letter_key, ALPHABET_TABLE)) is None:
             continue
 
-        alphabet_letter_text, _ = alphabet_lang_text
-        alphabet_letter_key, _ = alphabet_lang_key
+        _, alphabet_text = lang_alphabet_text
+        _, alphabet_key = lang_alphabet_key
 
-        letter_text_index = alphabet_letter_text.index(letter_text.lower())
-        letter_key_index = alphabet_letter_key.index(letter_key.lower())
+        letter_text_index = alphabet_text.index(letter_text.lower())
+        letter_key_index = alphabet_key.index(letter_key.lower())
 
         # choice of sign
         match mode:
@@ -60,8 +60,8 @@ def transform(text: str, key: str, mode: str = "encrypt") -> str:
             case _:
                 raise VigenereError(f"Invalid processing type! -> {mode}")
 
-        new_letter_text_index = (letter_text_index + letter_key_index * key_sign) % len(alphabet_letter_text)
-        new_letter_text = alphabet_letter_text[new_letter_text_index]
+        new_letter_text_index = (letter_text_index + letter_key_index * key_sign) % len(alphabet_text)
+        new_letter_text = alphabet_text[new_letter_text_index]
 
         if letter_text.isupper():
             new_letter_text = new_letter_text.upper()

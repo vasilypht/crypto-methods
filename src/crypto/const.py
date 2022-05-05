@@ -4,19 +4,6 @@ from typing import Final
 ENG_LCASE: Final = "abcdefghijklmnopqrstuvwxyz"
 RUS_LCASE: Final = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 
-ALPHABETS: Final = (
-    (ENG_LCASE, "en"),
-    (RUS_LCASE, "ru")
-)
-
-# Remake constants
-_ALPHABETS: Final = {
-    "russian": RUS_LCASE,
-    "english": ENG_LCASE
-}
-
-
-# TODO: Change all dependencies to this constant
 ALPHABET_TABLE: Final = {
     "russian": RUS_LCASE,
     "english": ENG_LCASE

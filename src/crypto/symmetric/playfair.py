@@ -7,7 +7,7 @@ from ..utils import (
     get_letters_alphabetically
 )
 from ..const import (
-    ALPHABETS
+    ALPHABET_TABLE
 )
 
 
@@ -45,16 +45,16 @@ def transform(text: str, key: str, mode: str = "encrypt") -> str:
         case _:
             raise PlayfairError(f"Invalid processing type! -> {mode}")
 
-    alphabet, lang = get_alphabet_by_letter(key[0], ALPHABETS)
+    lang, alphabet = get_alphabet_by_letter(key[0], ALPHABET_TABLE)
 
     match lang:
-        case "en":
+        case "english":
             shape = (5, 5)
             letter_swap = ("j", "i")
             first_add_letter = "x"
             second_add_letter = "y"
 
-        case "ru":
+        case "russian":
             shape = (4, 8)
             letter_swap = ("ъ", "ь")
             first_add_letter = "х"

@@ -2,7 +2,7 @@ from ..utils import (
     get_alphabet_by_letter
 )
 from ..const import (
-    ALPHABETS
+    ALPHABET_TABLE
 )
 
 
@@ -28,10 +28,10 @@ def transform(text: str) -> str:
     for i in range(len(text)):
         letter_text = letters_list[i]
 
-        if (alpha_lang := get_alphabet_by_letter(letter_text, ALPHABETS)) is None:
+        if (lang_alphabet := get_alphabet_by_letter(letter_text, ALPHABET_TABLE)) is None:
             continue
 
-        alphabet, _ = alpha_lang
+        _, alphabet = lang_alphabet
         letter_index = alphabet.index(letter_text.lower())
         new_letter = alphabet[len(alphabet) - letter_index - 1]
 

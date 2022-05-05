@@ -3,13 +3,13 @@ from typing import Iterable
 
 def get_alphabet_by_letter(
         letter: str,
-        alphabets: tuple[tuple[str, str]]
+        alphabets: dict[str, str]
 ) -> tuple[str, str] or None:
     letter = letter.lower()
 
-    for alphabet, lang in alphabets:
+    for lang, alphabet in alphabets.items():
         if letter in alphabet:
-            return alphabet, lang
+            return lang, alphabet
 
     return None
 

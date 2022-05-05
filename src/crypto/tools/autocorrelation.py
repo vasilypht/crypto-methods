@@ -5,7 +5,7 @@ from scipy.stats import chisquare
 import numpy as np
 
 from src.crypto.const import (
-    _ALPHABETS,
+    ALPHABET_TABLE,
     IC_TABLE,
     FREQ_TABLES
 )
@@ -21,8 +21,8 @@ class Autocorrelation:
         self.delta = delta
         self.max_len = max_len
 
-        if lang not in _ALPHABETS.keys():
-            raise AutocorrError(f"The selected language must be from the list -> {_ALPHABETS.keys()}")
+        if lang not in ALPHABET_TABLE.keys():
+            raise AutocorrError(f"The selected language must be from the list -> {ALPHABET_TABLE.keys()}")
 
         if lang not in FREQ_TABLES.keys():
             raise AutocorrError(f"The selected language must be from the list -> {FREQ_TABLES.keys()}")
@@ -31,7 +31,7 @@ class Autocorrelation:
             raise AutocorrError(f"The selected language must be from the list -> {IC_TABLE.keys()}")
 
         self.lang = lang
-        self.alphabet = _ALPHABETS.get(lang)
+        self.alphabet = ALPHABET_TABLE.get(lang)
         self.threshold = IC_TABLE.get(lang)
         freq_table = FREQ_TABLES.get(lang).get("common")
         freq_table_norm = self.freq_normalize(freq_table)

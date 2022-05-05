@@ -10,7 +10,7 @@ from src.crypto.tools.autocorrelation import (
     Autocorrelation,
     AutocorrError
 )
-from src.crypto.const import _ALPHABETS
+from src.crypto.const import ALPHABET_TABLE
 from src.gui.widgets import DragDropWidget
 from src.gui.const import (
     AUTOCORRELATION_SUPPORT_EXT,
@@ -29,7 +29,7 @@ class AutocorrelationWidget(QWidget):
         self.file_path = QUrl()
 
         # Init languages
-        self.ui.combo_box_lang.addItems(map(lambda x: x.capitalize(), _ALPHABETS.keys()))
+        self.ui.combo_box_lang.addItems(map(lambda x: x.capitalize(), ALPHABET_TABLE.keys()))
 
         # Add Drag and drop widget
         self.drag_drop_widget = DragDropWidget(self.ui.tab_document)

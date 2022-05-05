@@ -2,7 +2,7 @@ from collections import Counter
 from itertools import zip_longest
 
 from src.crypto.const import (
-    _ALPHABETS,
+    ALPHABET_TABLE,
     IC_TABLE
 )
 
@@ -17,13 +17,13 @@ class IndexOfCoincidence:
         self.max_len = max_len
         self.delta = delta
 
-        if lang not in _ALPHABETS.keys():
-            raise ICError(f"The selected language must be from the list -> {_ALPHABETS.keys()}.")
+        if lang not in ALPHABET_TABLE.keys():
+            raise ICError(f"The selected language must be from the list -> {ALPHABET_TABLE.keys()}.")
 
         if lang not in IC_TABLE.keys():
             raise ICError(f"The selected language must be from the list -> {IC_TABLE.keys()}.")
 
-        self.alphabet = _ALPHABETS.get(lang)
+        self.alphabet = ALPHABET_TABLE.get(lang)
         self.threshold = IC_TABLE.get(lang)
 
         if not set(self.text).issubset(self.alphabet):

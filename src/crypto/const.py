@@ -15,6 +15,13 @@ _ALPHABETS: Final = {
     "english": ENG_LCASE
 }
 
+
+# TODO: Change all dependencies to this constant
+ALPHABET_TABLE: Final = {
+    "russian": RUS_LCASE,
+    "english": ENG_LCASE
+}
+
 IC_TABLE: Final = {
     "russian": 0.0553,
     "english": 0.0644

@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_kasiski(object):
     def setupUi(self, kasiski):
         kasiski.setObjectName("kasiski")
-        kasiski.resize(715, 569)
+        kasiski.resize(808, 514)
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(kasiski)
         self.verticalLayout_7.setContentsMargins(4, 4, 4, 4)
         self.verticalLayout_7.setObjectName("verticalLayout_7")
@@ -119,7 +119,7 @@ class Ui_kasiski(object):
         self.verticalLayout_7.addItem(spacerItem3)
 
         self.retranslateUi(kasiski)
-        self.tab_widget.setCurrentIndex(1)
+        self.tab_widget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(kasiski)
 
     def retranslateUi(self, kasiski):

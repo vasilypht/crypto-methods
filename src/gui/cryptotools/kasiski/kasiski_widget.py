@@ -6,9 +6,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import QUrl
 
 from .kasiski_ui import Ui_kasiski
-from src.crypto.tools.kasiski import (
-    Kasiski
-)
+from src.crypto.tools.kasiski import Kasiski
 from src.gui.widgets import DragDropWidget
 from src.gui.const import (
     KASISKI_SUPPORT_EXT,

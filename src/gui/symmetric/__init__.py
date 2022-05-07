@@ -13,6 +13,7 @@ from .playfair import PlayfairWidget
 from .hill import HillWidget
 from .vernam import VernamWidget
 from .xor import XORWidget
+from .des import DESWidget
 
 WIDGETS_SYMMETRIC: Final = (
     AtbashWidget,
@@ -27,5 +28,6 @@ WIDGETS_SYMMETRIC: Final = (
     PlayfairWidget,
     HillWidget,
     VernamWidget,
-    XORWidget
+    XORWidget,
+    DESWidget
 )

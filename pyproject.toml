@@ -7,10 +7,11 @@ authors = ["Vasily Perekhrest <perekhrest-vasily@mail.ru>"]
 [tool.poetry.dependencies]
 python = "3.10"
 PyQt6 = "^6.2.3"
-numpy = "^1.22.2"
+numpy = "^1.22"
 sympy = "^1.9"
 pyqtgraph = "^0.12.4"
 scipy = "^1.8.0"
+bitarray = "^2.5.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.1"

@@ -1,10 +1,3 @@
-from bitarray import bitarray
-from bitarray.util import (
-    hex2ba, ba2hex,
-    int2ba, ba2int,
-    parity, zeros
-)
-
 from src.crypto.const import (
     DES_IP_TABLE, DES_IP_INV_TABLE,
     DES_PC_1_TABLE, DES_PC_2_TABLE,
@@ -24,22 +17,22 @@ class DES:
                        "CFB": self._CFB,
                        "OFB": self._OFB}
 
-        try:
-            self.key = hex2ba(key)
-        except ValueError:
-            raise DESError("The entered key is not a hexadecimal one!")
+        if len(key) != 14:
+            raise DESError(f"Key length must be 56 bits (7 bytes)! ({len(key) // 2} bytes entered)")
 
-        if len(self.key) != 56:
-            raise DESError(f"Key length must be 56 bits (7 bytes)! ({len(self.key)} bits entered)")
+        try:
+            self.key = int(key, 16)
+        except ValueError:
+            raise DESError("The entered key is not a hexadecimal value!")
 
         if iv:
-            try:
-                self.iv = hex2ba(iv)
-            except ValueError:
-                raise DESError("The entered IV is not a hexadecimal one!")
+            if len(iv) != 16:
+                raise DESError(f"IV length must be 64 bits (8 bytes)! ({len(iv) // 2} bytes entered)")
 
-            if len(self.iv) != 64:
-                raise DESError(f"IV length must be 64 bits (8 bytes)! ({len(self.iv)} bits entered)")
+            try:
+                self.iv = int(iv, 16)
+            except ValueError:
+                raise DESError("The entered IV is not a hexadecimal value!")
 
         if iv is None and mode != "ECB":
             raise DESError(f"Encryption in '{mode}' mode requires an initialization vector!")
@@ -51,90 +44,92 @@ class DES:
         self._mode = self._modes.get(mode)
         self.keys = self.generate_keys(self.key)
 
-    def generate_keys(self, key: bitarray):
-        ext_key = key.copy()
+    def generate_keys(self, key: int):
+        ext_key = 0
 
         # Getting a 64-bit key
-        for pos in range(0, 64, 8):
-            match parity(ext_key[pos:pos + 7]):
+        for i in range(8):
+            k = (key >> (i * 7)) & 0b1111111
+
+            match bin(k).count("1") % 2:
                 case 0:
-                    ext_key.insert(pos + 8, 1)
+                    ext_key |= ((k << 1) | 0b1) << (8 * i)
 
                 case 1:
-                    ext_key.insert(pos + 8, 0)
+                    ext_key |= ((k << 1) | 0b0) << (8 * i)
 
         # Permutation
-        new_key = self._permutation(ext_key, DES_PC_1_TABLE)
+        new_key = self._permutation(ext_key, 64, DES_PC_1_TABLE)
 
-        chunk_l, chunk_d = new_key[:28], new_key[28:]
+        chunk_l = new_key >> 28
+        chunk_d = new_key & 0xFFFFFFF
         keys = []
 
         for i in range(16):
             shift = DES_SHIFT_TABLE[i]
 
-            addition_l, addition_d = chunk_l[:shift], chunk_d[:shift]
-            chunk_l <<= shift
-            chunk_d <<= shift
-            chunk_l[-shift:], chunk_d[-shift:] = addition_l, addition_d
+            chunk_l = ((chunk_l << shift) | (chunk_l >> (28 - shift))) & 0xFFFFFFF
+            chunk_d = ((chunk_d << shift) | (chunk_d >> (28 - shift))) & 0xFFFFFFF
 
             # Final permutation
-            new_key = self._permutation(chunk_l + chunk_d, DES_PC_2_TABLE)
+            block = (chunk_l << 28) | chunk_d
+            new_key = self._permutation(block, 56, DES_PC_2_TABLE)
             keys.append(new_key)
 
         return keys
 
-    @staticmethod
-    def _permutation(key: bitarray, table: tuple):
-        return bitarray(key[i - 1] for i in table)
+    def _permutation(self, key: int, bit_len: int, table: tuple):
+        key = bin(key)[2:].zfill(bit_len)
+        return int("".join(key[i - 1] for i in table), 2)
 
-    def _transform(self, block: bitarray, mode: str = "encrypt"):
-        block = self._permutation(block, DES_IP_TABLE)
-        chunk_l, chunk_r = block[:32], block[32:]
+    def _transform(self, block: int, mode: str = "encrypt"):
+        block = self._permutation(block, 64, DES_IP_TABLE)
+        chunk_l = block >> 32
+        chunk_r = block & 0xFFFFFFFF
 
         match mode:
             case "encrypt":
                 for i in range(16):
-                    chunk_l, chunk_r = chunk_r, chunk_l ^ self._feistel(chunk_r, self.keys[i])
+                    chunk_l, chunk_r = chunk_r, chunk_l ^ self._f(chunk_r, self.keys[i])
 
             case "decrypt":
                 for i in range(15, -1, -1):
-                    chunk_r, chunk_l = chunk_l, chunk_r ^ self._feistel(chunk_l, self.keys[i])
+                    chunk_r, chunk_l = chunk_l, chunk_r ^ self._f(chunk_l, self.keys[i])
 
             case _:
                 raise DESError(f"Invalid processing mode! -> {mode}")
 
-        return self._permutation(chunk_l + chunk_r, DES_IP_INV_TABLE)
+        block = (chunk_l << 32) | chunk_r
+        return self._permutation(block, 64, DES_IP_INV_TABLE)
 
-    def _feistel(self, chunk: bitarray, key: bitarray):
-        chunk = self._permutation(chunk, DES_E_TABLE)
-        chunk ^= key
+    def _f(self, chunk: int, key: int):
+        chunk = self._permutation(chunk, 32, DES_E_TABLE) ^ key
 
-        new_chunk = bitarray()
-        for k, pos in enumerate(range(0, 48, 6)):
-            b = chunk[pos:pos + 6]
-            i = ba2int(b[::5])
-            j = ba2int(b[1:5])
-            b = int2ba(DES_S_TABLE[k][i][j], length=4)
-            new_chunk += b
+        new_chunk = 0
+        for k in range(8):
+            b = chunk >> (6 * k) & 0b111111
+            i = ((b >> 5) << 1) | (b & 0b1)
+            j = (b >> 1) & 0b1111
+            new_chunk |= DES_S_TABLE[7 - k][i][j] << (6 * k)
 
-        return self._permutation(new_chunk, DES_P_TABLE)
+        return self._permutation(new_chunk, 48, DES_P_TABLE)
 
-    def _ECB(self, data: bitarray, mode: str = "encrypt"):
-        processed_data = bitarray()
+    def _ECB(self, data: bytes, mode: str = "encrypt"):
+        processed_data = bytes()
 
-        for pos in range(0, len(data), 64):
-            block = data[pos:pos + 64]
+        for pos in range(0, len(data), 8):
+            block = int.from_bytes(data[pos:pos + 8], "little")
             processed_block = self._transform(block, mode)
-            processed_data += processed_block
+            processed_data += processed_block.to_bytes(8, "little")
 
         return processed_data
 
-    def _CBC(self, data: bitarray, mode: str = "encrypt"):
-        processed_data = bitarray()
+    def _CBC(self, data: bytes, mode: str = "encrypt"):
+        processed_data = bytes()
         vector = self.iv
 
-        for pos in range(0, len(data), 64):
-            block = data[pos:pos + 64]
+        for pos in range(0, len(data), 8):
+            block = int.from_bytes(data[pos:pos + 8], "little")
 
             match mode:
                 case "encrypt":
@@ -148,16 +143,16 @@ class DES:
                 case _:
                     raise DESError(f"Invalid processing mode! -> {mode}")
 
-            processed_data += processed_block
+            processed_data += processed_block.to_bytes(8, "little")
 
         return processed_data
 
-    def _CFB(self, data: bitarray, mode: str = "encrypt"):
-        processed_data = bitarray()
+    def _CFB(self, data: bytes, mode: str = "encrypt"):
+        processed_data = bytes()
         vector = self.iv
 
-        for pos in range(0, len(data), 64):
-            block = data[pos:pos + 64]
+        for pos in range(0, len(data), 8):
+            block = int.from_bytes(data[pos:pos + 8], "little")
 
             match mode:
                 case "encrypt":
@@ -171,16 +166,16 @@ class DES:
                 case _:
                     raise DESError(f"Invalid processing mode! -> {mode}")
 
-            processed_data += processed_block
+            processed_data += processed_block.to_bytes(8, "little")
 
         return processed_data
 
-    def _OFB(self, data: bitarray, mode: str = "encrypt"):
-        processed_data = bitarray()
+    def _OFB(self, data: bytes, mode: str = "encrypt"):
+        processed_data = bytes()
         vector = self.iv
 
-        for pos in range(0, len(data), 64):
-            block = data[pos:pos + 64]
+        for pos in range(0, len(data), 8):
+            block = int.from_bytes(data[pos:pos + 8], "little")
 
             match mode:
                 case "encrypt":
@@ -194,40 +189,38 @@ class DES:
                 case _:
                     raise DESError(f"Invalid processing mode! -> {mode}")
 
-            processed_data += processed_block
+            processed_data += processed_block.to_bytes(8, "little")
 
         return processed_data
 
     def _data_processing(self, data: bytes or str, mode: str = "encrypt"):
-        data_bits = bitarray()
-
         match mode, data:
             case "encrypt", str():
-                data_bits.frombytes(data.encode("utf-8"))
+                data_bytes = data.encode("utf-8")
 
             case "decrypt", str():
-                data_bits = hex2ba(data)
+                data_bytes = bytes.fromhex(data)
 
             case _, bytes():
-                data_bits.frombytes(data)
+                data_bytes = data
 
             case _:
                 raise DESError(f"Invalid processing mode! -> {mode}")
 
-        if mode == "encrypt" and (k := len(data_bits) % 64) != 0:
-            data_bits += bitarray("0" * (64 - k))
+        if mode == "encrypt" and (k := len(data_bytes) % 8) != 0:
+            data_bytes += b"\00" * (8 - k)
 
-        processed_data = self._mode(data_bits, mode)
+        processed_data = self._mode(data_bytes, mode)
 
         match mode, data:
             case "encrypt", str():
-                return ba2hex(processed_data)
+                return processed_data.hex()
 
             case "decrypt", str():
-                return processed_data.tobytes().decode("utf-8")
+                return processed_data.decode("utf-8")
 
             case _, bytes():
-                return processed_data.tobytes()
+                return processed_data
 
             case _:
                 raise DESError(f"Invalid processing mode! -> {mode}")

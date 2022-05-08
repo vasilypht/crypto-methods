@@ -2,7 +2,7 @@ from typing import Final
 
 # files
 MAX_CHARS_READ: Final = 1024
-MAX_BYTES_READ: Final = 64
+MAX_BYTES_READ: Final = 64 * 64
 
 # Support file extensions
 CAESAR_SUPPORT_EXT: Final = "Text files (*.txt)"

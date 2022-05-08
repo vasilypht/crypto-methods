@@ -14,6 +14,7 @@ from .hill import HillWidget
 from .vernam import VernamWidget
 from .xor import XORWidget
 from .des import DESWidget
+from .gost import GOSTWidget
 
 WIDGETS_SYMMETRIC: Final = (
     AtbashWidget,
@@ -29,5 +30,6 @@ WIDGETS_SYMMETRIC: Final = (
     HillWidget,
     VernamWidget,
     XORWidget,
-    DESWidget
+    DESWidget,
+    GOSTWidget
 )

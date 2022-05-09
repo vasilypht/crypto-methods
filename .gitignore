@@ -24,7 +24,7 @@ sdist/
 var/
 wheels/
 pip-wheel-metadata/
-src/resources/python-wheels/
+app/resources/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg

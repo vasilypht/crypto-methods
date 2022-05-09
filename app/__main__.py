@@ -27,9 +27,9 @@ def main():
     app.setWindowIcon(QIcon("icons:crypto-methods.png"))
 
     style_file = QFile("styles:style.css")
+    style_file.open(QIODevice.OpenModeFlag.ReadOnly)
 
     if style_file.isOpen():
-        style_file.open(QIODevice.OpenModeFlag.ReadOnly)
         app.setStyleSheet(QTextStream(style_file).readAll())
         style_file.close()
 

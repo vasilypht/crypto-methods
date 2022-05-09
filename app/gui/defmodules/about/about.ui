@@ -46,16 +46,22 @@
     </spacer>
    </item>
    <item>
+    <widget class="QLabel" name="label_logo">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="label_topic">
      <property name="text">
-      <string>&lt;p align=&quot;center&quot;&gt;
-	&lt;img src=&quot;resources/icons/crypto-methods.png&quot; alt=&quot;preview&quot; height=&quot;128&quot; width=&quot;128&quot;&gt;
-&lt;/p&gt;
-
-&lt;div&gt;
-	&lt;h1 align=&quot;center&quot;&gt;Crypto-methods&lt;/h1&gt;
-	&lt;h2 align=&quot;center&quot;&gt;Encrypt | Decrypt&lt;/h2&gt;
-	&lt;p align=&quot;center&quot;&gt;Laboratory work on cryptographic methods of information protection&lt;/p&gt;
+      <string>&lt;div&gt;
+            &lt;h1 align=&quot;center&quot;&gt;Crypto-methods&lt;/h1&gt;
+            &lt;h2 align=&quot;center&quot;&gt;Encrypt | Decrypt&lt;/h2&gt;
+            &lt;p align=&quot;center&quot;&gt;Laboratory work on cryptographic methods of information protection&lt;/p&gt;
 &lt;/div&gt;</string>
      </property>
      <property name="alignment">

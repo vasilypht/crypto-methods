@@ -1,4 +1,6 @@
 import sys
+import os
+import pathlib
 
 from PyQt6.QtWidgets import (
     QApplication
@@ -15,8 +17,10 @@ from PyQt6.QtCore import (
 
 from app.gui.mainwindow import MainWindow
 
-QDir.addSearchPath("icons", "resources/icons")
-QDir.addSearchPath("styles", "gui")
+PROJECT_DIR = os.path.dirname(__file__)
+
+QDir.addSearchPath("icons", PROJECT_DIR + "/resources/icons")
+QDir.addSearchPath("styles", PROJECT_DIR + "/gui")
 
 
 def main():

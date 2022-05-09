@@ -4,18 +4,22 @@
 block_cipher = None
 
 datas = [
-    ("crypto-methods/methods", "methods"),
-    ("crypto-methods/gui", "gui"),
-    ("crypto-methods/resources", "resources"),
-    ("crypto-methods/config.yaml", ".")
+    ("app/gui", "gui"),
+    ("app/crypto", "crypto"),
+    ("app/resources", "resources")
 ]
-
+    
 hiddenimports = [
+    "scipy",
+    "numpy",
     "sympy",
-    "numpy"
+    "pyqtgraph",
+    "pyqtgraph.graphicsItems.ViewBox.axisCtrlTemplate_pyqt6",
+    "pyqtgraph.graphicsItems.PlotItem.plotConfigTemplate_pyqt6",
+    "pyqtgraph.imageview.ImageViewTemplate_pyqt6"
 ]
 
-a = Analysis(['crypto-methods/app.py'],
+a = Analysis(['app\\__main__.py'],
              pathex=[],
              binaries=[],
              datas=datas,
@@ -35,16 +39,16 @@ exe = EXE(pyz,
           a.scripts, 
           [],
           exclude_binaries=True,
-          name='Crypto methods',
+          name='Crypto-methods',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=False,
+          console=True,
           disable_windowed_traceback=False,
           target_arch=None,
           codesign_identity=None,
-          entitlements_file=None)
+          entitlements_file=None )
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
@@ -52,4 +56,4 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                upx_exclude=[],
-               name='Crypto methods')
+               name='crypto-methods')

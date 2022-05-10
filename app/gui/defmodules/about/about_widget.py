@@ -4,8 +4,7 @@ from PyQt6.QtWidgets import (
     QWidget
 )
 from PyQt6.QtGui import (
-    QIcon,
-    QPixmap
+    QIcon
 )
 
 from .about_ui import Ui_about
@@ -18,8 +17,6 @@ class AboutWidget(QWidget):
         self.ui.setupUi(self)
 
         self.title = "About"
-
-        self.ui.label_logo.setPixmap(QPixmap("icons:crypto-methods.png").scaled(128, 128))
 
         self.ui.button_vk.setIcon(QIcon("icons:vk.png"))
         self.ui.button_vk.clicked.connect(

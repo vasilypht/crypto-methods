@@ -8,7 +8,7 @@ QPushButton#button_options {
     background: rgba(255, 255, 255, 0.1);
     width: 24px;
     height: 24px;
-    image: url("resources/icons/dots.png");
+    image: url("icons:dots.png");
 }
 
 QPushButton::menu-indicator {

@@ -1,5 +1,6 @@
 import sys
 import os
+from pathlib import Path
 
 from PyQt6.QtWidgets import (
     QApplication
@@ -14,12 +15,16 @@ from PyQt6.QtCore import (
     QTextStream
 )
 
+APP_PATH = os.path.dirname(__file__)
+PROJECT_PATH = str(Path(APP_PATH).parent)
+
+sys.path.append(APP_PATH)
+sys.path.append(PROJECT_PATH)
+
+QDir.addSearchPath("icons", APP_PATH + "/resources/icons")
+QDir.addSearchPath("styles", APP_PATH + "/gui")
+
 from app.gui.mainwindow import MainWindow
-
-PROJECT_DIR = os.path.dirname(__file__)
-
-QDir.addSearchPath("icons", PROJECT_DIR + "/resources/icons")
-QDir.addSearchPath("styles", PROJECT_DIR + "/gui")
 
 
 def main():

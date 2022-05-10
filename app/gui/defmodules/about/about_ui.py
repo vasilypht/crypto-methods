@@ -20,11 +20,6 @@ class Ui_about(object):
         self.verticalLayout.setObjectName("verticalLayout")
         spacerItem = QtWidgets.QSpacerItem(20, 35, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout.addItem(spacerItem)
-        self.label_logo = QtWidgets.QLabel(about)
-        self.label_logo.setText("")
-        self.label_logo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.label_logo.setObjectName("label_logo")
-        self.verticalLayout.addWidget(self.label_logo)
         self.label_topic = QtWidgets.QLabel(about)
         self.label_topic.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.label_topic.setObjectName("label_topic")
@@ -71,10 +66,14 @@ class Ui_about(object):
     def retranslateUi(self, about):
         _translate = QtCore.QCoreApplication.translate
         about.setWindowTitle(_translate("about", "Form"))
-        self.label_topic.setText(_translate("about", "<div>\n"
-"            <h1 align=\"center\">Crypto-methods</h1>\n"
-"            <h2 align=\"center\">Encrypt | Decrypt</h2>\n"
-"            <p align=\"center\">Laboratory work on cryptographic methods of information protection</p>\n"
+        self.label_topic.setText(_translate("about", "<p align=\"center\">\n"
+"    <img src=\"icons:crypto-methods.png\" alt=\"preview\" height=\"128\" width=\"128\">\n"
+" </p>\n"
+"\n"
+"<div>\n"
+"    <h1 align=\"center\">Crypto-methods</h1>\n"
+"    <h2 align=\"center\">Encrypt | Decrypt</h2>\n"
+"    <p align=\"center\">Laboratory work on cryptographic methods of information protection</p>\n"
 "</div>"))
         self.button_vk.setText(_translate("about", "vk.com/vasilypht"))
         self.button_tg.setText(_translate("about", "t.me/vasilypht"))

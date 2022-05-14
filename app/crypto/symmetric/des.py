@@ -34,6 +34,8 @@ class DES:
             except ValueError:
                 raise DESError("The entered IV is not a hexadecimal value!")
 
+            self.vector = self.iv
+
         if iv is None and mode != "ECB":
             raise DESError(f"Encryption in '{mode}' mode requires an initialization vector!")
 
@@ -126,19 +128,18 @@ class DES:
 
     def _CBC(self, data: bytes, mode: str = "encrypt"):
         processed_data = bytes()
-        vector = self.iv
 
         for pos in range(0, len(data), 8):
             block = int.from_bytes(data[pos:pos + 8], "little")
 
             match mode:
                 case "encrypt":
-                    processed_block = self._transform(block ^ vector, "encrypt")
-                    vector = processed_block
+                    processed_block = self._transform(block ^ self.vector, "encrypt")
+                    self.vector = processed_block
 
                 case "decrypt":
-                    processed_block = self._transform(block, "decrypt") ^ vector
-                    vector = block
+                    processed_block = self._transform(block, "decrypt") ^ self.vector
+                    self.vector = block
 
                 case _:
                     raise DESError(f"Invalid processing mode! -> {mode}")
@@ -149,19 +150,18 @@ class DES:
 
     def _CFB(self, data: bytes, mode: str = "encrypt"):
         processed_data = bytes()
-        vector = self.iv
 
         for pos in range(0, len(data), 8):
             block = int.from_bytes(data[pos:pos + 8], "little")
 
             match mode:
                 case "encrypt":
-                    processed_block = self._transform(vector, "encrypt") ^ block
-                    vector = processed_block
+                    processed_block = self._transform(self.vector, "encrypt") ^ block
+                    self.vector = processed_block
 
                 case "decrypt":
-                    processed_block = self._transform(vector, "encrypt") ^ block
-                    vector = block
+                    processed_block = self._transform(self.vector, "encrypt") ^ block
+                    self.vector = block
 
                 case _:
                     raise DESError(f"Invalid processing mode! -> {mode}")
@@ -172,19 +172,18 @@ class DES:
 
     def _OFB(self, data: bytes, mode: str = "encrypt"):
         processed_data = bytes()
-        vector = self.iv
 
         for pos in range(0, len(data), 8):
             block = int.from_bytes(data[pos:pos + 8], "little")
 
             match mode:
                 case "encrypt":
-                    vector = self._transform(vector, "encrypt")
-                    processed_block = vector ^ block
+                    self.vector = self._transform(self.vector, "encrypt")
+                    processed_block = self.vector ^ block
 
                 case "decrypt":
-                    vector = self._transform(vector, "encrypt")
-                    processed_block = vector ^ block
+                    self.vector = self._transform(self.vector, "encrypt")
+                    processed_block = self.vector ^ block
 
                 case _:
                     raise DESError(f"Invalid processing mode! -> {mode}")
@@ -193,7 +192,7 @@ class DES:
 
         return processed_data
 
-    def _data_processing(self, data: bytes or str, mode: str = "encrypt"):
+    def _data_processing(self, data: bytes or str, mode: str = "encrypt", reset_iv: bool = True):
         match mode, data:
             case "encrypt", str():
                 data_bytes = data.encode("utf-8")
@@ -210,6 +209,9 @@ class DES:
         if mode == "encrypt" and (k := len(data_bytes) % 8) != 0:
             data_bytes += b"\00" * (8 - k)
 
+        if reset_iv:
+            self.vector = self.iv
+
         processed_data = self._mode(data_bytes, mode)
 
         match mode, data:
@@ -225,19 +227,19 @@ class DES:
             case _:
                 raise DESError(f"Invalid processing mode! -> {mode}")
 
-    def encrypt(self, data: bytes or str):
-        return self._data_processing(data, "encrypt")
+    def encrypt(self, data: bytes or str, reset_iv: bool = True):
+        return self._data_processing(data, "encrypt", reset_iv)
 
-    def decrypt(self, data: bytes or str):
-        return self._data_processing(data, "decrypt")
+    def decrypt(self, data: bytes or str, reset_iv: bool = True):
+        return self._data_processing(data, "decrypt", reset_iv)
 
-    def make(self, data: bytes or str, mode: str = "encrypt"):
+    def make(self, data: bytes or str, mode: str = "encrypt", reset_iv: bool = True):
         match mode:
             case "encrypt":
-                return self.encrypt(data)
+                return self.encrypt(data, reset_iv)
 
             case "decrypt":
-                return self.decrypt(data)
+                return self.decrypt(data, reset_iv)
 
             case _:
                 raise DESError(f"Invalid processing mode! -> {mode}")

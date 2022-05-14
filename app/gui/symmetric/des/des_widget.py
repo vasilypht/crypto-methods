@@ -225,16 +225,16 @@ class FileProcessing(QThread):
                 if self.mode == "encrypt":
                     # padding to 8 bytes
                     pad = input_file_size.to_bytes(8, "little")
-                    encrypted_pad = self.cipher.encrypt(pad)
+                    encrypted_pad = self.cipher.encrypt(pad, reset_iv=False)
                     output_file.write(encrypted_pad)
 
                 if self.mode == "decrypt":
                     pad = input_file.read(8)
-                    decrypted_pad = self.cipher.decrypt(pad)
+                    decrypted_pad = self.cipher.decrypt(pad, reset_iv=False)
                     final_file_size = int.from_bytes(decrypted_pad, "little")
 
                 while (block := input_file.read(MAX_BYTES_READ)) and self._is_worked:
-                    processed_block = self.cipher.make(block, self.mode)
+                    processed_block = self.cipher.make(block, self.mode, reset_iv=False)
                     output_file.write(processed_block)
                     self.update_pbar.emit(("current_value", input_file.tell()))
 

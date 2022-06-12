@@ -5,118 +5,112 @@ class RichelieuError(Exception):
     pass
 
 
-def transform(
-        text: str,
-        key: str,
-        mode: str = "encrypt"
-) -> str:
-    """Richelieu cipher. Encryption/decryption function.
+class Richelieu:
+    def __init__(self, key: str):
+        if not key:
+            raise RichelieuError("The key is missing!")
 
-    Args:
-        text: text to be encrypted/decrypted.
-        key: format string (1,3,2)(1,2)...
-        mode: encryption or decryption (default "encrypt").
+        if not re.match(r"^\(\d+(,\d+|\)\(\d+)*\)$", key):
+            raise RichelieuError("Invalid key entered!")
 
-    Returns:
-        Encrypted or decrypted string.
-    """
-    if not text:
-        raise RichelieuError("Input text is empty!")
+        self.key = self._parse_key(key)
+        pass
 
-    if not key:
-        raise RichelieuError("The key is missing!")
+    @staticmethod
+    def _parse_key(key: str) -> tuple:
+        # parse key str
+        key_list = []
+        for subkey in key.strip("()").split(")("):
+            key_list.append(tuple(map(int, subkey.split(","))))
 
-    if not re.match(r"^\(\d+(,\d+|\)\(\d+)*\)$", key):
-        raise RichelieuError("Invalid key entered!")
+        # check range
+        for subkey in key_list:
+            for i in range(1, len(subkey) + 1):
+                if i not in subkey:
+                    raise RichelieuError("Invalid key entered!")
 
-    # parse key str
-    key_list = []
-    for subkey in key.strip("()").split(")("):
-        key_list.append(tuple(map(int, subkey.split(","))))
+        return tuple(key_list)
 
-    # check range
-    for subkey in key_list:
-        for i in range(1, len(subkey) + 1):
-            if i not in subkey:
-                raise RichelieuError("Invalid key entered!")
+    def _transform(self, text: str, mode: str = "encrypt") -> str:
+        """Richelieu cipher. Encryption/decryption function.
 
-    text_list: list[str] = list(text)
+        Args:
+            text: text to be encrypted/decrypted.
+            mode: encryption or decryption (default "encrypt").
 
-    text_index = 0
-    key_index = 0
+        Returns:
+            Encrypted or decrypted string.
+        """
+        if not text:
+            raise RichelieuError("Input text is empty!")
 
-    while True:
-        subkey = key_list[key_index]
+        text_list: list[str] = list(text)
 
-        if text_index + len(subkey) > len(text):
-            break
+        text_index = 0
+        key_index = 0
 
-        substr = text[text_index:text_index + len(subkey)]
+        while True:
+            subkey = self.key[key_index]
 
-        for i, k in enumerate(subkey):
-            match mode:
-                case "encrypt":
-                    text_list[text_index + k - 1] = substr[i]
+            if text_index + len(subkey) > len(text):
+                break
 
-                case "decrypt":
-                    text_list[text_index + i] = substr[k - 1]
+            substr = text[text_index:text_index + len(subkey)]
 
-                case _:
-                    raise RichelieuError(f"Invalid processing type! -> {mode}")
+            for i, k in enumerate(subkey):
+                match mode:
+                    case "encrypt":
+                        text_list[text_index + k - 1] = substr[i]
 
-        text_index += len(subkey)
-        key_index = (key_index + 1) % len(key_list)
+                    case "decrypt":
+                        text_list[text_index + i] = substr[k - 1]
 
-    return "".join(text_list)
+                    case _:
+                        raise RichelieuError(f"Invalid processing type! -> {mode}")
 
+            text_index += len(subkey)
+            key_index = (key_index + 1) % len(self.key)
 
-def encrypt(text: str, key: str) -> str:
-    """Richelieu cipher. Interface for calling encryption functions.
+        return "".join(text_list)
 
-    Args:
-        text: text to be encrypted.
-        key: format string (1,3,2)(1,2)...
+    def encrypt(self, text: str) -> str:
+        """Richelieu cipher. Interface for calling encryption functions.
 
-    Returns:
-        Encrypted string.
-    """
-    return transform(text, key, "encrypt")
+        Args:
+            text: text to be encrypted.
 
+        Returns:
+            Encrypted string.
+        """
+        return self._transform(text, "encrypt")
 
-def decrypt(text: str, key: str) -> str:
-    """Richelieu cipher. Interface for calling decryption functions.
+    def decrypt(self, text: str) -> str:
+        """Richelieu cipher. Interface for calling decryption functions.
 
-    Args:
-        text: text to be decrypted.
-        key: format string (1,3,2)(1,2)...
+        Args:
+            text: text to be decrypted.
 
-    Returns:
-        Decrypted string.
-    """
-    return transform(text, key, "decrypt")
+        Returns:
+            Decrypted string.
+        """
+        return self._transform(text, "decrypt")
 
+    def make(self, text: str, mode: str = "encrypt") -> str:
+        """Richelieu cipher. Interface for calling encryption/decryption functions.
 
-def make(
-        text: str,
-        key: str,
-        mode: str = "encrypt"
-) -> str:
-    """Richelieu cipher. Interface for calling encryption/decryption functions.
+        Args:
+            text: text to be encrypted/decrypted.
+            mode: encryption or decryption (default "encrypt").
 
-    Args:
-        text: text to be encrypted/decrypted.
-        key: format string (1,3,2)(1,2)...
-        mode: encryption or decryption (default "encrypt").
+        Returns:
+            Encrypted or decrypted string.
+        """
+        match mode:
+            case "encrypt":
+                return self._transform(text, "encrypt")
 
-    Returns:
-        Encrypted or decrypted string.
-    """
-    match mode:
-        case "encrypt":
-            return encrypt(text, key)
+            case "decrypt":
+                return self._transform(text, "decrypt")
 
-        case "decrypt":
-            return decrypt(text, key)
-
-        case _:
-            raise RichelieuError(f"Invalid processing type! -> {mode}")
+            case _:
+                raise RichelieuError(f"Invalid processing type! -> {mode}")

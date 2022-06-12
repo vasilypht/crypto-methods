@@ -9,14 +9,17 @@ from PyQt6.QtGui import (
     QRegularExpressionValidator as QRegExpVal
 )
 
-from .richelieu_ui import Ui_richelieu
-from app.crypto.symmetric import richelieu
+from .richelieu_ui import Ui_Richelieu
+from app.crypto.symmetric.richelieu import (
+    Richelieu,
+    RichelieuError
+)
 
 
 class RichelieuWidget(QWidget):
     def __init__(self):
         super(RichelieuWidget, self).__init__()
-        self.ui = Ui_richelieu()
+        self.ui = Ui_Richelieu()
         self.ui.setupUi(self)
 
         self.title = "Richelieu"
@@ -26,14 +29,23 @@ class RichelieuWidget(QWidget):
 
     def button_make_clicked(self) -> None:
         """Richelieu | (Slot) Method for handling button click. (Encryption/decryption)"""
+        match self.ui.tab_widget.currentWidget():
+            case self.ui.tab_text:
+                self._tab_text_processing()
+
+            case _:
+                pass
+
+    def _tab_text_processing(self):
         try:
-            processed_text = richelieu.make(
+            cipher = Richelieu(self.ui.line_edit_key.text())
+
+            processed_text = cipher.make(
                 text=self.ui.text_edit_input.toPlainText(),
-                key=self.ui.line_edit_key.text(),
                 mode=self.ui.combo_box_mode.currentText().lower()
             )
 
-        except richelieu.RichelieuError as e:
+        except RichelieuError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

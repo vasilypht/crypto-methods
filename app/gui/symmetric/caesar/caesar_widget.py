@@ -8,8 +8,11 @@ from PyQt6.QtCore import (
     QUrl
 )
 
-from .caesar_ui import Ui_caesar
-from app.crypto.symmetric import caesar
+from .caesar_ui import Ui_Caesar
+from app.crypto.symmetric.caesar import (
+    Caesar,
+    CaesarError
+)
 from app.gui.widgets import DragDropWidget
 from app.gui.const import (
     MAX_CHARS_READ,
@@ -20,7 +23,7 @@ from app.gui.const import (
 class CaesarWidget(QWidget):
     def __init__(self):
         super(CaesarWidget, self).__init__()
-        self.ui = Ui_caesar()
+        self.ui = Ui_Caesar()
         self.ui.setupUi(self)
 
         self.title = "Caesar"
@@ -43,66 +46,79 @@ class CaesarWidget(QWidget):
         """Caesar | (Slot) Method for handling button click. (Encryption/decryption)"""
 
         match self.ui.tab_widget.currentWidget():
-            case self.ui.tab_document:
-                if self.file_path_input.isEmpty():
-                    QMessageBox.warning(self, "Warning!", "File not selected!")
-                    return
-
-                # get the name of the new file
-                file_path_output, _ = QFileDialog.getSaveFileName(
-                    parent=self,
-                    caption="Save new file",
-                    directory="",
-                    filter=CAESAR_SUPPORT_EXT,
-                )
-
-                if not file_path_output:
-                    return
-
-                # Attempt to open input file
-                try:
-                    file_input = open(self.file_path_input.toLocalFile(), "r")
-                except OSError:
-                    QMessageBox.warning(self, "Warning!", "Error opening input file!")
-                    return
-
-                # Attempt to open output file
-                try:
-                    file_output = open(file_path_output, "w")
-                except OSError:
-                    # Closing the input file
-                    file_input.close()
-                    QMessageBox.warning(self, "Warning!", "Error opening output file!")
-                    return
-
-                try:
-                    while block := file_input.read(MAX_CHARS_READ):
-                        processed_block = caesar.make(
-                            text=block,
-                            shift=self.ui.spin_box_shift.value(),
-                            mode=self.ui.combo_box_mode.currentText().lower()
-                        )
-                        file_output.write(processed_block)
-                except caesar.CaesarError as e:
-                    QMessageBox.warning(self, "Warning!", e.args[0])
-                    return
-
-                finally:
-                    file_input.close()
-                    file_output.close()
-
             case self.ui.tab_text:
-                try:
-                    processed_text = caesar.make(
-                        text=self.ui.text_edit_input.toPlainText(),
-                        shift=self.ui.spin_box_shift.value(),
-                        mode=self.ui.combo_box_mode.currentText().lower()
-                    )
-                except caesar.CaesarError as e:
-                    QMessageBox.warning(self, "Warning!", e.args[0])
-                    return
+                self._tab_text_processing()
 
-                self.ui.text_edit_output.setText(processed_text)
+            case self.ui.tab_document:
+                self._tab_document_processing()
+
+            case _:
+                pass
+
+    def _tab_text_processing(self):
+        try:
+            cipher = Caesar(self.ui.spin_box_shift.value())
+
+            processed_text = cipher.make(
+                text=self.ui.text_edit_input.toPlainText(),
+                mode=self.ui.combo_box_mode.currentText().lower()
+            )
+
+        except CaesarError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+        self.ui.text_edit_output.setText(processed_text)
+
+    def _tab_document_processing(self):
+        if self.file_path_input.isEmpty():
+            QMessageBox.warning(self, "Warning!", "File not selected!")
+            return
+
+        # get the name of the new file
+        file_path_output, _ = QFileDialog.getSaveFileName(
+            parent=self,
+            caption="Save new file",
+            directory="",
+            filter=CAESAR_SUPPORT_EXT,
+        )
+
+        if not file_path_output:
+            return
+
+        # Attempt to open input file
+        try:
+            file_input = open(self.file_path_input.toLocalFile(), "r")
+        except OSError:
+            QMessageBox.warning(self, "Warning!", "Error opening input file!")
+            return
+
+        # Attempt to open output file
+        try:
+            file_output = open(file_path_output, "w")
+        except OSError:
+            # Closing the input file
+            file_input.close()
+            QMessageBox.warning(self, "Warning!", "Error opening output file!")
+            return
+
+        try:
+            cipher = Caesar(self.ui.spin_box_shift.value())
+
+            while block := file_input.read(MAX_CHARS_READ):
+                processed_block = cipher.make(
+                    text=block,
+                    mode=self.ui.combo_box_mode.currentText().lower()
+                )
+                file_output.write(processed_block)
+
+        except CaesarError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+        finally:
+            file_input.close()
+            file_output.close()
 
     def _change_file_path(self, file: QUrl):
         self.file_path_input = file

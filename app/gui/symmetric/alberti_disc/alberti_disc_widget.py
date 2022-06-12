@@ -9,14 +9,17 @@ from PyQt6.QtGui import (
     QRegularExpressionValidator as QRegExpVal
 )
 
-from .alberti_disc_ui import Ui_alberti_disc
-from app.crypto.symmetric import alberti_disc
+from .alberti_disc_ui import Ui_AlbertiDisk
+from app.crypto.symmetric.alberti_disc import (
+    Alberti,
+    AlbertiError
+)
 
 
 class AlbertiDiscWidget(QWidget):
     def __init__(self):
         super(AlbertiDiscWidget, self).__init__()
-        self.ui = Ui_alberti_disc()
+        self.ui = Ui_AlbertiDisk()
         self.ui.setupUi(self)
 
         self.title = "Alberti disc"
@@ -28,16 +31,27 @@ class AlbertiDiscWidget(QWidget):
 
     def button_make_clicked(self) -> None:
         """Alberti disc | (Slot) Method for handling button click. (Encryption/decryption)"""
+        match self.ui.tab_widget.currentWidget():
+            case self.ui.tab_text:
+                self._tab_text_processing()
+
+            case _:
+                pass
+
+    def _tab_text_processing(self):
         try:
-            processed_text = alberti_disc.make(
-                text=self.ui.text_edit_input.toPlainText(),
+            cipher = Alberti(
                 key=self.ui.line_edit_key.text(),
                 step=self.ui.spin_box_iteration_step.value(),
-                shift=self.ui.spin_box_key_alphabet_shift.value(),
+                shift=self.ui.spin_box_key_alphabet_shift.value()
+            )
+
+            processed_text = cipher.make(
+                text=self.ui.text_edit_input.toPlainText(),
                 mode=self.ui.combo_box_mode.currentText().lower()
             )
 
-        except alberti_disc.AlbertiError as e:
+        except AlbertiError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

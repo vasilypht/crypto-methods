@@ -12,143 +12,86 @@ class AlbertiError(Exception):
     pass
 
 
-def transform(
-        text: str,
-        key: str,
-        step: int = 0,
-        shift: int = 0,
-        mode: str = "encrypt"
-) -> str:
-    """Alberti disc cipher. Encryption/decryption function.
+class Alberti:
+    def __init__(self, key: str, step: int = 0, shift: int = 0):
+        if not key:
+            raise AlbertiError("The key is missing!")
 
-    Args:
-        text: text to be encrypted/decrypted.
-        key: a set of letters of the same alphabet.
-        step: offset after each iteration.
-        shift: offset from the beginning of the internal alphabet.
-        mode: encryption or decryption (default "encrypt").
+        if not re.match(r"(^[а-яё]*$)|(^[a-z]*$)", key, re.IGNORECASE):
+            raise AlbertiError("Invalid key!")
 
-    Returns:
-        Encrypted or decrypted string.
-    """
-    if not text:
-        raise AlbertiError("Input text is empty!")
+        self.key = key
 
-    if not key:
-        raise AlbertiError("The key is missing!")
+        if step < 0:
+            raise AlbertiError("The step value must be positive or zero!")
 
-    if not re.match(r"(^[а-яё]*$)|(^[a-z]*$)", key, re.IGNORECASE):
-        raise AlbertiError("Invalid key!")
+        self.step = step
 
-    _, external_alphabet = get_alphabet_by_letter(key[0], ALPHABET_TABLE)
+        if shift < 0:
+            raise AlbertiError("The shift value must be positive or zero!")
 
-    internal_alphabet = ""
-    for letter in key.lower() + external_alphabet:
-        if letter not in internal_alphabet:
-            internal_alphabet += letter
+        self.shift = shift
 
-    # Making a shift in the internal alphabet
-    internal_alphabet = internal_alphabet[shift::] + internal_alphabet[:shift:]
+    def _transform(self, text: str, mode: str = "encrypt") -> str:
+        if not text:
+            raise AlbertiError("Input text is empty!")
 
-    match mode:
-        case "encrypt":
-            key_sign = 1
+        _, external_alphabet = get_alphabet_by_letter(self.key[0], ALPHABET_TABLE)
 
-        case "decrypt":
-            # swap alphabets
-            internal_alphabet, external_alphabet = external_alphabet, internal_alphabet
-            key_sign = -1
+        internal_alphabet = ""
+        for letter in self.key.lower() + external_alphabet:
+            if letter not in internal_alphabet:
+                internal_alphabet += letter
 
-        case _:
-            raise AlbertiError(f"Invalid processing type! -> {mode}")
+        # Making a shift in the internal alphabet
+        internal_alphabet = internal_alphabet[self.shift::] + internal_alphabet[:self.shift:]
 
-    text_list: list[str] = list(text)
-    internal_shift = 0
+        match mode:
+            case "encrypt":
+                key_sign = 1
 
-    for i in range(len(text)):
-        letter = text_list[i]
+            case "decrypt":
+                # swap alphabets
+                internal_alphabet, external_alphabet = external_alphabet, internal_alphabet
+                key_sign = -1
 
-        if (letter_pos := external_alphabet.find(letter.lower())) == -1:
-            continue
+            case _:
+                raise AlbertiError(f"Invalid processing type! -> {mode}")
 
-        new_letter_pos = (letter_pos + internal_shift) % len(internal_alphabet)
-        new_letter = internal_alphabet[new_letter_pos]
+        text_list: list[str] = list(text)
+        internal_shift = 0
 
-        internal_shift = (internal_shift + step * key_sign) % len(internal_alphabet)
+        for i in range(len(text)):
+            letter = text_list[i]
 
-        if letter.isupper():
-            new_letter = new_letter.upper()
+            if (letter_pos := external_alphabet.find(letter.lower())) == -1:
+                continue
 
-        text_list[i] = new_letter
+            new_letter_pos = (letter_pos + internal_shift) % len(internal_alphabet)
+            new_letter = internal_alphabet[new_letter_pos]
 
-    return "".join(text_list)
+            internal_shift = (internal_shift + self.step * key_sign) % len(internal_alphabet)
 
+            if letter.isupper():
+                new_letter = new_letter.upper()
 
-def encrypt(
-        text: str,
-        key: str,
-        step: int = 0,
-        shift: int = 0
-) -> str:
-    """Alberti disc cipher. Interface for calling encryption functions.
+            text_list[i] = new_letter
 
-    Args:
-        text: text to be encrypted.
-        key: a set of letters of the same alphabet.
-        step: offset after each iteration.
-        shift: offset from the beginning of the internal alphabet.
+        return "".join(text_list)
 
-    Returns:
-        Encrypted string.
-    """
-    return transform(text, key, step, shift, "encrypt")
+    def encrypt(self, text: str) -> str:
+        return self._transform(text, "encrypt")
 
+    def decrypt(self, text: str) -> str:
+        return self._transform(text, "decrypt")
 
-def decrypt(
-        text: str,
-        key: str,
-        step: int = 0,
-        shift: int = 0
-) -> str:
-    """Alberti disc cipher. Interface for calling decryption functions.
+    def make(self, text: str, mode: str = "encrypt") -> str:
+        match mode:
+            case "encrypt":
+                return self._transform(text, "encrypt")
 
-    Args:
-        text: text to be decrypted.
-        key: a set of letters of the same alphabet.
-        step: offset after each iteration.
-        shift: offset from the beginning of the internal alphabet.
+            case "decrypt":
+                return self._transform(text, "decrypt")
 
-    Returns:
-        Decrypted string.
-    """
-    return transform(text, key, step, shift, "decrypt")
-
-
-def make(
-        text: str,
-        key: str,
-        step: int = 0,
-        shift: int = 0,
-        mode: str = "encrypt"
-) -> str:
-    """Alberti disc cipher. Interface for calling encryption/decryption functions.
-
-    Args:
-        text: text to be encrypted/decrypted.
-        key: a set of letters of the same alphabet.
-        step: offset after each iteration.
-        shift: offset from the beginning of the internal alphabet.
-        mode: encryption or decryption (default "encrypt").
-
-    Returns:
-        Encrypted or decrypted string.
-    """
-    match mode:
-        case "encrypt":
-            return encrypt(text, key, step, shift)
-
-        case "decrypt":
-            return decrypt(text, key, step, shift)
-
-        case _:
-            raise AlbertiError(f"Invalid processing type! -> {mode}")
+            case _:
+                raise AlbertiError(f"Invalid processing type! -> {mode}")

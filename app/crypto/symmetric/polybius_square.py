@@ -21,220 +21,208 @@ class PolybiusSquareError(Exception):
     pass
 
 
-def find_indices_in_square(letter: str, square: dict) -> tuple[int, int] or None:
-    """The function of finding the index of an element in a given square.
+class PolybiusSquare:
+    def __init__(self, shift: int = 0, method: str = "method 1"):
+        self.shift = shift
 
-    Args:
-        letter: the letter whose index will be searched for.
-        square: square to search.
+        if method not in ("method 1", "method 2"):
+            raise PolybiusSquareError(f"Invalid method type! -> {method}")
+        self.method = method
 
-    Returns:
-        Element indices or None.
-    """
-    if not letter:
-        return None
+    @staticmethod
+    def find_indices_in_square(letter: str, square: dict) -> tuple[int, int] or None:
+        """The function of finding the index of an element in a given square.
 
-    for indices, letters in square.items():
-        if letter.upper() in letters:
-            return indices
+        Args:
+            letter: the letter whose index will be searched for.
+            square: square to search.
 
-    return None
+        Returns:
+            Element indices or None.
+        """
+        if not letter:
+            return None
 
+        for indices, letters in square.items():
+            if letter.upper() in letters:
+                return indices
 
-def get_square_by_letter(letter: str, squares: tuple) -> tuple[dict, dict, str] or None:
-    """Function to determine which square a letter belongs to.
+    @staticmethod
+    def get_square_by_letter(letter: str, squares: tuple) -> tuple[dict, dict, str] or None:
+        """Function to determine which square a letter belongs to.
 
-    Args:
-        letter: the letter for which you want to find the square.
-        squares: squares to be searched.
+        Args:
+            letter: the letter for which you want to find the square.
+            squares: squares to be searched.
 
-    Returns:
-        The desired square or None.
-    """
-    if not letter:
-        return None
+        Returns:
+            The desired square or None.
+        """
+        if not letter:
+            return None
 
-    for square in squares:
-        if letter.upper() in [item for value in square.values() for item in value]:
-            return square
+        for square in squares:
+            if letter.upper() in [item for value in square.values() for item in value]:
+                return square
 
-    return None
+    def _method_1(self, text: str, mode: str = "encrypt") -> str:
+        """Polybius Square. Method 1. Function for encryption and decryption.
 
+        Args:
+            text: text to encrypt or decrypt.
+            mode: encryption or decryption (default "encrypt").
 
-def ps_method_1(text: str, mode: str = "encrypt") -> str:
-    """Polybius Square. Method 1. Function for encryption and decryption.
+        Returns:
+            Encrypted or decrypted string.
+        """
+        if not text:
+            raise PolybiusSquareError("Input text is empty!")
 
-    Args:
-        text: text to encrypt or decrypt.
-        mode: encryption or decryption (default "encrypt").
+        text_list: list[str] = list(text)
 
-    Returns:
-        Encrypted or decrypted string.
-    """
-    if not text:
-        raise PolybiusSquareError("Input text is empty!")
+        for i in range(len(text)):
+            letter = text_list[i]
 
-    text_list: list[str] = list(text)
+            if (square := self.get_square_by_letter(letter, SQUARES)) is None:
+                continue
 
-    for i in range(len(text)):
-        letter = text_list[i]
+            letter_i, letter_j = self.find_indices_in_square(letter, square)
 
-        if (square := get_square_by_letter(letter, SQUARES)) is None:
-            continue
+            match mode:
+                case "encrypt":
+                    if letter_j == 5:
+                        letter_j = 1
+                    else:
+                        letter_j += 1
 
-        letter_i, letter_j = find_indices_in_square(letter, square)
+                case "decrypt":
+                    if letter_j == 1:
+                        letter_j = 5
+                    else:
+                        letter_j -= 1
+
+                case _:
+                    raise PolybiusSquareError(f"Invalid processing type! -> {mode}")
+
+            new_letters = square.get((letter_i, letter_j))
+            new_letter = new_letters[randint(0, 1)] if len(new_letters) == 2 else new_letters[0]
+
+            if letter.islower():
+                new_letter = new_letter.lower()
+
+            text_list[i] = new_letter
+
+        return "".join(text_list)
+
+    def _method_2(self, text: str, mode: str = "encrypt") -> str:
+        """Polybius Square. Method 2. Function for encryption and decryption.
+
+        Args:
+            text: text to encrypt or decrypt.
+            mode: encryption or decryption (default "encrypt").
+
+        Returns:
+            Encrypted or decrypted string.
+        """
+        if not text:
+            raise PolybiusSquareError("Input text is empty!")
+
+        letters, indices = get_letters_alphabetically(text, ENG_LCASE + RUS_LCASE)
+
+        indices_i = []
+        indices_j = []
+        for letter in letters:
+            square = self.get_square_by_letter(letter, SQUARES)
+            i, j = self.find_indices_in_square(letter, square)
+            indices_i.append(i)
+            indices_j.append(j)
+
+        self.shift %= len(indices_i) + len(indices_j)
 
         match mode:
             case "encrypt":
-                if letter_j == 5:
-                    letter_j = 1
-                else:
-                    letter_j += 1
+                indices_ij = indices_i + indices_j
+                indices_ij = indices_ij[self.shift::] + indices_ij[:self.shift:]
+                new_indices = [(indices_ij[i], indices_ij[i + 1]) for i in range(0, len(indices_ij), 2)]
 
             case "decrypt":
-                if letter_j == 1:
-                    letter_j = 5
-                else:
-                    letter_j -= 1
+                indices_ij = [index for pair in zip(indices_i, indices_j) for index in pair]
+                indices_ij = indices_ij[len(indices_ij) - self.shift:] + indices_ij[:len(indices_ij) - self.shift:]
+                k = len(indices_ij) // 2
+                new_indices = list(zip(indices_ij[:k:], indices_ij[k::]))
 
             case _:
                 raise PolybiusSquareError(f"Invalid processing type! -> {mode}")
 
-        new_letters = square.get((letter_i, letter_j))
-        new_letter = new_letters[randint(0, 1)] if len(new_letters) == 2 else new_letters[0]
+        text_list: list[str] = list(text)
 
-        if letter.islower():
-            new_letter = new_letter.lower()
+        for letter_index, (new_i, new_j) in zip(indices, new_indices):
+            square = self.get_square_by_letter(text[letter_index], SQUARES)
 
-        text_list[i] = new_letter
+            values = square.get((new_i, new_j))
+            new_letter = values[randint(0, 1)] if len(values) == 2 else values[0]
 
-    return "".join(text_list)
+            if text_list[letter_index].islower():
+                new_letter = new_letter.lower()
 
+            text_list[letter_index] = new_letter
 
-def ps_method_2(text: str, shift: int = 0, mode: str = "encrypt") -> str:
-    """Polybius Square. Method 2. Function for encryption and decryption.
+        return "".join(text_list)
 
-    Args:
-        text: text to encrypt or decrypt.
-        shift: number for second method (default 0).
-        mode: encryption or decryption (default "encrypt").
+    def encrypt(self, text: str) -> str:
+        """Polybius square cipher. Interface for calling encryption functions.
 
-    Returns:
-        Encrypted or decrypted string.
-    """
-    if not text:
-        raise PolybiusSquareError("Input text is empty!")
+        Args:
+            text: text to be encrypted.
 
-    letters, indices = get_letters_alphabetically(text, ENG_LCASE + RUS_LCASE)
+        Returns:
+            Encrypted string.
+        """
+        match self.method:
+            case "method 1":
+                return self._method_1(text, "encrypt")
 
-    indices_i = []
-    indices_j = []
-    for letter in letters:
-        square = get_square_by_letter(letter, SQUARES)
-        i, j = find_indices_in_square(letter, square)
-        indices_i.append(i)
-        indices_j.append(j)
+            case "method 2":
+                return self._method_2(text, "encrypt")
 
-    shift %= len(indices_i) + len(indices_j)
+            case _:
+                raise PolybiusSquareError(f"Invalid method type! -> {self.method}")
 
-    match mode:
-        case "encrypt":
-            indices_ij = indices_i + indices_j
-            indices_ij = indices_ij[shift::] + indices_ij[:shift:]
-            new_indices = [(indices_ij[i], indices_ij[i + 1]) for i in range(0, len(indices_ij), 2)]
+    def decrypt(self, text: str) -> str:
+        """Polybius square cipher. Interface for calling decryption functions.
 
-        case "decrypt":
-            indices_ij = [index for pair in zip(indices_i, indices_j) for index in pair]
-            indices_ij = indices_ij[len(indices_ij) - shift:] + indices_ij[:len(indices_ij) - shift:]
-            k = len(indices_ij) // 2
-            new_indices = list(zip(indices_ij[:k:], indices_ij[k::]))
+        Args:
+            text: text to be decrypted.
 
-        case _:
-            raise PolybiusSquareError(f"Invalid processing type! -> {mode}")
+        Returns:
+            Decrypted string.
+        """
+        match self.method:
+            case "method 1":
+                return self._method_1(text, "decrypt")
 
-    text_list: list[str] = list(text)
+            case "method 2":
+                return self._method_2(text, "decrypt")
 
-    for letter_index, (new_i, new_j) in zip(indices, new_indices):
-        square = get_square_by_letter(text[letter_index], SQUARES)
+            case _:
+                pass
 
-        values = square.get((new_i, new_j))
-        new_letter = values[randint(0, 1)] if len(values) == 2 else values[0]
+    def make(self, text: str, mode: str = "encrypt") -> str:
+        """Polybius square cipher. Interface for calling encryption/decryption functions.
 
-        if text_list[letter_index].islower():
-            new_letter = new_letter.lower()
+        Args:
+            text: text to be encrypted/decrypted.
+            mode: encryption or decryption (default "encrypt").
 
-        text_list[letter_index] = new_letter
+        Returns:
+            Encrypted or decrypted string.
+        """
+        match mode:
+            case "encrypt":
+                return self.encrypt(text)
 
-    return "".join(text_list)
+            case "decrypt":
+                return self.decrypt(text)
 
-
-def encrypt(text: str, shift: int = 0, method: str = "method 1") -> str:
-    """Polybius square cipher. Interface for calling encryption functions.
-
-    Args:
-        text: text to be encrypted.
-        shift: number for second method (default 0).
-        method: encryption method (default "method 1").
-
-    Returns:
-        Encrypted string.
-    """
-    match method:
-        case "method 1":
-            return ps_method_1(text, "encrypt")
-
-        case "method 2":
-            return ps_method_2(text, shift, "encrypt")
-
-        case _:
-            raise PolybiusSquareError(f"Invalid method type! -> {method}")
-
-
-def decrypt(text: str, shift: int = 0, method: str = "method 1") -> str:
-    """Polybius square cipher. Interface for calling decryption functions.
-
-    Args:
-        text: text to be decrypted.
-        shift: number for second method (default 0).
-        method: encryption method (default "method 1").
-
-    Returns:
-        Decrypted string.
-    """
-    match method:
-        case "method 1":
-            return ps_method_1(text, "decrypt")
-
-        case "method 2":
-            return ps_method_2(text, shift, "decrypt")
-
-        case _:
-            raise PolybiusSquareError(f"Invalid method type! -> {method}")
-
-
-def make(
-        text: str,
-        shift: int = 0,
-        method: str = "method 1",
-        mode: str = "encrypt"
-) -> str:
-    """Polybius square cipher. Interface for calling encryption/decryption functions.
-
-    Args:
-        text: text to be encrypted/decrypted.
-        shift: number for second method (default 0).
-        method: encryption method (default "method 1").
-        mode: encryption or decryption (default "encrypt").
-
-    Returns:
-        Encrypted or decrypted string.
-    """
-    match mode:
-        case "encrypt":
-            return encrypt(text, shift, method)
-
-        case "decrypt":
-            return decrypt(text, shift, method)
-
-        case _:
-            raise PolybiusSquareError(f"Invalid processing type! -> {mode}")
+            case _:
+                pass

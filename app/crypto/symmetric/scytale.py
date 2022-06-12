@@ -3,88 +3,57 @@ class ScytaleError(Exception):
     pass
 
 
-def encrypt(text: str, n: int, m: int, auto_m: bool = True) -> str:
-    """scytale cipher. Encryption function.
+class Scytale:
+    def __init__(self, n: int, m: int = None, auto_m: bool = True):
+        if not auto_m and m is None:
+            raise ScytaleError("You must set the value of 'm', or set the automatic calculation flag 'auto_m'!")
 
-    Args:
-        text: text to be encrypted.
-        n: number of rows.
-        m: number of columns.
-        auto_m: calculate number of columns automatically (default True).
+        if n <= 0:
+            raise ScytaleError("'n' must be positive!")
 
-    Returns:
-        Encrypted string.
-    """
-    if not text:
-        raise ScytaleError("Input text is empty!")
+        if m <= 0:
+            raise ScytaleError("'n' must be positive!")
 
-    if n <= 0 or m <= 0:
-        raise ScytaleError("'n' and 'm' must be positive!")
+        self.n = n
+        self.m = m
+        self.auto_m = auto_m
 
-    if auto_m:
-        m = (len(text) - 1) // n + 1
+    def encrypt(self, text: str) -> str:
+        if not text:
+            raise ScytaleError("Input text is empty!")
 
-    lines_list: list[list[str]] = []
+        if self.auto_m:
+            self.m = (len(text) - 1) // self.n + 1
 
-    for i in range(n):
-        line = list(text[i * m:(i + 1) * m])
-        line += (m - len(line)) * [" "]
-        lines_list.append(line)
+        lines_list: list[list[str]] = []
 
-    flip_lines_list = [i for i in zip(*lines_list)]
-    return "".join("".join(i) for i in flip_lines_list)
+        for i in range(self.n):
+            line = list(text[i * self.m:(i + 1) * self.m])
+            line += (self.m - len(line)) * [" "]
+            lines_list.append(line)
 
+        flip_lines_list = [i for i in zip(*lines_list)]
+        return "".join("".join(i) for i in flip_lines_list)
 
-def decrypt(text: str, n: int) -> str:
-    """scytale cipher. Decryption function.
+    def decrypt(self, text: str) -> str:
+        if not text:
+            raise ScytaleError("Input text is empty!")
 
-    Args:
-        text: text to be decrypted.
-        n: number of rows.
+        lines_list: list[str] = []
 
-    Returns:
-        Decrypted string.
-    """
-    if not text:
-        raise ScytaleError("Input text is empty!")
+        for i in range(self.n):
+            line = text[i:len(text):self.n]
+            lines_list.append(line)
 
-    if n <= 0:
-        raise ScytaleError("'n' must be positive!")
+        return "".join(lines_list)
 
-    lines_list: list[str] = []
+    def make(self, text: str, mode: str = "encrypt") -> str:
+        match mode:
+            case "encrypt":
+                return self.encrypt(text)
 
-    for i in range(n):
-        line = text[i:len(text):n]
-        lines_list.append(line)
+            case "decrypt":
+                return self.decrypt(text)
 
-    return "".join(lines_list)
-
-
-def make(
-        text: str,
-        n: int,
-        m: int,
-        auto_m: bool = True,
-        mode: str = "encrypt",
-) -> str:
-    """scytale cipher. Interface for calling encryption/decryption functions.
-
-    Args:
-        text: text to be encrypted/decrypted.
-        n: number of rows.
-        m: number of columns.
-        auto_m: calculate number of columns automatically (default True).
-        mode: encryption or decryption (default "encrypt").
-
-    Returns:
-        Encrypted or decrypted string.
-    """
-    match mode:
-        case "encrypt":
-            return encrypt(text, n, m, auto_m)
-
-        case "decrypt":
-            return decrypt(text, n)
-
-        case _:
-            raise ScytaleError(f"Invalid processing type! -> {mode}")
+            case _:
+                raise ScytaleError(f"Invalid processing type! -> {mode}")

@@ -10,46 +10,49 @@ class AtbashError(Exception):
     pass
 
 
-def transform(text: str) -> str:
-    """Atbash cipher. Encryption/decryption function.
+class Atbash:
+    def __init__(self):
+        pass
 
-    Args:
-        text: text to be encrypted/decrypted.
+    def _transform(self, text: str) -> str:
+        """Atbash cipher. Encryption/decryption function.
 
-    Returns:
-        Encrypted or decrypted string.
-    """
+        Args:
+            text: text to be encrypted/decrypted.
 
-    if not text:
-        raise AtbashError("Input text is empty!")
+        Returns:
+            Encrypted or decrypted string.
+        """
 
-    letters_list: list[str] = list(text)
+        if not text:
+            raise AtbashError("Input text is empty!")
 
-    for i in range(len(text)):
-        letter_text = letters_list[i]
+        letters_list: list[str] = list(text)
 
-        if (lang_alphabet := get_alphabet_by_letter(letter_text, ALPHABET_TABLE)) is None:
-            continue
+        for i in range(len(text)):
+            letter_text = letters_list[i]
 
-        _, alphabet = lang_alphabet
-        letter_index = alphabet.index(letter_text.lower())
-        new_letter = alphabet[len(alphabet) - letter_index - 1]
+            if (lang_alphabet := get_alphabet_by_letter(letter_text, ALPHABET_TABLE)) is None:
+                continue
 
-        if letter_text.isupper():
-            new_letter = new_letter.upper()
+            _, alphabet = lang_alphabet
+            letter_index = alphabet.index(letter_text.lower())
+            new_letter = alphabet[len(alphabet) - letter_index - 1]
 
-        letters_list[i] = new_letter
+            if letter_text.isupper():
+                new_letter = new_letter.upper()
 
-    return "".join(letters_list)
+            letters_list[i] = new_letter
 
+        return "".join(letters_list)
 
-def make(text: str) -> str:
-    """Atbash cipher. Interface for calling encryption/decryption functions.
+    def make(self, text: str) -> str:
+        """Atbash cipher. Interface for calling encryption/decryption functions.
 
-    Args:
-        text: text to be encrypted/decrypted.
+        Args:
+            text: text to be encrypted/decrypted.
 
-    Returns:
-        Encrypted or decrypted string.
-    """
-    return transform(text)
+        Returns:
+            Encrypted or decrypted string.
+        """
+        return self._transform(text)

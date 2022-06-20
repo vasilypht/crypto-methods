@@ -23,6 +23,7 @@ class Ui_Richelieu(object):
         self.tab_text.setObjectName("tab_text")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.tab_text)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setSpacing(12)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.group_box_input = QtWidgets.QGroupBox(self.tab_text)
         self.group_box_input.setObjectName("group_box_input")

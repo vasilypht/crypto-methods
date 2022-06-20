@@ -39,6 +39,9 @@
        <string>Text</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>12</number>
+       </property>
        <property name="leftMargin">
         <number>0</number>
        </property>

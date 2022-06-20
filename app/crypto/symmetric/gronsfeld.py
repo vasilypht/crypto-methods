@@ -12,107 +12,100 @@ class GronsfeldError(Exception):
     pass
 
 
-def transform(text: str, key: str, mode: str = "encrypt") -> str:
-    """Gronsfeld cipher. Encryption/Decryption function.
+class Gronsfeld:
+    def __init__(self, key: str):
+        if not key:
+            raise GronsfeldError("The key is missing!")
 
-    Args:
-        text: text to be encrypted/decrypted.
-        key: set of positive numbers.
-        mode: encryption or decryption (default "encrypt").
+        if not re.match(r"^\d*$", key):
+            raise GronsfeldError("Invalid key!")
 
-    Returns:
-        Encrypted or decrypted string.
-    """
-    if not text:
-        raise GronsfeldError("Input text is empty!")
+        self.key = key
 
-    if not key:
-        raise GronsfeldError("The key is missing!")
+    def _transform(self, text: str, mode: str = "encrypt") -> str:
+        """Gronsfeld cipher. Encryption/Decryption function.
 
-    if not re.match(r"^\d*$", key):
-        raise GronsfeldError("Invalid key!")
+        Args:
+            text: text to be encrypted/decrypted.
+            mode: encryption or decryption (default "encrypt").
 
-    text_list: list[str] = list(text)
+        Returns:
+            Encrypted or decrypted string.
+        """
+        if not text:
+            raise GronsfeldError("Input text is empty!")
 
-    for i in range(len(text)):
-        letter_text = text_list[i]
+        text_list: list[str] = list(text)
 
-        if (lang_alphabet := get_alphabet_by_letter(letter_text, ALPHABET_TABLE)) is None:
-            continue
+        for i in range(len(text)):
+            letter_text = text_list[i]
 
-        _, alphabet = lang_alphabet
-        letter_text_index = alphabet.index(letter_text.lower())
-        shift = int(key[i % len(key)])
+            if (lang_alphabet := get_alphabet_by_letter(letter_text, ALPHABET_TABLE)) is None:
+                continue
 
-        # choice of sign
+            _, alphabet = lang_alphabet
+            letter_text_index = alphabet.index(letter_text.lower())
+            shift = int(self.key[i % len(self.key)])
+
+            # choice of sign
+            match mode:
+                case "encrypt":
+                    sign = 1
+
+                case "decrypt":
+                    sign = -1
+
+                case _:
+                    raise GronsfeldError(f"Invalid processing type! -> {mode}")
+
+            new_letter_index = (letter_text_index + shift * sign) % len(alphabet)
+            new_letter_text = alphabet[new_letter_index]
+
+            if letter_text.isupper():
+                new_letter_text = new_letter_text.upper()
+
+            text_list[i] = new_letter_text
+
+        return "".join(text_list)
+
+    def encrypt(self, text: str) -> str:
+        """Gronsfeld cipher. Interface for calling encryption functions.
+
+        Args:
+            text: text to be encrypted.
+
+        Returns:
+            Encrypted string.
+        """
+        return self._transform(text, "encrypt")
+
+    def decrypt(self, text: str) -> str:
+        """Gronsfeld cipher. Interface for calling decryption functions.
+
+        Args:
+            text: text to be decrypted.
+
+        Returns:
+            Decrypted string.
+        """
+        return self._transform(text, "decrypt")
+
+    def make(self, text: str, mode: str = "encrypt"):
+        """Gronsfeld cipher. Interface for calling encryption/decryption functions.
+
+        Args:
+            text: text to be encrypted/decrypted.
+            mode: encryption or decryption (default "encrypt").
+
+        Returns:
+            Encrypted or decrypted string.
+        """
         match mode:
             case "encrypt":
-                sign = 1
+                return self._transform(text, "encrypt")
 
             case "decrypt":
-                sign = -1
+                return self._transform(text, "decrypt")
 
             case _:
                 raise GronsfeldError(f"Invalid processing type! -> {mode}")
-
-        new_letter_index = (letter_text_index + shift * sign) % len(alphabet)
-        new_letter_text = alphabet[new_letter_index]
-
-        if letter_text.isupper():
-            new_letter_text = new_letter_text.upper()
-
-        text_list[i] = new_letter_text
-
-    return "".join(text_list)
-
-
-def encrypt(text: str, key: str) -> str:
-    """Gronsfeld cipher. Interface for calling encryption functions.
-
-    Args:
-        text: text to be encrypted.
-        key: set of positive numbers.
-
-    Returns:
-        Encrypted string.
-    """
-    return transform(text, key, "encrypt")
-
-
-def decrypt(text: str, key: str) -> str:
-    """Gronsfeld cipher. Interface for calling decryption functions.
-
-    Args:
-        text: text to be decrypted.
-        key: set of positive numbers.
-
-    Returns:
-        Decrypted string.
-    """
-    return transform(text, key, "decrypt")
-
-
-def make(
-        text: str,
-        key: str,
-        mode: str = "encrypt"
-):
-    """Gronsfeld cipher. Interface for calling encryption/decryption functions.
-
-    Args:
-        text: text to be encrypted/decrypted.
-        key: set of positive numbers.
-        mode: encryption or decryption (default "encrypt").
-
-    Returns:
-        Encrypted or decrypted string.
-    """
-    match mode:
-        case "encrypt":
-            return encrypt(text, key)
-
-        case "decrypt":
-            return decrypt(text, key)
-
-        case _:
-            raise GronsfeldError(f"Invalid processing type! -> {mode}")

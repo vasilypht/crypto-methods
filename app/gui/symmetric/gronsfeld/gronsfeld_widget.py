@@ -9,14 +9,17 @@ from PyQt6.QtGui import (
     QRegularExpressionValidator as QRegExpVal
 )
 
-from .gronsfeld_ui import Ui_gronsfeld
-from app.crypto.symmetric import gronsfeld
+from .gronsfeld_ui import Ui_Gronsfeld
+from app.crypto.symmetric.gronsfeld import (
+    Gronsfeld,
+    GronsfeldError
+)
 
 
 class GronsfeldWidget(QWidget):
     def __init__(self):
         super(GronsfeldWidget, self).__init__()
-        self.ui = Ui_gronsfeld()
+        self.ui = Ui_Gronsfeld()
         self.ui.setupUi(self)
 
         self.title = "Gronsfeld"
@@ -26,14 +29,23 @@ class GronsfeldWidget(QWidget):
 
     def button_make_clicked(self) -> None:
         """Gronsfeld | (Slot) Method for handling button click. (Encryption/decryption)"""
+        match self.ui.tab_widget.currentWidget():
+            case self.ui.tab_text:
+                self._tab_text_processing()
+
+            case _:
+                pass
+
+    def _tab_text_processing(self):
         try:
-            processed_text = gronsfeld.make(
+            cipher = Gronsfeld(self.ui.line_edit_key.text())
+
+            processed_text = cipher.make(
                 text=self.ui.text_edit_input.toPlainText(),
-                key=self.ui.line_edit_key.text(),
                 mode=self.ui.combo_box_mode.currentText().lower()
             )
 
-        except gronsfeld.GronsfeldError as e:
+        except GronsfeldError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

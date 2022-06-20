@@ -9,14 +9,17 @@ from PyQt6.QtGui import (
     QRegularExpressionValidator as QRegExpVal
 )
 
-from .vigenere_ui import Ui_vigenere
-from app.crypto.symmetric import vigenere
+from .vigenere_ui import Ui_Vigenere
+from app.crypto.symmetric.vigenere import (
+    Vigenere,
+    VigenereError
+)
 
 
 class VigenereWidget(QWidget):
     def __init__(self):
         super(VigenereWidget, self).__init__()
-        self.ui = Ui_vigenere()
+        self.ui = Ui_Vigenere()
         self.ui.setupUi(self)
 
         self.title = "Vigenere"
@@ -28,14 +31,23 @@ class VigenereWidget(QWidget):
 
     def button_make_clicked(self) -> None:
         """Vigenere | (Slot) Method for handling button click. (Encryption/decryption)"""
+        match self.ui.tab_widget.currentWidget():
+            case self.ui.tab_text:
+                self._tab_text_processing()
+
+            case _:
+                pass
+
+    def _tab_text_processing(self):
         try:
-            processed_text = vigenere.make(
+            cipher = Vigenere(self.ui.line_edit_key.text())
+
+            processed_text = cipher.make(
                 text=self.ui.text_edit_input.toPlainText(),
-                key=self.ui.line_edit_key.text(),
                 mode=self.ui.combo_box_mode.currentText().lower()
             )
 
-        except vigenere.VigenereError as e:
+        except VigenereError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

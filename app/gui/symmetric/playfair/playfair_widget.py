@@ -9,14 +9,17 @@ from PyQt6.QtGui import (
     QRegularExpressionValidator as QRegExpVal
 )
 
-from .playfair_ui import Ui_playfair
-from app.crypto.symmetric import playfair
+from .playfair_ui import Ui_Playfair
+from app.crypto.symmetric.playfair import (
+    Playfair,
+    PlayfairError
+)
 
 
 class PlayfairWidget(QWidget):
     def __init__(self):
         super(PlayfairWidget, self).__init__()
-        self.ui = Ui_playfair()
+        self.ui = Ui_Playfair()
         self.ui.setupUi(self)
 
         self.title = "Playfair"
@@ -28,14 +31,23 @@ class PlayfairWidget(QWidget):
 
     def button_make_clicked(self) -> None:
         """Playfair | (Slot) Method for handling button click. (Encryption/decryption)"""
+        match self.ui.tab_widget.currentWidget():
+            case self.ui.tab_text:
+                self._tab_text_processing()
+
+            case _:
+                pass
+
+    def _tab_text_processing(self):
         try:
-            processed_text = playfair.make(
+            cipher = Playfair(self.ui.line_edit_key.text())
+
+            processed_text = cipher.make(
                 text=self.ui.text_edit_input.toPlainText(),
-                key=self.ui.line_edit_key.text(),
                 mode=self.ui.combo_box_mode.currentText().lower()
             )
 
-        except playfair.PlayfairError as e:
+        except PlayfairError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

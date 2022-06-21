@@ -15,161 +15,159 @@ class PlayfairError(Exception):
     pass
 
 
-def transform(text: str, key: str, mode: str = "encrypt") -> str:
-    """Playfair cipher. Encryption/Decryption function.
+class Playfair:
+    def __init__(self, key: str):
+        if not key:
+            raise PlayfairError("The key is missing!")
 
-    Args:
-        text: text to be encrypted/decrypted.
-        key: a set of letters of the same alphabet.
-        mode: encryption or decryption (default "encrypt").
+        if not re.match(r"(^[а-яА-ЯёЁ]*$)|(^[a-zA-Z]*$)", key):
+            raise PlayfairError("Invalid key!")
 
-    Returns:
-        Encrypted or decrypted string.
-    """
-    if not text:
-        raise PlayfairError("Input text is empty!")
+        self.key = key
 
-    if not key:
-        raise PlayfairError("The key is missing!")
+    def _transform(self, text: str, mode: str = "encrypt") -> str:
+        """Playfair cipher. Encryption/Decryption function.
 
-    if not re.match(r"(^[а-яА-ЯёЁ]*$)|(^[a-zA-Z]*$)", key):
-        raise PlayfairError("Invalid key!")
+        Args:
+            text: text to be encrypted/decrypted.
+            mode: encryption or decryption (default "encrypt").
 
-    match mode:
-        case "encrypt":
-            key_sign = 1
+        Returns:
+            Encrypted or decrypted string.
+        """
+        if not text:
+            raise PlayfairError("Input text is empty!")
 
-        case "decrypt":
-            key_sign = -1
+        match mode:
+            case "encrypt":
+                key_sign = 1
 
-        case _:
-            raise PlayfairError(f"Invalid processing type! -> {mode}")
+            case "decrypt":
+                key_sign = -1
 
-    lang, alphabet = get_alphabet_by_letter(key[0], ALPHABET_TABLE)
+            case _:
+                raise PlayfairError(f"Invalid processing type! -> {mode}")
 
-    match lang:
-        case "english":
-            shape = (5, 5)
-            letter_swap = ("j", "i")
-            first_add_letter = "x"
-            second_add_letter = "y"
+        lang, alphabet = get_alphabet_by_letter(self.key[0], ALPHABET_TABLE)
 
-        case "russian":
-            shape = (4, 8)
-            letter_swap = ("ъ", "ь")
-            first_add_letter = "х"
-            second_add_letter = "у"
+        match lang:
+            case "english":
+                shape = (5, 5)
+                letter_swap = ("j", "i")
+                first_add_letter = "x"
+                second_add_letter = "y"
 
-        case _:
-            raise Exception("Error lang!")
+            case "russian":
+                shape = (4, 8)
+                letter_swap = ("ъ", "ь")
+                first_add_letter = "х"
+                second_add_letter = "у"
 
-    alphabet = alphabet.replace(letter_swap[0], "")
-    text = text.replace(*letter_swap)
+            case _:
+                raise Exception("Error lang!")
 
-    key = key.lower()
-    key = key.replace(*letter_swap)
+        alphabet = alphabet.replace(letter_swap[0], "")
+        text = text.replace(*letter_swap)
 
-    # added key + alphabet
-    unique_letters = []
-    for letter in key + alphabet:
-        if letter not in unique_letters:
-            unique_letters.append(letter)
+        key = self.key.lower()
+        key = key.replace(*letter_swap)
 
-    key_matrix = np.array(unique_letters).reshape(shape)
+        # added key + alphabet
+        unique_letters = []
+        for letter in key + alphabet:
+            if letter not in unique_letters:
+                unique_letters.append(letter)
 
-    # split to bigrams
-    letters, indices = get_letters_alphabetically(text, alphabet)
-    bigrams = [letters[i:i + 2] for i in range(0, len(letters), 2)]
+        key_matrix = np.array(unique_letters).reshape(shape)
 
-    if not bigrams:
-        return text
+        # split to bigrams
+        letters, indices = get_letters_alphabetically(text, alphabet)
+        bigrams = [letters[i:i + 2] for i in range(0, len(letters), 2)]
 
-    if len(bigrams[-1]) == 1:
-        bigrams[-1] += first_add_letter
+        if not bigrams:
+            return text
 
-    transformed_letters = ""
-    for first_letter, second_letter in bigrams:
-        # first rule
-        if first_letter == second_letter:
-            # If the letters are equal to the additional letter,
-            # then it is necessary to replace the second one with a new additional letter
-            if first_letter == first_add_letter:
-                second_letter = second_add_letter
+        if len(bigrams[-1]) == 1:
+            bigrams[-1] += first_add_letter
+
+        transformed_letters = ""
+        for first_letter, second_letter in bigrams:
+            # first rule
+            if first_letter == second_letter:
+                # If the letters are equal to the additional letter,
+                # then it is necessary to replace the second one with a new additional letter
+                if first_letter == first_add_letter:
+                    second_letter = second_add_letter
+                else:
+                    second_letter = first_add_letter
+
+            # get indices
+            first_letter_i, first_letter_j = np.where(key_matrix == first_letter.lower())
+            second_letter_i, second_letter_j = np.where(key_matrix == second_letter.lower())
+
+            if first_letter_i[0] == second_letter_i[0]:
+                first_letter_j[0] = (first_letter_j[0] + 1 * key_sign) % shape[1]
+                second_letter_j[0] = (second_letter_j[0] + 1 * key_sign) % shape[1]
+
+            elif first_letter_j[0] == second_letter_j[0]:
+                first_letter_i[0] = (first_letter_i + 1 * key_sign) % shape[0]
+                second_letter_i[0] = (second_letter_i + 1 * key_sign) % shape[0]
+
             else:
-                second_letter = first_add_letter
+                first_letter_j, second_letter_j = second_letter_j, first_letter_j
 
-        # get indices
-        first_letter_i, first_letter_j = np.where(key_matrix == first_letter.lower())
-        second_letter_i, second_letter_j = np.where(key_matrix == second_letter.lower())
+            new_firs_letter = key_matrix[first_letter_i, first_letter_j][0]
+            new_second_letter = key_matrix[second_letter_i, second_letter_j][0]
 
-        if first_letter_i[0] == second_letter_i[0]:
-            first_letter_j[0] = (first_letter_j[0] + 1 * key_sign) % shape[1]
-            second_letter_j[0] = (second_letter_j[0] + 1 * key_sign) % shape[1]
+            transformed_letters += new_firs_letter.upper() if first_letter.isupper() else new_firs_letter
+            transformed_letters += new_second_letter.upper() if second_letter.isupper() else new_second_letter
 
-        elif first_letter_j[0] == second_letter_j[0]:
-            first_letter_i[0] = (first_letter_i + 1 * key_sign) % shape[0]
-            second_letter_i[0] = (second_letter_i + 1 * key_sign) % shape[0]
+        text_list: list[str] = list(text + transformed_letters[len(indices)::])
 
-        else:
-            first_letter_j, second_letter_j = second_letter_j, first_letter_j
+        for i, letter_index in enumerate(indices):
+            text_list[letter_index] = transformed_letters[i]
 
-        new_firs_letter = key_matrix[first_letter_i, first_letter_j][0]
-        new_second_letter = key_matrix[second_letter_i, second_letter_j][0]
+        return "".join(text_list)
 
-        transformed_letters += new_firs_letter.upper() if first_letter.isupper() else new_firs_letter
-        transformed_letters += new_second_letter.upper() if second_letter.isupper() else new_second_letter
+    def encrypt(self, text: str) -> str:
+        """Playfair cipher. Interface for calling encryption functions.
 
-    text_list: list[str] = list(text + transformed_letters[len(indices)::])
+        Args:
+            text: text to be encrypted.
 
-    for i, letter_index in enumerate(indices):
-        text_list[letter_index] = transformed_letters[i]
+        Returns:
+            Encrypted string.
+        """
+        return self._transform(text, "encrypt")
 
-    return "".join(text_list)
+    def decrypt(self, text: str) -> str:
+        """Playfair cipher. Interface for calling decryption functions.
 
+        Args:
+            text: text to be decrypted.
+            key: a set of letters of the same alphabet.
 
-def encrypt(text: str, key: str) -> str:
-    """Playfair cipher. Interface for calling encryption functions.
+        Returns:
+            Decrypted string.
+        """
+        return self._transform(text, "decrypt")
 
-    Args:
-        text: text to be encrypted.
-        key: a set of letters of the same alphabet.
+    def make(self, text: str, mode: str = "encrypt") -> str:
+        """Playfair cipher. Interface for calling encryption/decryption functions.
 
-    Returns:
-        Encrypted string.
-    """
-    return transform(text, key, "encrypt")
+        Args:
+            text: text to be encrypted/decrypted.
+            mode: encryption or decryption (default "encrypt").
 
+        Returns:
+            Encrypted or decrypted string.
+        """
+        match mode:
+            case "encrypt":
+                return self._transform(text, mode)
 
-def decrypt(text: str, key: str) -> str:
-    """Playfair cipher. Interface for calling decryption functions.
+            case "decrypt":
+                return self._transform(text, mode)
 
-    Args:
-        text: text to be decrypted.
-        key: a set of letters of the same alphabet.
-
-    Returns:
-        Decrypted string.
-    """
-    return transform(text, key, "decrypt")
-
-
-def make(text: str, key: str, mode: str = "encrypt") -> str:
-    """Playfair cipher. Interface for calling encryption/decryption functions.
-
-    Args:
-        text: text to be encrypted/decrypted.
-        key: a set of letters of the same alphabet.
-        mode: encryption or decryption (default "encrypt").
-
-    Returns:
-        Encrypted or decrypted string.
-    """
-    match mode:
-        case "encrypt":
-            return encrypt(text, key)
-
-        case "decrypt":
-            return decrypt(text, key)
-
-        case _:
-            raise PlayfairError(f"Invalid processing type! -> {mode}")
+            case _:
+                raise PlayfairError(f"Invalid processing type! -> {mode}")

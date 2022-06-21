@@ -17,143 +17,123 @@ class HillError(Exception):
     pass
 
 
-def transform(
-        text: str,
-        key: str,
-        alphabet: str,
-        mode: str = "encrypt"
-) -> str:
-    """Hill Cipher. Encryption/decryption function.
+class Hill:
+    def __init__(self, key: str, alphabet: str):
+        if not key:
+            raise HillError("The key is missing!")
 
-    Args:
-        text: text to be encrypted/decrypted.
-        key: a set of letters of the same alphabet.
-        alphabet: alphabet compiled by the user.
-        mode: encryption or decryption (default "encrypt").
+        if not alphabet:
+            raise HillError("Alphabet is empty!")
 
-    Returns:
-        Encrypted or decrypted string.
-    """
-    if not text:
-        raise HillError("Input text is empty!")
+        if not is_square(len(key)):
+            raise HillError("Key length must be a square!")
 
-    if not key:
-        raise HillError("The key is missing!")
+        if not set(key.lower()).issubset(alphabet):
+            raise HillError("The key must be alphabetic characters!")
 
-    if not alphabet:
-        raise HillError("Alphabet is empty!")
+        if len(alphabet) != len(set(alphabet)):
+            raise HillError("The alphabet must be composed of unique characters!")
 
-    if not is_square(len(key)):
-        raise HillError("Key length must be a square!")
+        n = math.isqrt(len(key))
+        matrix_key = np.array(list(map(lambda x: alphabet.index(x.lower()), key))).reshape((n, n))
 
-    if not set(key.lower()).issubset(alphabet):
-        raise HillError("The key must be alphabetic characters!")
+        matrix_key_det = int(np.linalg.det(matrix_key))
+        if matrix_key_det == 0:
+            raise HillError("Matrix determinant is zero! The matrix is degenerate!")
 
-    if len(alphabet) != len(set(alphabet)):
-        raise HillError("The alphabet must be composed of unique characters!")
+        if math.gcd(matrix_key_det, len(alphabet)) != 1:
+            raise HillError("Matrix determinant and key length must be coprime!")
 
-    n = math.isqrt(len(key))
-    matrix_key = np.array(list(map(lambda x: alphabet.index(x.lower()), key))).reshape((n, n))
+        self.matrix_key = matrix_key
 
-    matrix_key_det = int(np.linalg.det(matrix_key))
-    if matrix_key_det == 0:
-        raise HillError("Matrix determinant is zero! The matrix is degenerate!")
+        self.key = key
+        self.alphabet = alphabet
 
-    if math.gcd(matrix_key_det, len(alphabet)) != 1:
-        raise HillError("Matrix determinant and key length must be coprime!")
+    def _transform(self, text: str, mode: str = "encrypt") -> str:
+        """Hill Cipher. Encryption/decryption function.
 
-    match mode:
-        case "encrypt":
-            pass
+        Args:
+            text: text to be encrypted/decrypted.
+            mode: encryption or decryption (default "encrypt").
 
-        case "decrypt":
-            matrix_key = np.array(Matrix(matrix_key).inv_mod(len(alphabet)))
+        Returns:
+            Encrypted or decrypted string.
+        """
+        if not text:
+            raise HillError("Input text is empty!")
 
-        case _:
-            raise HillError(f"Invalid processing type! -> {mode}")
+        match mode:
+            case "encrypt":
+                matrix_key = self.matrix_key
 
-    letters, indices = get_letters_alphabetically(text, alphabet)
+            case "decrypt":
+                matrix_key = np.array(Matrix(self.matrix_key).inv_mod(len(self.alphabet)))
 
-    new_letters = ""
-    for i in range(0, len(letters), n):
-        vct = list(map(lambda x: alphabet.index(x.lower()), letters[i:i + n]))
-        vct += [0 for _ in range(len(vct), n)]
+            case _:
+                raise HillError(f"Invalid processing type! -> {mode}")
 
-        new_vct = np.matmul(matrix_key, vct) % len(alphabet)
-        new_letters += "".join(map(lambda x: alphabet[x], new_vct))
+        letters, indices = get_letters_alphabetically(text, self.alphabet)
 
-    text_list = list(text + new_letters[len(letters)::])
-    for i, index in enumerate(indices):
-        old_letter = text_list[index]
-        new_letter = new_letters[i]
+        n = math.isqrt(len(self.key))
 
-        if old_letter.isupper():
-            new_letter = new_letter.upper()
+        new_letters = ""
+        for i in range(0, len(letters), n):
+            vct = list(map(lambda x: self.alphabet.index(x.lower()), letters[i:i + n]))
+            vct += [0 for _ in range(len(vct), n)]
 
-        text_list[index] = new_letter
+            new_vct = np.matmul(matrix_key, vct) % len(self.alphabet)
+            new_letters += "".join(map(lambda x: self.alphabet[x], new_vct))
 
-    return "".join(text_list)
+        text_list = list(text + new_letters[len(letters)::])
+        for i, index in enumerate(indices):
+            old_letter = text_list[index]
+            new_letter = new_letters[i]
 
+            if old_letter.isupper():
+                new_letter = new_letter.upper()
 
-def encrypt(
-        text: str,
-        key: str,
-        alphabet: str
-):
-    """Hill Cipher. Interface for calling encryption functions.
+            text_list[index] = new_letter
 
-    Args:
-        text: text to be encrypted.
-        key: a set of letters of the same alphabet.
-        alphabet: alphabet compiled by the user.
+        return "".join(text_list)
 
-    Returns:
-        Encrypted string.
-    """
-    return transform(text, key, alphabet, "encrypt")
+    def encrypt(self, text: str):
+        """Hill Cipher. Interface for calling encryption functions.
 
+        Args:
+            text: text to be encrypted.
 
-def decrypt(
-        text: str,
-        key: str,
-        alphabet: str
-):
-    """Hill Cipher. Interface for calling decryption functions.
+        Returns:
+            Encrypted string.
+        """
+        return self._transform(text, "encrypt")
 
-    Args:
-        text: text to be decrypted.
-        key: a set of letters of the same alphabet.
-        alphabet: alphabet compiled by the user.
+    def decrypt(self, text: str):
+        """Hill Cipher. Interface for calling decryption functions.
 
-    Returns:
-        Decrypted string.
-    """
-    return transform(text, key, alphabet, "decrypt")
+        Args:
+            text: text to be decrypted.
 
+        Returns:
+            Decrypted string.
+        """
+        return self._transform(text, "decrypt")
 
-def make(
-        text: str,
-        key: str,
-        alphabet: str,
-        mode: str = "encrypt"
-):
-    """Hill Cipher. Interface for calling encryption/decryption functions.
+    def make(self, text: str, mode: str = "encrypt"):
+        """Hill Cipher. Interface for calling encryption/decryption functions.
 
-    Args:
-        text: text to be encrypted/decrypted.
-        key: a set of letters of the same alphabet.
-        alphabet: alphabet compiled by the user.
-        mode: encryption or decryption (default "encrypt").
+        Args:
+            text: text to be encrypted/decrypted.
+            mode: encryption or decryption (default "encrypt").
 
-    Returns:
-        Encrypted or decrypted string.
-    """
-    match mode:
-        case "encrypt":
-            return encrypt(text, key, alphabet)
+        Returns:
+            Encrypted or decrypted string.
+        """
+        match mode:
+            case "encrypt":
+                return self._transform(text, mode)
 
-        case "decrypt":
-            return decrypt(text, key, alphabet)
+            case "decrypt":
+                return self._transform(text, mode)
 
-        case _:
-            raise HillError(f"Invalid processing type! -> {mode}")
+            case _:
+                raise HillError(f"Invalid processing type! -> {mode}")

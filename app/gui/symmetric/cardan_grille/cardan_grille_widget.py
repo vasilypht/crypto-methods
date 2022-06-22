@@ -2,61 +2,71 @@ from PyQt6.QtWidgets import (
     QWidget,
     QMessageBox,
     QAbstractItemView,
-    QTableWidgetItem
+    QTableWidgetItem,
+    QMenu
 )
 from PyQt6.QtGui import (
     QColor
 )
-import numpy as np
 
-from .cardan_grille_ui import Ui_cardan_grille
-from app.crypto.symmetric import cardan_grille
+from .cardan_grille_ui import Ui_CardanGrille
+from app.crypto.symmetric.cardan_grille import (
+    CarganGrille,
+    CarganGrilleError
+)
 
 
 class CardanGrilleWidget(QWidget):
     def __init__(self):
         super(CardanGrilleWidget, self).__init__()
-        self.ui = Ui_cardan_grille()
+        self.ui = Ui_CardanGrille()
         self.ui.setupUi(self)
 
         self.title = "Cardan grille"
+        self.stencil = None
 
         self.ui.table_widget_stencil.setSelectionMode(QAbstractItemView.SelectionMode(0))
 
-        self.ui.button_gen_stencil.clicked.connect(self.button_gen_stencil_clicked)
+        self.action_gen_clean_stencil_clicked()
+
+        # Context menu
+        menu = QMenu()
+        menu.addAction("Generate stencil", self.action_gen_stencil_clicked)
+        menu.addAction("Generate clean stencil", self.action_gen_clean_stencil_clicked)
+        self.ui.button_options.setMenu(menu)
+
         self.ui.button_make.clicked.connect(self.button_make_clicked)
         self.ui.table_widget_stencil.clicked.connect(self.table_widget_change)
-        self.ui.button_clean_stencil.clicked.connect(self.button_clean_stencil)
 
-    def button_gen_stencil_clicked(self) -> None:
+    def action_gen_stencil_clicked(self) -> None:
         """Cardan grille | (Slot) Method for creating a stencil on button click"""
         k = self.ui.spin_box_dim_stencil.value()
-        stencil = cardan_grille.gen_stencil(k)
+        self.stencil = CarganGrille.gen_stencil(k)
 
         self.ui.table_widget_stencil.setRowCount(2 * k)
         self.ui.table_widget_stencil.setColumnCount(2 * k)
 
         for i in range(2 * k):
             for j in range(2 * k):
-                item = QTableWidgetItem(str(stencil[i, j].value))
-                if stencil[i, j].cond:
+                item = QTableWidgetItem(str(self.stencil[i, j].value))
+                if self.stencil[i, j].cond:
                     item.setBackground(QColor("orange"))
                 self.ui.table_widget_stencil.setItem(i, j, item)
 
         self.ui.table_widget_stencil.resizeRowsToContents()
         self.ui.table_widget_stencil.resizeColumnsToContents()
 
-    def button_clean_stencil(self) -> None:
+    def action_gen_clean_stencil_clicked(self) -> None:
         """Cardan grille | (Slot) Method for creating a clean stencil on button click."""
         k = self.ui.spin_box_dim_stencil.value()
-        stencil = cardan_grille.gen_stencil(k)
+        self.stencil = CarganGrille.gen_stencil(k)
 
         self.ui.table_widget_stencil.setRowCount(2 * k)
         self.ui.table_widget_stencil.setColumnCount(2 * k)
 
         for i in range(2 * k):
             for j in range(2 * k):
-                item = QTableWidgetItem(str(stencil[i, j].value))
+                item = QTableWidgetItem(str(self.stencil[i, j].value))
                 self.ui.table_widget_stencil.setItem(i, j, item)
 
         self.ui.table_widget_stencil.resizeRowsToContents()
@@ -65,42 +75,42 @@ class CardanGrilleWidget(QWidget):
     def table_widget_change(self) -> None:
         """Cardan grille | (Slot) Method to change table cell color when cell is clicked."""
         item = self.ui.table_widget_stencil.currentItem()
+        i, j = item.row(), item.column()
+
         if item.background() == QColor("orange"):
             item.setBackground(QColor(0, 0, 0, 0))
+            self.stencil[i][j].cond = False
         else:
             item.setBackground(QColor("orange"))
+            self.stencil[i][j].cond = True
 
     def button_make_clicked(self) -> None:
         """Cardan grille | (Slot) Method for handling button click. (Encryption/decryption)"""
+        match self.ui.tab_widget.currentWidget():
+            case self.ui.tab_text:
+                self._tab_text_processing()
 
+            case _:
+                pass
+
+    def _tab_text_processing(self):
         # clear preview table
         self.ui.table_widget_preview.clear()
 
-        # Creating and filling a stencil from a widget.
-        n = self.ui.table_widget_stencil.rowCount()
-        square = np.empty(shape=(n, n), dtype=cardan_grille.Field)
-
-        for i in range(n):
-            for j in range(n):
-                item = self.ui.table_widget_stencil.item(i, j)
-                square[i, j] = cardan_grille.Field(
-                    int(item.text()),
-                    item.background() == QColor("orange")
-                )
-
         try:
-            processed_text = cardan_grille.make(
+            cipher = CarganGrille(self.stencil, self.ui.combo_box_trash.currentText().lower())
+
+            processed_text = cipher.make(
                 text=self.ui.text_edit_input.toPlainText(),
-                stencil=square,
-                litter_type=self.ui.combo_box_trash.currentText().lower(),
                 mode=self.ui.combo_box_mode.currentText().lower()
             )
 
-        except cardan_grille.CarganGrilleError as e:
+        except CarganGrilleError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
         self.ui.text_edit_output.setText(processed_text)
+        n, _ = self.stencil.shape
 
         text_blocks = [processed_text[i:i + n ** 2] for i in range(0, len(processed_text), n ** 2)]
 

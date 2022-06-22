@@ -67,62 +67,64 @@ class XORWidget(QWidget):
 
     def button_make_clicked(self) -> None:
         """XOR | (Slot) Method for handling button click. (Encryption/decryption)"""
-        iv_hex = self.ui.line_edit_iv.text()
+        match self.ui.tab_widget.currentWidget():
+            case self.ui.tab_text:
+                self._tab_text_processing()
+
+            case self.ui.tab_document:
+                self._tab_document_processing()
+
+            case _:
+                pass
+
+    def _tab_text_processing(self):
+        key = self.gen_xor_key()
+
         try:
-            rc4 = RC4(iv=iv_hex)
-        except RC4Error as e:
+            cipher = XOR(key)
+
+            processed_data = cipher.make(
+                data=self.ui.text_edit_input.toPlainText(),
+                mode=self.ui.combo_box_mode.currentText().lower()
+            )
+
+        except XORError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
-        key = bytes(next(rc4) for _ in range(self.ui.spin_box_gamma_size.value())).hex()
-        xor = XOR(key)
+        self.ui.text_edit_output.setText(processed_data)
 
-        mode = self.ui.combo_box_mode.currentText().lower()
-        data = self.ui.text_edit_input.toPlainText()
+    def _tab_document_processing(self):
+        if self.file_path.isEmpty():
+            QMessageBox.warning(self, "Warning!", "File not selected!")
+            return
 
-        match self.ui.tab_widget.currentWidget():
+        # get the name of the new file
+        file_path_output, _ = QFileDialog.getSaveFileName(
+            parent=self,
+            caption="Save new file",
+            directory="",
+            filter=XOR_SUPPORT_EXT,
+        )
 
-            case self.ui.tab_text:
-                try:
-                    match mode:
-                        case "encrypt":
-                            processed_data = xor.encrypt(data)
+        if not file_path_output:
+            return
 
-                        case "decrypt":
-                            processed_data = xor.decrypt(data)
+        key = self.gen_xor_key()
 
-                        case _:
-                            raise XORError(f"Wrong encryption mode! ({mode})")
+        try:
+            cipher = XOR(key)
+        except XORError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
 
-                except XORError as e:
-                    QMessageBox.warning(self, "Warning!", e.args[0])
-                    return
-
-                self.ui.text_edit_output.setText(processed_data)
-
-            case self.ui.tab_document:
-                if self.file_path.isEmpty():
-                    QMessageBox.warning(self, "Warning!", "File not selected!")
-                    return
-
-                # get the name of the new file
-                file_path_output, _ = QFileDialog.getSaveFileName(
-                    parent=self,
-                    caption="Save new file",
-                    directory="",
-                    filter=XOR_SUPPORT_EXT,
-                )
-
-                if not file_path_output:
-                    return
-
-                self.file_worker_thread.set_options(
-                    cipher=xor,
-                    mode=mode,
-                    input_file=self.file_path.toLocalFile(),
-                    output_file=file_path_output
-                )
-                self.file_worker_thread.start()
+        self.file_worker_thread.set_options(
+            cipher=cipher,
+            mode=self.ui.combo_box_mode.currentText().lower(),
+            input_file=self.file_path.toLocalFile(),
+            output_file=file_path_output
+        )
+        self.file_worker_thread.start()
 
     def action_gen_iv_clicked(self):
         iv = np.random.randint(0, 256, self.ui.spin_box_iv_size.value())
@@ -172,6 +174,15 @@ class XORWidget(QWidget):
         except OSError:
             QMessageBox.warning(self, "Warning!", "Failed to open file!")
             return
+
+    def gen_xor_key(self):
+        try:
+            rc4 = RC4(self.ui.line_edit_iv.text())
+        except RC4Error as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+        return bytes(next(rc4) for _ in range(self.ui.spin_box_gamma_size.value())).hex()
 
     def file_path_changed(self, file: QUrl):
         self.file_path = file

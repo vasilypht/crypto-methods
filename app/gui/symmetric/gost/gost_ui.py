@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_GOST(object):
     def setupUi(self, GOST):
         GOST.setObjectName("GOST")
-        GOST.resize(876, 564)
+        GOST.resize(690, 448)
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(GOST)
         self.verticalLayout_6.setContentsMargins(4, 4, 4, 4)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
@@ -23,6 +23,7 @@ class Ui_GOST(object):
         self.tab_text.setObjectName("tab_text")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.tab_text)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setSpacing(12)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.group_box_input = QtWidgets.QGroupBox(self.tab_text)
         self.group_box_input.setObjectName("group_box_input")
@@ -58,7 +59,7 @@ class Ui_GOST(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.group_box_options.sizePolicy().hasHeightForWidth())
         self.group_box_options.setSizePolicy(sizePolicy)
-        self.group_box_options.setMaximumSize(QtCore.QSize(700, 16777215))
+        self.group_box_options.setMaximumSize(QtCore.QSize(400, 16777215))
         self.group_box_options.setObjectName("group_box_options")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.group_box_options)
         self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)

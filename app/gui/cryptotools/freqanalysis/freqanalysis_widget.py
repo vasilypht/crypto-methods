@@ -73,17 +73,17 @@ class FreqAnalysisWidget(QWidget):
         # table match
         self.ui.match_table_widget.horizontalHeader().setStretchLastSection(True)
 
-        self.ui.button_analysis.clicked.connect(self.button_analysis_clicked)
-        self.ui.button_dechipher.clicked.connect(self.button_decipher_clicked)
+        self.ui.button_analysis.clicked.connect(self._button_analysis_clicked)
+        self.ui.button_dechipher.clicked.connect(self._button_decipher_clicked)
 
-        self.ui.match_table_widget.itemChanged.connect(self.freq_table_item_changed)
+        self.ui.match_table_widget.itemChanged.connect(self._freq_table_item_changed)
 
-        self.drag_drop_widget.dropped.connect(self.file_path_changed)
-        self.drag_drop_widget.canceled.connect(self.file_path_changed)
+        self.drag_drop_widget.dropped.connect(self._file_path_changed)
+        self.drag_drop_widget.canceled.connect(self._file_path_changed)
 
-        self.ui.combo_box_text_style.currentTextChanged.connect(self.text_style_changed)
+        self.ui.combo_box_text_style.currentTextChanged.connect(self._text_style_changed)
 
-    def button_analysis_clicked(self):
+    def _button_analysis_clicked(self):
         self.current_lang = self.ui.combo_box_lang.currentText().lower()
         self.freq_table = fa.get_freq_table(
             lang=self.current_lang.lower(),
@@ -144,7 +144,7 @@ class FreqAnalysisWidget(QWidget):
         self.update_bar_graph(self.bar_graph_freq_text, self.freq_text)
         self.update_table_match()
 
-    def button_decipher_clicked(self):
+    def _button_decipher_clicked(self):
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
                 try:
@@ -251,7 +251,7 @@ class FreqAnalysisWidget(QWidget):
             self.ui.match_table_widget.setItem(i, 0, item)
         self.ui.match_table_widget.blockSignals(False)
 
-    def freq_table_item_changed(self, item: QTableWidgetItem):
+    def _freq_table_item_changed(self, item: QTableWidgetItem):
         current_row_label = self.ui.match_table_widget.verticalHeaderItem(item.row()).text()
         current_text_letter = self.letter_match.get(current_row_label)
 
@@ -282,10 +282,10 @@ class FreqAnalysisWidget(QWidget):
 
         self.update_bar_graph(self.bar_graph_freq_text, self.freq_text)
 
-    def file_path_changed(self, file: QUrl):
+    def _file_path_changed(self, file: QUrl):
         self.file_path = file
 
-    def text_style_changed(self, text_style: str):
+    def _text_style_changed(self, text_style: str):
         self.freq_table = fa.get_freq_table(
             lang=self.current_lang.lower(),
             text_type=text_style.lower()

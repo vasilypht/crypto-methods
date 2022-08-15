@@ -18,10 +18,10 @@ class PolybiusSquareWidget(QWidget):
 
         self.title = "Polybius square"
 
-        self.ui.combo_box_method.currentIndexChanged.connect(self.combo_box_check)
-        self.ui.button_make.clicked.connect(self.button_make_clicked)
+        self.ui.combo_box_method.currentIndexChanged.connect(self._combo_box_check)
+        self.ui.button_make.clicked.connect(self._button_make_clicked)
 
-    def combo_box_check(self) -> None:
+    def _combo_box_check(self) -> None:
         """Polybius square | (Slot) Method for activating/deactivating a spinbox."""
         if self.ui.combo_box_method.currentText() == "Method 2":
             self.ui.spin_box_shift.setDisabled(False)
@@ -30,26 +30,31 @@ class PolybiusSquareWidget(QWidget):
             self.ui.spin_box_shift.setDisabled(True)
             self.ui.label_shift.setDisabled(True)
 
-    def button_make_clicked(self) -> None:
+    def _button_make_clicked(self) -> None:
         """Polybius square | (Slot) Method for handling button click. (Encryption/decryption)"""
+        shift = self.ui.spin_box_shift.value()
+        method = self.ui.combo_box_method.currentText().lower()
+        mode = self.ui.combo_box_mode.currentText().lower()
+
+        try:
+            cipher = PolybiusSquare(shift, method)
+
+        except PolybiusSquareError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                self._tab_text_processing()
+                self._tab_text_processing(cipher, mode)
 
             case _:
                 pass
 
-    def _tab_text_processing(self):
-        try:
-            cipher = PolybiusSquare(
-                shift=self.ui.spin_box_shift.value(),
-                method=self.ui.combo_box_method.currentText().lower()
-            )
+    def _tab_text_processing(self, cipher: PolybiusSquare, mode: str):
+        data = self.ui.text_edit_input.toPlainText()
 
-            processed_text = cipher.make(
-                text=self.ui.text_edit_input.toPlainText(),
-                mode=self.ui.combo_box_mode.currentText().lower()
-            )
+        try:
+            processed_text = cipher.make(data, mode)
 
         except PolybiusSquareError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])

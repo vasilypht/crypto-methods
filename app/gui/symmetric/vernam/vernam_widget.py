@@ -4,7 +4,6 @@ from PyQt6.QtWidgets import (
     QMenu,
     QFileDialog
 )
-import numpy as np
 
 from .vernam_ui import Ui_vernam
 from app.crypto.symmetric.vernam import (
@@ -20,17 +19,17 @@ class VernamWidget(QWidget):
         self.ui.setupUi(self)
         self.title = "Vernam"
 
-        self.ui.button_make.clicked.connect(self.button_make_clicked)
+        self.ui.button_make.clicked.connect(self._button_make_clicked)
 
         # Context menu
         menu = QMenu()
-        menu.addAction("Generate key", self.action_clicked_gen_key)
+        menu.addAction("Generate key", self._action_clicked_gen_key)
         menu.addSeparator()
-        menu.addAction("Save key", self.action_clicked_save_key)
-        menu.addAction("Load key", self.action_clicked_load_key)
+        menu.addAction("Save key", self._action_clicked_save_key)
+        menu.addAction("Load key", self._action_clicked_load_key)
         self.ui.button_options.setMenu(menu)
 
-    def action_clicked_gen_key(self):
+    def _action_clicked_gen_key(self):
         if not self.ui.text_edit_input.toPlainText():
             QMessageBox.warning(self, "Warning!", "Input text field is empty!")
             return
@@ -38,7 +37,7 @@ class VernamWidget(QWidget):
         key_hex = Vernam.gen_key(len(self.ui.text_edit_input.toPlainText().encode("utf-8")))
         self.ui.line_edit_key.setText(key_hex)
 
-    def action_clicked_save_key(self):
+    def _action_clicked_save_key(self):
         if not self.ui.line_edit_key.text():
             QMessageBox.warning(self, "Warning!", "The field with the key is empty!")
             return
@@ -62,7 +61,7 @@ class VernamWidget(QWidget):
             QMessageBox.warning(self, "Warning!", "Failed to save file!")
             return
 
-    def action_clicked_load_key(self):
+    def _action_clicked_load_key(self):
         filename, _ = QFileDialog.getOpenFileName(
             parent=self,
             caption="Open a key file",
@@ -82,30 +81,33 @@ class VernamWidget(QWidget):
             QMessageBox.warning(self, "Warning!", "Failed to open file!")
             return
 
-    def button_make_clicked(self) -> None:
+    def _button_make_clicked(self) -> None:
         """Vernam | (Slot) Method for handling button click. (Encryption/decryption)"""
+        key = self.ui.line_edit_key.text()
+        mode = self.ui.combo_box_mode.currentText().lower()
+
+        try:
+            cipher = Vernam(key)
+
+        except VernamError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
 
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                mode = self.ui.combo_box_mode.currentText().lower()
-                data = self.ui.text_edit_input.toPlainText()
-                key = self.ui.line_edit_key.text()
+                self._tab_text_processing(cipher, mode)
 
-                vernam = Vernam(key)
+            case _:
+                pass
 
-                try:
-                    match mode:
-                        case "encrypt":
-                            processed_text = vernam.encrypt(data)
+    def _tab_text_processing(self, cipher: Vernam, mode: str):
+        data = self.ui.text_edit_input.toPlainText()
 
-                        case "decrypt":
-                            processed_text = vernam.decrypt(data)
+        try:
+            processed_text = cipher.make(data, mode)
 
-                        case _:
-                            raise VernamError(f"Wrong encryption mode! ({mode})")
+        except VernamError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
 
-                except VernamError as e:
-                    QMessageBox.warning(self, "Warning!", e.args[0])
-                    return
-
-                self.ui.text_edit_output.setText(processed_text)
+        self.ui.text_edit_output.setText(processed_text)

@@ -27,25 +27,32 @@ class VigenereWidget(QWidget):
         self.ui.line_edit_key.setValidator(
             QRegExpVal(QRegExp(r"^[а-яёa-z]*$", QRegExp.PatternOption.CaseInsensitiveOption))
         )
-        self.ui.button_make.clicked.connect(self.button_make_clicked)
+        self.ui.button_make.clicked.connect(self._button_make_clicked)
 
-    def button_make_clicked(self) -> None:
+    def _button_make_clicked(self) -> None:
         """Vigenere | (Slot) Method for handling button click. (Encryption/decryption)"""
+        key = self.ui.line_edit_key.text()
+        mode = self.ui.combo_box_mode.currentText().lower()
+
+        try:
+            cipher = Vigenere(key)
+
+        except VigenereError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                self._tab_text_processing()
+                self._tab_text_processing(cipher, mode)
 
             case _:
                 pass
 
-    def _tab_text_processing(self):
-        try:
-            cipher = Vigenere(self.ui.line_edit_key.text())
+    def _tab_text_processing(self, cipher: Vigenere, mode: str):
+        data = self.ui.text_edit_input.toPlainText()
 
-            processed_text = cipher.make(
-                text=self.ui.text_edit_input.toPlainText(),
-                mode=self.ui.combo_box_mode.currentText().lower()
-            )
+        try:
+            processed_text = cipher.make(data, mode)
 
         except VigenereError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])

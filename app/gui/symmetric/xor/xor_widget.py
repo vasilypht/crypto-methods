@@ -54,39 +54,44 @@ class XORWidget(QWidget):
 
         # Context menu
         menu = QMenu()
-        menu.addAction("Generate IV", self.action_gen_iv_clicked)
+        menu.addAction("Generate IV", self._action_gen_iv_clicked)
         menu.addSeparator()
-        menu.addAction("Save IV", self.action_save_iv_clicked)
-        menu.addAction("Load IV", self.action_load_iv_clicked)
+        menu.addAction("Save IV", self._action_save_iv_clicked)
+        menu.addAction("Load IV", self._action_load_iv_clicked)
         self.ui.button_options.setMenu(menu)
 
-        self.ui.button_make.clicked.connect(self.button_make_clicked)
+        self.ui.button_make.clicked.connect(self._button_make_clicked)
 
-        self.drag_drop_widget.dropped.connect(self.file_path_changed)
-        self.drag_drop_widget.canceled.connect(self.file_path_changed)
+        self.drag_drop_widget.dropped.connect(self._file_path_changed)
+        self.drag_drop_widget.canceled.connect(self._file_path_changed)
 
-    def button_make_clicked(self) -> None:
+    def _button_make_clicked(self) -> None:
         """XOR | (Slot) Method for handling button click. (Encryption/decryption)"""
-        match self.ui.tab_widget.currentWidget():
-            case self.ui.tab_text:
-                self._tab_text_processing()
-
-            case self.ui.tab_document:
-                self._tab_document_processing()
-
-            case _:
-                pass
-
-    def _tab_text_processing(self):
         key = self.gen_xor_key()
+        mode = self.ui.combo_box_mode.currentText().lower()
 
         try:
             cipher = XOR(key)
 
-            processed_data = cipher.make(
-                data=self.ui.text_edit_input.toPlainText(),
-                mode=self.ui.combo_box_mode.currentText().lower()
-            )
+        except XORError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+        match self.ui.tab_widget.currentWidget():
+            case self.ui.tab_text:
+                self._tab_text_processing(cipher, mode)
+
+            case self.ui.tab_document:
+                self._tab_document_processing(cipher, mode)
+
+            case _:
+                pass
+
+    def _tab_text_processing(self, cipher: XOR, mode: str):
+        data = self.ui.text_edit_input.toPlainText(),
+
+        try:
+            processed_data = cipher.make(data, mode)
 
         except XORError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
@@ -94,7 +99,7 @@ class XORWidget(QWidget):
 
         self.ui.text_edit_output.setText(processed_data)
 
-    def _tab_document_processing(self):
+    def _tab_document_processing(self, cipher: XOR, mode: str):
         if self.file_path.isEmpty():
             QMessageBox.warning(self, "Warning!", "File not selected!")
             return
@@ -110,28 +115,20 @@ class XORWidget(QWidget):
         if not file_path_output:
             return
 
-        key = self.gen_xor_key()
-
-        try:
-            cipher = XOR(key)
-        except XORError as e:
-            QMessageBox.warning(self, "Warning!", e.args[0])
-            return
-
         self.file_worker_thread.set_options(
             cipher=cipher,
-            mode=self.ui.combo_box_mode.currentText().lower(),
+            mode=mode,
             input_file=self.file_path.toLocalFile(),
             output_file=file_path_output
         )
         self.file_worker_thread.start()
 
-    def action_gen_iv_clicked(self):
+    def _action_gen_iv_clicked(self):
         iv = np.random.randint(0, 256, self.ui.spin_box_iv_size.value())
         iv_hex = bytes(tuple(iv)).hex()
         self.ui.line_edit_iv.setText(iv_hex)
 
-    def action_save_iv_clicked(self):
+    def _action_save_iv_clicked(self):
         if not self.ui.line_edit_iv.text():
             QMessageBox.warning(self, "Warning!", "The field with the IV is empty!")
             return
@@ -155,7 +152,7 @@ class XORWidget(QWidget):
             QMessageBox.warning(self, "Warning!", "Failed to save file!")
             return
 
-    def action_load_iv_clicked(self):
+    def _action_load_iv_clicked(self):
         filename, _ = QFileDialog.getOpenFileName(
             parent=self,
             caption="Open a key file",
@@ -184,7 +181,7 @@ class XORWidget(QWidget):
 
         return bytes(next(rc4) for _ in range(self.ui.spin_box_gamma_size.value())).hex()
 
-    def file_path_changed(self, file: QUrl):
+    def _file_path_changed(self, file: QUrl):
         self.file_path = file
 
 

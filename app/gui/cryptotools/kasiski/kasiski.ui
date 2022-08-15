@@ -6,14 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>808</width>
-    <height>514</height>
+    <width>1078</width>
+    <height>769</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_7">
+   <property name="spacing">
+    <number>-1</number>
+   </property>
    <property name="leftMargin">
     <number>4</number>
    </property>
@@ -28,6 +31,9 @@
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontal_layout_1">
+     <property name="spacing">
+      <number>12</number>
+     </property>
      <item>
       <widget class="QTabWidget" name="tab_widget">
        <property name="maximumSize">
@@ -123,6 +129,9 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="spacing">
+      <number>-1</number>
+     </property>
      <item>
       <layout class="QVBoxLayout" name="vertical_layout_1">
        <item>

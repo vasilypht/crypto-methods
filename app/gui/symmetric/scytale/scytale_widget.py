@@ -18,10 +18,10 @@ class ScytaleWidget(QWidget):
 
         self.title = "Scytale"
 
-        self.ui.check_box_columns.stateChanged.connect(self.check_box_check)
-        self.ui.button_make.clicked.connect(self.button_make_clicked)
+        self.ui.check_box_columns.stateChanged.connect(self._check_box_check)
+        self.ui.button_make.clicked.connect(self._button_make_clicked)
 
-    def check_box_check(self) -> None:
+    def _check_box_check(self) -> None:
         """Scytale | (Slot) Method for activating/deactivating a checkbox."""
         if self.ui.check_box_columns.isChecked():
             self.ui.spin_box_columns.setDisabled(False)
@@ -30,27 +30,32 @@ class ScytaleWidget(QWidget):
             self.ui.spin_box_columns.setDisabled(True)
             self.ui.check_box_columns.setStyleSheet("color: grey")
 
-    def button_make_clicked(self) -> None:
+    def _button_make_clicked(self) -> None:
         """Scytale | (Slot) Method for handling button click. (Encryption/decryption)"""
+        n = self.ui.spin_box_rows.value()
+        m = self.ui.spin_box_columns.value()
+        auto_m = not self.ui.check_box_columns.isChecked()
+        mode = self.ui.combo_box_mode.currentText().lower()
+
+        try:
+            cipher = Scytale(n, m, auto_m)
+
+        except ScytaleError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                self._tab_text_processing()
+                self._tab_text_processing(cipher, mode)
 
             case _:
                 return
 
-    def _tab_text_processing(self):
-        try:
-            cipher = Scytale(
-                n=self.ui.spin_box_rows.value(),
-                m=self.ui.spin_box_columns.value(),
-                auto_m=not self.ui.check_box_columns.isChecked()
-            )
+    def _tab_text_processing(self, cipher: Scytale, mode: str):
+        data = self.ui.text_edit_input.toPlainText()
 
-            processed_text = cipher.make(
-                text=self.ui.text_edit_input.toPlainText(),
-                mode=self.ui.combo_box_mode.currentText().lower()
-            )
+        try:
+            processed_text = cipher.make(data, mode)
 
         except ScytaleError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])

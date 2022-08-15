@@ -40,29 +40,30 @@ class CaesarWidget(QWidget):
         self.drag_drop_widget.dropped.connect(self._change_file_path)
         self.drag_drop_widget.canceled.connect(self._change_file_path)
 
-        self.ui.button_make.clicked.connect(self.button_make_clicked)
+        self.ui.button_make.clicked.connect(self._button_make_clicked)
 
-    def button_make_clicked(self) -> None:
+    def _button_make_clicked(self) -> None:
         """Caesar | (Slot) Method for handling button click. (Encryption/decryption)"""
+        shift = self.ui.spin_box_shift.value()
+        mode = self.ui.combo_box_mode.currentText().lower()
+
+        cipher = Caesar(shift)
 
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                self._tab_text_processing()
+                self._tab_text_processing(cipher, mode)
 
             case self.ui.tab_document:
-                self._tab_document_processing()
+                self._tab_document_processing(cipher, mode)
 
             case _:
                 pass
 
-    def _tab_text_processing(self):
-        try:
-            cipher = Caesar(self.ui.spin_box_shift.value())
+    def _tab_text_processing(self, cipher: Caesar, mode: str):
+        data = self.ui.text_edit_input.toPlainText()
 
-            processed_text = cipher.make(
-                text=self.ui.text_edit_input.toPlainText(),
-                mode=self.ui.combo_box_mode.currentText().lower()
-            )
+        try:
+            processed_text = cipher.make(data, mode)
 
         except CaesarError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
@@ -70,7 +71,8 @@ class CaesarWidget(QWidget):
 
         self.ui.text_edit_output.setText(processed_text)
 
-    def _tab_document_processing(self):
+    # TODO: Make a progress bar
+    def _tab_document_processing(self, cipher: Caesar, mode: str):
         if self.file_path_input.isEmpty():
             QMessageBox.warning(self, "Warning!", "File not selected!")
             return
@@ -103,13 +105,8 @@ class CaesarWidget(QWidget):
             return
 
         try:
-            cipher = Caesar(self.ui.spin_box_shift.value())
-
             while block := file_input.read(MAX_CHARS_READ):
-                processed_block = cipher.make(
-                    text=block,
-                    mode=self.ui.combo_box_mode.currentText().lower()
-                )
+                processed_block = cipher.make(block, mode)
                 file_output.write(processed_block)
 
         except CaesarError as e:

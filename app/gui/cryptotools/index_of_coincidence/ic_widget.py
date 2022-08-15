@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import QUrl
 
-from .ic_ui import Ui_ic
+from .ic_ui import Ui_IC
 from app.crypto.tools.index_of_coincidence import (
     IndexOfCoincidence,
     ICError
@@ -21,7 +21,7 @@ from app.gui.const import (
 class ICWidget(QWidget):
     def __init__(self):
         super(ICWidget, self).__init__()
-        self.ui = Ui_ic()
+        self.ui = Ui_IC()
         self.ui.setupUi(self)
 
         self.title = "Index of coincidence"
@@ -38,15 +38,15 @@ class ICWidget(QWidget):
         vertical_layout.setContentsMargins(0, 0, 0, 0)
         vertical_layout.addWidget(self.drag_drop_widget)
 
-        self.drag_drop_widget.dropped.connect(self.file_path_changed)
-        self.drag_drop_widget.canceled.connect(self.file_path_changed)
+        self.drag_drop_widget.dropped.connect(self._file_path_changed)
+        self.drag_drop_widget.canceled.connect(self._file_path_changed)
 
-        self.ui.button_analysis.clicked.connect(self.button_analysis_clicked)
-        self.ui.check_box_custom_key_length.stateChanged.connect(self.check_box_check)
+        self.ui.button_analysis.clicked.connect(self._button_analysis_clicked)
+        self.ui.check_box_custom_key_length.stateChanged.connect(self._check_box_check)
 
-        self.check_box_check()
+        self._check_box_check()
 
-    def button_analysis_clicked(self):
+    def _button_analysis_clicked(self):
         self.ui.text_edit_stats.clear()
 
         lang = self.ui.combo_box_lang.currentText().lower()
@@ -98,7 +98,7 @@ class ICWidget(QWidget):
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
-    def check_box_check(self) -> None:
+    def _check_box_check(self) -> None:
         if self.ui.check_box_custom_key_length.isChecked():
             self.ui.spin_box_custom_key_length.setDisabled(False)
             self.ui.check_box_custom_key_length.setStyleSheet("color: palette(window-text)")
@@ -106,5 +106,5 @@ class ICWidget(QWidget):
             self.ui.spin_box_custom_key_length.setDisabled(True)
             self.ui.check_box_custom_key_length.setStyleSheet("color: grey")
 
-    def file_path_changed(self, file: QUrl):
+    def _file_path_changed(self, file: QUrl):
         self.file_path = file

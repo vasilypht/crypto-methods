@@ -18,24 +18,24 @@ class AtbashWidget(QWidget):
 
         self.title = "Atbash"
 
-        self.ui.button_make.clicked.connect(self.button_make_clicked)
+        self.ui.button_make.clicked.connect(self._button_make_clicked)
 
-    def button_make_clicked(self):
+    def _button_make_clicked(self):
         """Atbash | (Slot) Method for handling button click. (Encryption/decryption)"""
+        cipher = Atbash()
+
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                self._tab_text_processing()
+                self._tab_text_processing(cipher)
 
             case _:
                 return
 
-    def _tab_text_processing(self):
-        cipher = Atbash()
+    def _tab_text_processing(self, cipher: Atbash):
+        data = self.ui.text_edit_input.toPlainText()
 
         try:
-            processed_text = cipher.make(
-                text=self.ui.text_edit_input.toPlainText()
-            )
+            processed_text = cipher.make(data)
 
         except AtbashError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])

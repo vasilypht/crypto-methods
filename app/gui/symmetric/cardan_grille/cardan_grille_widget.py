@@ -27,18 +27,18 @@ class CardanGrilleWidget(QWidget):
 
         self.ui.table_widget_stencil.setSelectionMode(QAbstractItemView.SelectionMode(0))
 
-        self.action_gen_clean_stencil_clicked()
+        self._action_gen_clean_stencil_clicked()
 
         # Context menu
         menu = QMenu()
-        menu.addAction("Generate stencil", self.action_gen_stencil_clicked)
-        menu.addAction("Generate clean stencil", self.action_gen_clean_stencil_clicked)
+        menu.addAction("Generate stencil", self._action_gen_stencil_clicked)
+        menu.addAction("Generate clean stencil", self._action_gen_clean_stencil_clicked)
         self.ui.button_options.setMenu(menu)
 
-        self.ui.button_make.clicked.connect(self.button_make_clicked)
-        self.ui.table_widget_stencil.clicked.connect(self.table_widget_change)
+        self.ui.button_make.clicked.connect(self._button_make_clicked)
+        self.ui.table_widget_stencil.clicked.connect(self._table_widget_change)
 
-    def action_gen_stencil_clicked(self) -> None:
+    def _action_gen_stencil_clicked(self) -> None:
         """Cardan grille | (Slot) Method for creating a stencil on button click"""
         k = self.ui.spin_box_dim_stencil.value()
         self.stencil = CarganGrille.gen_stencil(k)
@@ -56,7 +56,7 @@ class CardanGrilleWidget(QWidget):
         self.ui.table_widget_stencil.resizeRowsToContents()
         self.ui.table_widget_stencil.resizeColumnsToContents()
 
-    def action_gen_clean_stencil_clicked(self) -> None:
+    def _action_gen_clean_stencil_clicked(self) -> None:
         """Cardan grille | (Slot) Method for creating a clean stencil on button click."""
         k = self.ui.spin_box_dim_stencil.value()
         self.stencil = CarganGrille.gen_stencil(k)
@@ -72,7 +72,7 @@ class CardanGrilleWidget(QWidget):
         self.ui.table_widget_stencil.resizeRowsToContents()
         self.ui.table_widget_stencil.resizeColumnsToContents()
 
-    def table_widget_change(self) -> None:
+    def _table_widget_change(self) -> None:
         """Cardan grille | (Slot) Method to change table cell color when cell is clicked."""
         item = self.ui.table_widget_stencil.currentItem()
         i, j = item.row(), item.column()
@@ -84,26 +84,32 @@ class CardanGrilleWidget(QWidget):
             item.setBackground(QColor("orange"))
             self.stencil[i][j].cond = True
 
-    def button_make_clicked(self) -> None:
+    def _button_make_clicked(self) -> None:
         """Cardan grille | (Slot) Method for handling button click. (Encryption/decryption)"""
+        trash = self.ui.combo_box_trash.currentText().lower()
+        mode = self.ui.combo_box_mode.currentText().lower()
+
+        try:
+            cipher = CarganGrille(self.stencil, trash)
+
+        except CarganGrilleError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                self._tab_text_processing()
+                self._tab_text_processing(cipher, mode)
 
             case _:
                 pass
 
-    def _tab_text_processing(self):
+    def _tab_text_processing(self, cipher: CarganGrille, mode: str):
         # clear preview table
         self.ui.table_widget_preview.clear()
+        data = self.ui.text_edit_input.toPlainText()
 
         try:
-            cipher = CarganGrille(self.stencil, self.ui.combo_box_trash.currentText().lower())
-
-            processed_text = cipher.make(
-                text=self.ui.text_edit_input.toPlainText(),
-                mode=self.ui.combo_box_mode.currentText().lower()
-            )
+            processed_text = cipher.make(data, mode)
 
         except CarganGrilleError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])

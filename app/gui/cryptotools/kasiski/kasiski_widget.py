@@ -31,12 +31,12 @@ class KasiskiWidget(QWidget):
         vertical_layout.setContentsMargins(0, 0, 0, 0)
         vertical_layout.addWidget(self.drag_drop_widget)
 
-        self.drag_drop_widget.dropped.connect(self.file_path_changed)
-        self.drag_drop_widget.canceled.connect(self.file_path_changed)
+        self.drag_drop_widget.dropped.connect(self._file_path_changed)
+        self.drag_drop_widget.canceled.connect(self._file_path_changed)
 
-        self.ui.button_analysis.clicked.connect(self.button_analysis_clicked)
+        self.ui.button_analysis.clicked.connect(self._button_analysis_clicked)
 
-    def button_analysis_clicked(self):
+    def _button_analysis_clicked(self):
         self.ui.text_edit_stats.clear()
 
         threshold = self.ui.spin_box_threshold.value()
@@ -78,5 +78,5 @@ class KasiskiWidget(QWidget):
         self.ui.text_edit_stats.append(f"Possible key lengths:")
         self.ui.text_edit_stats.append(f"{lengths}")
 
-    def file_path_changed(self, file: QUrl):
+    def _file_path_changed(self, file: QUrl):
         self.file_path = file

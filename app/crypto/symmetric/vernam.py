@@ -66,3 +66,14 @@ class Vernam:
 
     def decrypt(self, data: str or bytes):
         return self._transform(data, "decrypt")
+
+    def make(self, data: str or bytes, mode: str):
+        match mode:
+            case "encrypt":
+                return self.encrypt(data)
+
+            case "decrypt":
+                return self.decrypt(data)
+
+            case _:
+                raise VernamError(f"Invalid processing mode! -> {mode}")

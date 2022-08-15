@@ -55,25 +55,25 @@ class GOSTWidget(QWidget):
 
         # Context menu
         menu = QMenu()
-        menu.addAction("Generate IV", self.action_gen_iv_clicked)
-        menu.addAction("Generate key", self.action_gen_key_clicked)
+        menu.addAction("Generate IV", self._action_gen_iv_clicked)
+        menu.addAction("Generate key", self._action_gen_key_clicked)
         menu.addSeparator()
-        menu.addAction("Save state", self.action_save_state_clicked)
-        menu.addAction("Load state", self.action_load_state_clicked)
+        menu.addAction("Save state", self._action_save_state_clicked)
+        menu.addAction("Load state", self._action_load_state_clicked)
         self.ui.button_options.setMenu(menu)
 
-        self.ui.button_make.clicked.connect(self.button_make_clicked)
+        self.ui.button_make.clicked.connect(self._button_make_clicked)
 
-        self.drag_drop_widget.dropped.connect(self.file_path_changed)
-        self.drag_drop_widget.canceled.connect(self.file_path_changed)
+        self.drag_drop_widget.dropped.connect(self._file_path_changed)
+        self.drag_drop_widget.canceled.connect(self._file_path_changed)
 
-    def action_gen_iv_clicked(self):
+    def _action_gen_iv_clicked(self):
         self.ui.line_edit_iv.setText(randbytes(8).hex())
 
-    def action_gen_key_clicked(self):
+    def _action_gen_key_clicked(self):
         self.ui.line_edit_key.setText(randbytes(32).hex())
 
-    def action_save_state_clicked(self):
+    def _action_save_state_clicked(self):
         if not self.ui.line_edit_iv.text():
             QMessageBox.warning(self, "Warning!", "The field with the IV is empty!")
             return
@@ -107,7 +107,7 @@ class GOSTWidget(QWidget):
             QMessageBox.warning(self, "Warning!", "Failed to save file!")
             return
 
-    def action_load_state_clicked(self):
+    def _action_load_state_clicked(self):
         filename, _ = QFileDialog.getOpenFileName(
             parent=self,
             caption="Open a state file",
@@ -135,54 +135,67 @@ class GOSTWidget(QWidget):
         self.ui.line_edit_iv.setText(data.get("iv", ""))
         self.ui.line_edit_key.setText(data.get("key", ""))
 
-    def button_make_clicked(self) -> None:
+    def _button_make_clicked(self) -> None:
         """GOST | (Slot) Method for handling button click. (Encryption/decryption)"""
         key_hex = self.ui.line_edit_key.text()
         iv_hex = self.ui.line_edit_iv.text()
         gost_mode = self.ui.combo_box_gost_mode.currentText()
-        gost = GOST(key=key_hex, iv=iv_hex, mode=gost_mode)
-
         mode = self.ui.combo_box_mode.currentText().lower()
 
+        try:
+            cipher = GOST(key=key_hex, iv=iv_hex, mode=gost_mode)
+
+        except GOSTError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
         match self.ui.tab_widget.currentWidget():
-
             case self.ui.tab_text:
-                data = self.ui.text_edit_input.toPlainText()
-
-                try:
-                    processed_data = gost.make(data, mode)
-
-                except GOSTError as e:
-                    QMessageBox.warning(self, "Warning!", e.args[0])
-                    return
-
-                self.ui.text_edit_output.setText(processed_data)
+                self._tab_text_processing(cipher, mode)
 
             case self.ui.tab_document:
-                if self.file_path.isEmpty():
-                    QMessageBox.warning(self, "Warning!", "File not selected!")
-                    return
+                self._tab_document_processing(cipher, mode)
 
-                # get the name of the new file
-                file_path_output, _ = QFileDialog.getSaveFileName(
-                    parent=self,
-                    caption="Save new file",
-                    directory="",
-                    filter=DES_SUPPORT_EXT,
-                )
+            case _:
+                pass
 
-                if not file_path_output:
-                    return
+    def _tab_text_processing(self, cipher: GOST, mode: str):
+        data = self.ui.text_edit_input.toPlainText()
 
-                self.file_worker_thread.set_options(
-                    cipher=gost,
-                    mode=mode,
-                    input_file=self.file_path.toLocalFile(),
-                    output_file=file_path_output
-                )
-                self.file_worker_thread.start()
+        try:
+            processed_data = cipher.make(data, mode)
 
-    def file_path_changed(self, file: QUrl):
+        except GOSTError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+        self.ui.text_edit_output.setText(processed_data)
+
+    def _tab_document_processing(self, cipher: GOST, mode: str):
+        if self.file_path.isEmpty():
+            QMessageBox.warning(self, "Warning!", "File not selected!")
+            return
+
+        # get the name of the new file
+        file_path_output, _ = QFileDialog.getSaveFileName(
+            parent=self,
+            caption="Save new file",
+            directory="",
+            filter=DES_SUPPORT_EXT,
+        )
+
+        if not file_path_output:
+            return
+
+        self.file_worker_thread.set_options(
+            cipher=cipher,
+            mode=mode,
+            input_file=self.file_path.toLocalFile(),
+            output_file=file_path_output
+        )
+        self.file_worker_thread.start()
+
+    def _file_path_changed(self, file: QUrl):
         self.file_path = file
 
 

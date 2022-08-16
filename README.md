@@ -3,23 +3,20 @@
 </p>
 <div>
     <h1 align="center">Crypto-methods</h1>
-    <h2 align="center">Encrypt | Decrypt</h2>
-    <p align="center">Laboratory work on cryptographic methods of information protection</p>
+    <p align="center">Laboratory work on the subject "Cryptographic methods of information protection". These works include asymmetric and symmetric encryption, as well as some cryptanalysis methods.</p>
 </div>
 
 ![image-app](/resources/screenshots/image-app.png)
 
 
-# :books: Contents
+## :books: Contents
 
 - [**Supported ciphers**](#fire-features)
 - [**Dependencies**](#gear-dependencies)
 - [**Installation**](#hammer_and_wrench-installation)
 - [**Attribution links**](#link-attribution-links)
 
-<br>
-
-# :fire: Features
+## :fire: Features
 
 
 | Category           | Module                                                                 | Widget                                                                                        | Description                                                                        |
@@ -46,22 +43,20 @@
 |                    | [`kasiski.py`](/app/crypto/tools/kasiski.py)                           | [`kasiski_widget.py`](/app/gui/cryptotools/kasiski/kasiski_widget.py)                         | [Kasiski examination](https://en.wikipedia.org/wiki/Kasiski_examination)           |
 | PRNGs              | [`rc4.py`](/app/crypto/prngs/rc4.py)                                   |                                                                                               | [RC4](https://en.wikipedia.org/wiki/RC4)                                           |
 
-<br>
-
-# :gear: Dependencies
+## :gear: Dependencies
 
 - `python-3.10+`
 - `PyQt6`
 - `numpy`
 - `sympy`
+- `pyqtgraph`
+- `scipy`
 
-<br>
-
-# :hammer_and_wrench: Installation
+## :hammer_and_wrench: Installation
 
 Coming soon...
 
-# :link: Attribution links
+## :link: Attribution links
 
 - <a href="https://www.flaticon.com/free-icons/cyber-security" title="cyber security icons">Cyber security icons created by Graphix's Art - Flaticon</a>
 - <a href="https://www.flaticon.com/free-icons/telegram" title="telegram icons">Telegram icons created by Freepik - Flaticon</a>

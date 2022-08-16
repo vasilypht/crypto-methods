@@ -64,15 +64,8 @@ class KasiskiWidget(QWidget):
             case _:
                 return
 
-        kasiski = Kasiski(
-            text=text,
-            seq_len=seq_len,
-            threshold=threshold,
-            min_len=min_key_length,
-            max_len=max_key_length
-        )
-
-        lengths = kasiski.find_possible_key_lengths()
+        crypto_tool = Kasiski(text, seq_len, threshold, min_key_length, max_key_length)
+        lengths = crypto_tool.find_possible_key_lengths()
 
         self.ui.text_edit_stats.append(f"Found lengths: {len(lengths)}")
         self.ui.text_edit_stats.append(f"Possible key lengths:")

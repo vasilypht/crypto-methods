@@ -12,41 +12,43 @@ class FreqAnalysisError(Exception):
     pass
 
 
-def get_freq_table(lang: str = "english", text_type: str = "common") -> dict:
-    return FREQ_TABLES.get(lang, {}).get(text_type, {})
+class FreqAnalysis:
+    @staticmethod
+    def get_freq_table(lang: str = "english", text_type: str = "common") -> dict:
+        return FREQ_TABLES.get(lang, {}).get(text_type, {})
 
+    @staticmethod
+    def analysis(text: str, freq_table: dict) -> dict:
+        if not text:
+            raise FreqAnalysisError("Input string is empty!")
 
-def analysis(text: str, freq_table: dict) -> dict:
-    if not text:
-        raise FreqAnalysisError("Input string is empty!")
+        substr, _ = get_letters_alphabetically(text, freq_table.keys())
 
-    substr, _ = get_letters_alphabetically(text, freq_table.keys())
+        if not substr:
+            raise FreqAnalysisError("The input string does not have characters of the selected alphabet!")
 
-    if not substr:
-        raise FreqAnalysisError("The input string does not have characters of the selected alphabet!")
+        counter_text = Counter(substr)
 
-    counter_text = Counter(substr)
+        freq_text = dict.fromkeys(freq_table.keys(), 0)
+        freq_text.update(counter_text)
+        return freq_text
 
-    freq_text = dict.fromkeys(freq_table.keys(), 0)
-    freq_text.update(counter_text)
-    return freq_text
+    @staticmethod
+    def decipher(text: str, letter_match: dict) -> str:
+        if not text:
+            raise FreqAnalysisError("Input string is empty!")
 
+        test_list: list[str] = list(text)
 
-def decipher(text: str, letter_match: dict) -> str:
-    if not text:
-        raise FreqAnalysisError("Input string is empty!")
+        for i in range(len(text)):
+            letter = test_list[i]
+            if letter.lower() not in letter_match.keys():
+                continue
 
-    test_list: list[str] = list(text)
+            new_letter = letter_match.get(letter.lower())
+            if letter.isupper():
+                new_letter = new_letter.upper()
 
-    for i in range(len(text)):
-        letter = test_list[i]
-        if letter.lower() not in letter_match.keys():
-            continue
+            test_list[i] = new_letter
 
-        new_letter = letter_match.get(letter.lower())
-        if letter.isupper():
-            new_letter = new_letter.upper()
-
-        test_list[i] = new_letter
-
-    return "".join(test_list)
+        return "".join(test_list)

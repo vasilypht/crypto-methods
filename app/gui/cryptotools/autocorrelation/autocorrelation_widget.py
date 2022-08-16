@@ -74,22 +74,17 @@ class AutocorrelationWidget(QWidget):
                 return
 
         try:
-            autocorr = Autocorrelation(
-                text=text,
-                max_len=max_key_length,
-                delta=delta,
-                lang=lang
-            )
+            crypto_tool = Autocorrelation(text, max_key_length, delta, lang)
 
             if self.ui.check_box_custom_key_length.isChecked():
                 key_length = self.ui.spin_box_custom_key_length.value()
                 self.ui.text_edit_stats.append(f"Key length: {key_length} (custom)\n")
 
             else:
-                key_length = autocorr.find_possible_key_length()
+                key_length = crypto_tool.find_possible_key_length()
                 self.ui.text_edit_stats.append(f"Key length: {key_length} (possible)\n")
 
-            possible_key = autocorr.find_possible_key(key_length)
+            possible_key = crypto_tool.find_possible_key(key_length)
             self.ui.text_edit_stats.append(f"Possible key: \"{possible_key}\"")
 
         except AutocorrError as e:

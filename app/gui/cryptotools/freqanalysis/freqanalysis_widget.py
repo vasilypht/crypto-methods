@@ -17,8 +17,9 @@ from app.gui.const import (
     FREQ_ANALYSIS_SUPPORT_EXT,
     MAX_CHARS_READ
 )
-from app.crypto.tools import (
-    freqanalysis as fa
+from app.crypto.tools.freqanalysis import (
+    FreqAnalysis,
+    FreqAnalysisError
 )
 
 
@@ -85,7 +86,7 @@ class FreqAnalysisWidget(QWidget):
 
     def _button_analysis_clicked(self):
         self.current_lang = self.ui.combo_box_lang.currentText().lower()
-        self.freq_table = fa.get_freq_table(
+        self.freq_table = FreqAnalysis.get_freq_table(
             lang=self.current_lang.lower(),
             text_type=self.ui.combo_box_text_style.currentText().lower()
         )
@@ -94,45 +95,10 @@ class FreqAnalysisWidget(QWidget):
 
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                try:
-                    self.freq_text = fa.analysis(
-                        text=self.ui.text_edit_input.toPlainText().lower(),
-                        freq_table=self.freq_table
-                    )
-                except fa.FreqAnalysisError as e:
-                    QMessageBox.warning(self, "Warning!", e.args[0])
-                    return
+                self._tab_text_analysis_processing()
 
             case self.ui.tab_document:
-                if self.file_path.isEmpty():
-                    QMessageBox.warning(self, "Warning!", "File not selected!")
-                    return
-
-                try:
-                    # clear
-                    self.freq_text.clear()
-
-                    with open(self.file_path.toLocalFile(), "r") as file:
-                        while block := file.read(MAX_CHARS_READ):
-                            freq_table = fa.analysis(
-                                text=block.lower(),
-                                freq_table=self.freq_table
-                            )
-
-                            if not self.freq_text:
-                                self.freq_text = freq_table
-                                continue
-
-                            for key, value in freq_table.items():
-                                self.freq_text[key] += value
-
-                except fa.FreqAnalysisError as e:
-                    QMessageBox.warning(self, "Warning!", e.args[0])
-                    return
-
-                except OSError:
-                    QMessageBox.warning(self, "Warning!", "Error while reading or writing to file!")
-                    return
+                self._tab_document_analysis_processing()
 
             case _:
                 return
@@ -144,77 +110,116 @@ class FreqAnalysisWidget(QWidget):
         self.update_bar_graph(self.bar_graph_freq_text, self.freq_text)
         self.update_table_match()
 
+    def _tab_text_analysis_processing(self):
+        data = self.ui.text_edit_input.toPlainText().lower()
+
+        try:
+            self.freq_text = FreqAnalysis.analysis(data, self.freq_table)
+
+        except FreqAnalysisError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+    def _tab_document_analysis_processing(self):
+        if self.file_path.isEmpty():
+            QMessageBox.warning(self, "Warning!", "File not selected!")
+            return
+
+        try:
+            self.freq_text.clear()
+
+            with open(self.file_path.toLocalFile(), "r") as file:
+                while block := file.read(MAX_CHARS_READ):
+                    freq_table = FreqAnalysis.analysis(block.lower(), self.freq_table)
+
+                    if not self.freq_text:
+                        self.freq_text = freq_table
+                        continue
+
+                    for key, value in freq_table.items():
+                        self.freq_text[key] += value
+
+        except FreqAnalysisError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+        except OSError:
+            QMessageBox.warning(self, "Warning!", "Error while reading or writing to file!")
+            return
+
     def _button_decipher_clicked(self):
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                try:
-                    self.ui.text_edit_output.setText(
-                        fa.decipher(
-                            text=self.ui.text_edit_input.toPlainText(),
-                            letter_match=self.letter_match
-                        )
-                    )
-
-                except fa.FreqAnalysisError as e:
-                    QMessageBox.warning(self, "Warning!", e.args[0])
-                    return
+                self._tab_text_decipher_processing()
 
             case self.ui.tab_document:
-                if self.file_path.isEmpty():
-                    QMessageBox.warning(self, "Warning!", "File not selected!")
-                    return
-
-                # get the name of the new file
-                file_path_output, _ = QFileDialog.getSaveFileName(
-                    parent=self,
-                    caption="Save new file",
-                    directory="",
-                    filter=FREQ_ANALYSIS_SUPPORT_EXT,
-                )
-
-                if not file_path_output:
-                    return
-
-                # Attempt to open input file
-                try:
-                    file_input = open(self.file_path.toLocalFile(), "r")
-
-                except OSError:
-                    QMessageBox.warning(self, "Warning!", "Error opening input file!")
-                    return
-
-                # Attempt to open output file
-                try:
-                    file_output = open(file_path_output, "w")
-
-                except OSError:
-                    # Closing the input file
-                    file_input.close()
-                    QMessageBox.warning(self, "Warning!", "Error opening output file!")
-                    return
-
-                try:
-                    while block := file_input.read(MAX_CHARS_READ):
-                        processed_block = fa.decipher(
-                            text=block,
-                            letter_match=self.letter_match
-                        )
-                        file_output.write(processed_block)
-
-                except fa.FreqAnalysisError as e:
-                    QMessageBox.warning(self, "Warning!", e.args[0])
-                    return
-
-                except OSError:
-                    QMessageBox.warning(self, "Warning!", "An error occurred while writing to file!")
-                    return
-
-                finally:
-                    file_input.close()
-                    file_output.close()
+                self._tab_document_decipher_processing()
 
             case _:
                 return
+
+    def _tab_text_decipher_processing(self):
+        data = self.ui.text_edit_input.toPlainText()
+
+        try:
+            processed_data = FreqAnalysis.decipher(data, self.letter_match)
+
+        except FreqAnalysisError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+        self.ui.text_edit_output.setText(processed_data)
+
+    def _tab_document_decipher_processing(self):
+        if self.file_path.isEmpty():
+            QMessageBox.warning(self, "Warning!", "File not selected!")
+            return
+
+        # get the name of the new file
+        file_path_output, _ = QFileDialog.getSaveFileName(
+            parent=self,
+            caption="Save new file",
+            directory="",
+            filter=FREQ_ANALYSIS_SUPPORT_EXT,
+        )
+
+        if not file_path_output:
+            return
+
+        # Attempt to open input file
+        try:
+            file_input = open(self.file_path.toLocalFile(), "r")
+
+        except OSError:
+            QMessageBox.warning(self, "Warning!", "Error opening input file!")
+            return
+
+        # Attempt to open output file
+        try:
+            file_output = open(file_path_output, "w")
+
+        except OSError:
+            # Closing the input file
+            file_input.close()
+            QMessageBox.warning(self, "Warning!", "Error opening output file!")
+            return
+
+        try:
+            while block := file_input.read(MAX_CHARS_READ):
+                processed_block = FreqAnalysis.decipher(block, self.letter_match)
+                file_output.write(processed_block)
+
+        except FreqAnalysisError as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
+
+        except OSError:
+            QMessageBox.warning(self, "Warning!", "An error occurred while writing to file!")
+            return
+
+        finally:
+            file_input.close()
+            file_output.close()
 
     @staticmethod
     def update_bar_graph(graph: pg.BarGraphItem, freq_table: dict):
@@ -286,7 +291,7 @@ class FreqAnalysisWidget(QWidget):
         self.file_path = file
 
     def _text_style_changed(self, text_style: str):
-        self.freq_table = fa.get_freq_table(
+        self.freq_table = FreqAnalysis.get_freq_table(
             lang=self.current_lang.lower(),
             text_type=text_style.lower()
         )

@@ -74,22 +74,17 @@ class ICWidget(QWidget):
                 return
 
         try:
-            ic = IndexOfCoincidence(
-                text=text,
-                max_len=max_key_length,
-                delta=delta,
-                lang=lang
-            )
+            crypto_tool = IndexOfCoincidence(text, max_key_length, delta, lang)
 
             if self.ui.check_box_custom_key_length.isChecked():
                 key_length = self.ui.spin_box_custom_key_length.value()
                 self.ui.text_edit_stats.append(f"Key length: {key_length} (custom)\n")
 
             else:
-                key_length = ic.find_possible_key_length()
+                key_length = crypto_tool.find_possible_key_length()
                 self.ui.text_edit_stats.append(f"Key length: {key_length} (possible)\n")
 
-            possible_keys = ic.find_possible_keys(key_length)
+            possible_keys = crypto_tool.find_possible_keys(key_length)
             self.ui.text_edit_stats.append(f"Possible keys ({len(possible_keys)}):")
             for key in possible_keys:
                 self.ui.text_edit_stats.append(f" -> \"{key}\"")

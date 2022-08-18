@@ -54,7 +54,11 @@
 
 ## :hammer_and_wrench: Installation
 
-Coming soon...
+To install the program, just run this script:
+
+```shell
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/vasilypht/crypto-methods/main/install.sh)"
+```
 
 ## :link: Attribution links
 

@@ -2,32 +2,31 @@ from random import randbytes
 import json
 
 from PyQt6.QtWidgets import (
-    QWidget,
     QMessageBox,
     QMenu,
     QFileDialog,
     QVBoxLayout,
 )
-from PyQt6.QtCore import (
-    QUrl,
-    QThread,
-    pyqtSignal,
-    Qt
-)
+from PyQt6.QtCore import QUrl
 
 from .gost_ui import Ui_GOST
-from app.gui.widgets import DragDropWidget, PBar
-from app.gui.const import (
-    DES_SUPPORT_EXT,
-    MAX_BYTES_READ
-)
 from app.crypto.symmetric.gost import (
     GOST,
     GOSTError
 )
+from app.gui.widgets import (
+    DragDropWidget,
+    PBarCommands,
+    BaseQWidget,
+    BaseQThread
+)
+from app.gui.const import (
+    DES_SUPPORT_EXT,
+    MAX_BYTES_READ
+)
 
 
-class GOSTWidget(QWidget):
+class GOSTWidget(BaseQWidget):
     def __init__(self):
         super(GOSTWidget, self).__init__()
         self.ui = Ui_GOST()
@@ -36,15 +35,6 @@ class GOSTWidget(QWidget):
         self.title = "GOST 28147-89"
 
         self.file_path = QUrl()
-
-        self.pbar = PBar()
-        self.pbar.setWindowTitle(self.title)
-        self.pbar.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        self.file_worker_thread = FileProcessing(self)
-        self.file_worker_thread.update_pbar.connect(self.pbar.signal_handler)
-        self.file_worker_thread.message.connect(lambda m: QMessageBox.warning(self, "Warning!", m))
-        self.pbar.close_clicked.connect(lambda: self.file_worker_thread.close())
 
         # Add Drag and drop widget
         self.drag_drop_widget = DragDropWidget(self.ui.tab_document)
@@ -187,78 +177,67 @@ class GOSTWidget(QWidget):
         if not file_path_output:
             return
 
-        self.file_worker_thread.set_options(
-            cipher=cipher,
-            mode=mode,
-            input_file=self.file_path.toLocalFile(),
-            output_file=file_path_output
-        )
-        self.file_worker_thread.start()
+        thread_worker = FileProcessing(cipher, mode, self.file_path.toLocalFile(), file_path_output)
+        self.thread_ready.emit(thread_worker)
 
     def _file_path_changed(self, file: QUrl):
         self.file_path = file
 
 
-class FileProcessing(QThread):
-    update_pbar = pyqtSignal(tuple)
-    message = pyqtSignal(str)
-
-    def __init__(self, parent):
-        super(FileProcessing, self).__init__(parent)
-        self.cipher = None
-        self.mode = None
-        self.input_file = None
-        self.output_file = None
+class FileProcessing(BaseQThread):
+    def __init__(self, cipher: GOST, mode: str, input_file: str, output_file: str):
+        super(FileProcessing, self).__init__()
+        self._cipher = cipher
+        self._mode = mode
+        self._input_file = input_file
+        self._output_file = output_file
 
         self._is_worked = True
-
-    def set_options(self, cipher: GOST, mode: str, input_file: str, output_file: str):
-        self.cipher = cipher
-        self.mode = mode
-        self.input_file = input_file
-        self.output_file = output_file
 
     def close(self):
         self._is_worked = False
         self.wait()
 
     def run(self) -> None:
-        self._is_worked = True
-
         try:
-            with open(self.input_file, "rb") as input_file, \
-                    open(self.output_file, "wb") as output_file:
+            with open(self._input_file, "rb") as input_file, \
+                    open(self._output_file, "wb") as output_file:
                 input_file.seek(0, 2)
                 input_file_size = input_file.tell()
                 input_file.seek(0, 0)
 
-                self.update_pbar.emit(("range", 0, input_file_size))
-                self.update_pbar.emit(("show",))
+                self.pbar.emit((PBarCommands.SET_RANGE, 0, input_file_size))
+                self.pbar.emit((PBarCommands.SET_VALUE, 0))
+                self.pbar.emit((PBarCommands.SHOW,))
 
-                if self.mode == "encrypt":
-                    # padding to 8 bytes
-                    pad = input_file_size.to_bytes(8, "little")
-                    encrypted_pad = self.cipher.encrypt(pad, reset_iv=False)
-                    output_file.write(encrypted_pad)
+                match self._mode:
+                    case "encrypt":
+                        # padding to 8 bytes
+                        pad = input_file_size.to_bytes(8, "little")
+                        encrypted_pad = self._cipher.encrypt(pad, reset_iv=False)
+                        output_file.write(encrypted_pad)
 
-                if self.mode == "decrypt":
-                    pad = input_file.read(8)
-                    decrypted_pad = self.cipher.decrypt(pad, reset_iv=False)
-                    final_file_size = int.from_bytes(decrypted_pad, "little")
+                    case "decrypt":
+                        pad = input_file.read(8)
+                        decrypted_pad = self._cipher.decrypt(pad, reset_iv=False)
+                        final_file_size = int.from_bytes(decrypted_pad, "little")
+
+                    case _:
+                        return
 
                 while (block := input_file.read(MAX_BYTES_READ)) and self._is_worked:
-                    processed_block = self.cipher.make(block, self.mode, reset_iv=False)
+                    processed_block = self._cipher.make(block, self._mode, reset_iv=False)
                     output_file.write(processed_block)
-                    self.update_pbar.emit(("current_value", input_file.tell()))
 
-                if self.mode == "decrypt":
+                    self.pbar.emit((PBarCommands.SET_VALUE, input_file.tell()))
+
+                if self._mode == "decrypt":
                     output_file.truncate(final_file_size)
 
-                self.update_pbar.emit(("close",))
-
         except Exception as e:
-            self.update_pbar.emit(("close",))
             self.message.emit("An error occurred while working with files or when "
                               "determining the file size. (Check encryption mode)\n"
                               f"({e.args[0]})")
-            return
+
+        finally:
+            self.pbar.emit((PBarCommands.CLOSE,))

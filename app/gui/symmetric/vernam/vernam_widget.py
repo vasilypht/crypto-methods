@@ -1,5 +1,4 @@
 from PyQt6.QtWidgets import (
-    QWidget,
     QMessageBox,
     QMenu,
     QFileDialog
@@ -10,9 +9,10 @@ from app.crypto.symmetric.vernam import (
     Vernam,
     VernamError
 )
+from app.gui.widgets import BaseQWidget
 
 
-class VernamWidget(QWidget):
+class VernamWidget(BaseQWidget):
     def __init__(self):
         super(VernamWidget, self).__init__()
         self.ui = Ui_vernam()

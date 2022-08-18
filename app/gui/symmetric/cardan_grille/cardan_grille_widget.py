@@ -1,22 +1,20 @@
 from PyQt6.QtWidgets import (
-    QWidget,
     QMessageBox,
     QAbstractItemView,
     QTableWidgetItem,
     QMenu
 )
-from PyQt6.QtGui import (
-    QColor
-)
+from PyQt6.QtGui import QColor
 
 from .cardan_grille_ui import Ui_CardanGrille
 from app.crypto.symmetric.cardan_grille import (
     CarganGrille,
     CarganGrilleError
 )
+from app.gui.widgets import BaseQWidget
 
 
-class CardanGrilleWidget(QWidget):
+class CardanGrilleWidget(BaseQWidget):
     def __init__(self):
         super(CardanGrilleWidget, self).__init__()
         self.ui = Ui_CardanGrille()

@@ -1,22 +1,16 @@
-from PyQt6.QtCore import (
-    QRegularExpression as QRegExp
-)
-from PyQt6.QtWidgets import (
-    QWidget,
-    QMessageBox
-)
-from PyQt6.QtGui import (
-    QRegularExpressionValidator as QRegExpVal
-)
+from PyQt6.QtCore import QRegularExpression as QRegExp
+from PyQt6.QtWidgets import QMessageBox
+from PyQt6.QtGui import QRegularExpressionValidator as QRegExpVal
 
 from .richelieu_ui import Ui_Richelieu
 from app.crypto.symmetric.richelieu import (
     Richelieu,
     RichelieuError
 )
+from app.gui.widgets import BaseQWidget
 
 
-class RichelieuWidget(QWidget):
+class RichelieuWidget(BaseQWidget):
     def __init__(self):
         super(RichelieuWidget, self).__init__()
         self.ui = Ui_Richelieu()

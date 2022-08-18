@@ -1,16 +1,16 @@
 from PyQt6.QtWidgets import (
-    QWidget,
     QMessageBox
 )
 
 from .polybius_square_ui import Ui_PolybiusSquare
+from app.gui.widgets import BaseQWidget
 from app.crypto.symmetric.polybius_square import (
     PolybiusSquareError,
     PolybiusSquare
 )
 
 
-class PolybiusSquareWidget(QWidget):
+class PolybiusSquareWidget(BaseQWidget):
     def __init__(self):
         super(PolybiusSquareWidget, self).__init__()
         self.ui = Ui_PolybiusSquare()

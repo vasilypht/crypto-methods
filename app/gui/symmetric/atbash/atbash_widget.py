@@ -1,16 +1,14 @@
-from PyQt6.QtWidgets import (
-    QWidget,
-    QMessageBox
-)
+from PyQt6.QtWidgets import QMessageBox
 
 from .atbash_ui import Ui_Atbash
 from app.crypto.symmetric.atbash import (
     Atbash,
     AtbashError
 )
+from app.gui.widgets import BaseQWidget
 
 
-class AtbashWidget(QWidget):
+class AtbashWidget(BaseQWidget):
     def __init__(self):
         super(AtbashWidget, self).__init__()
         self.ui = Ui_Atbash()

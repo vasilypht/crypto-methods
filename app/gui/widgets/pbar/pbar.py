@@ -1,41 +1,52 @@
+from enum import Enum, auto
+
 from PyQt6.QtWidgets import (
     QProgressBar
 )
 from PyQt6.QtCore import (
     pyqtSignal
 )
-from PyQt6.QtGui import (
-    QCloseEvent
-)
+
+
+class PBarCommands(Enum):
+    SET_VALUE = auto()
+    UPDATE_VALUE = auto()
+    SET_RANGE = auto()
+    SET_MIN_VALUE = auto()
+    SET_MAX_VALUE = auto()
+    CLOSE = auto()
+    SHOW = auto()
 
 
 class PBar(QProgressBar):
-    close_clicked = pyqtSignal()
+    shown = pyqtSignal()
+    closed = pyqtSignal()
 
-    def __init__(self):
-        super(PBar, self).__init__()
-        self.setMaximumSize(400, 40)
-        self.setMinimumSize(400, 40)
+    def __init__(self, *args, **kwargs):
+        super(PBar, self).__init__(*args, **kwargs)
 
-    def closeEvent(self, event: QCloseEvent) -> None:
-        self.close_clicked.emit()
-
-    def signal_handler(self, option: tuple):
+    def event_handler(self, option: tuple):
         match option:
-            case "current_value", value:
+            case PBarCommands.SET_VALUE, value:
                 self.setValue(value)
 
-            case "min_value", value:
-                self.setMinimum(value)
+            case PBarCommands.UPDATE_VALUE, value:
+                current_value = self.value()
+                self.setValue(current_value + value)
 
-            case "max_value", value:
-                self.setMaximum(value)
-
-            case "range", min_value, max_value:
+            case PBarCommands.SET_RANGE, min_value, max_value:
                 self.setRange(min_value, max_value)
 
-            case "show", *args:
-                self.show()
+            case PBarCommands.SET_MIN_VALUE, min_value:
+                self.setMinimum(min_value)
 
-            case "close", *args:
+            case PBarCommands.SET_MAX_VALUE, max_value:
+                self.setMaximum(max_value)
+
+            case PBarCommands.CLOSE, *args:
+                self.closed.emit()
                 self.close()
+
+            case PBarCommands.SHOW, *args:
+                self.shown.emit()
+                self.show()

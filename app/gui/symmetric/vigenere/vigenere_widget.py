@@ -1,22 +1,16 @@
-from PyQt6.QtCore import (
-    QRegularExpression as QRegExp
-)
-from PyQt6.QtWidgets import (
-    QWidget,
-    QMessageBox
-)
-from PyQt6.QtGui import (
-    QRegularExpressionValidator as QRegExpVal
-)
+from PyQt6.QtCore import QRegularExpression as QRegExp
+from PyQt6.QtWidgets import QMessageBox
+from PyQt6.QtGui import QRegularExpressionValidator as QRegExpVal
 
 from .vigenere_ui import Ui_Vigenere
 from app.crypto.symmetric.vigenere import (
     Vigenere,
     VigenereError
 )
+from app.gui.widgets import BaseQWidget
 
 
-class VigenereWidget(QWidget):
+class VigenereWidget(BaseQWidget):
     def __init__(self):
         super(VigenereWidget, self).__init__()
         self.ui = Ui_Vigenere()

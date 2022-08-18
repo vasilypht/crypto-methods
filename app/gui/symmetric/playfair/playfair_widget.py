@@ -1,22 +1,16 @@
-from PyQt6.QtCore import (
-    QRegularExpression as QRegExp
-)
-from PyQt6.QtWidgets import (
-    QWidget,
-    QMessageBox
-)
-from PyQt6.QtGui import (
-    QRegularExpressionValidator as QRegExpVal
-)
+from PyQt6.QtCore import QRegularExpression as QRegExp
+from PyQt6.QtWidgets import QMessageBox
+from PyQt6.QtGui import QRegularExpressionValidator as QRegExpVal
 
 from .playfair_ui import Ui_Playfair
 from app.crypto.symmetric.playfair import (
     Playfair,
     PlayfairError
 )
+from app.gui.widgets import BaseQWidget
 
 
-class PlayfairWidget(QWidget):
+class PlayfairWidget(BaseQWidget):
     def __init__(self):
         super(PlayfairWidget, self).__init__()
         self.ui = Ui_Playfair()

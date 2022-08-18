@@ -1,26 +1,28 @@
 from PyQt6.QtWidgets import (
-    QWidget,
     QMessageBox,
     QHBoxLayout,
     QFileDialog
 )
-from PyQt6.QtCore import (
-    QUrl
-)
+from PyQt6.QtCore import QUrl
 
 from .caesar_ui import Ui_Caesar
 from app.crypto.symmetric.caesar import (
     Caesar,
     CaesarError
 )
-from app.gui.widgets import DragDropWidget
 from app.gui.const import (
     MAX_CHARS_READ,
     CAESAR_SUPPORT_EXT
 )
+from app.gui.widgets import (
+    DragDropWidget,
+    BaseQWidget,
+    BaseQThread,
+    PBarCommands
+)
 
 
-class CaesarWidget(QWidget):
+class CaesarWidget(BaseQWidget):
     def __init__(self):
         super(CaesarWidget, self).__init__()
         self.ui = Ui_Caesar()
@@ -71,7 +73,6 @@ class CaesarWidget(QWidget):
 
         self.ui.text_edit_output.setText(processed_text)
 
-    # TODO: Make a progress bar
     def _tab_document_processing(self, cipher: Caesar, mode: str):
         if self.file_path_input.isEmpty():
             QMessageBox.warning(self, "Warning!", "File not selected!")
@@ -88,34 +89,50 @@ class CaesarWidget(QWidget):
         if not file_path_output:
             return
 
-        # Attempt to open input file
-        try:
-            file_input = open(self.file_path_input.toLocalFile(), "r")
-        except OSError:
-            QMessageBox.warning(self, "Warning!", "Error opening input file!")
-            return
-
-        # Attempt to open output file
-        try:
-            file_output = open(file_path_output, "w")
-        except OSError:
-            # Closing the input file
-            file_input.close()
-            QMessageBox.warning(self, "Warning!", "Error opening output file!")
-            return
-
-        try:
-            while block := file_input.read(MAX_CHARS_READ):
-                processed_block = cipher.make(block, mode)
-                file_output.write(processed_block)
-
-        except CaesarError as e:
-            QMessageBox.warning(self, "Warning!", e.args[0])
-            return
-
-        finally:
-            file_input.close()
-            file_output.close()
+        thread_worker = FileProcessing(cipher, mode, self.file_path_input.toLocalFile(), file_path_output)
+        self.thread_ready.emit(thread_worker)
 
     def _change_file_path(self, file: QUrl):
         self.file_path_input = file
+
+
+class FileProcessing(BaseQThread):
+    def __init__(self, cipher: Caesar, mode: str, input_file: str, output_file: str):
+        super(FileProcessing, self).__init__()
+        self._cipher = cipher
+        self._mode = mode
+        self._input_file = input_file
+        self._output_file = output_file
+
+        self._is_worked = True
+
+    def close(self):
+        self._is_worked = False
+        self.wait()
+
+    def run(self) -> None:
+        try:
+            with open(self._input_file, "r") as input_file, \
+                    open(self._output_file, "w") as output_file:
+                input_file.seek(0, 2)
+                input_file_size = input_file.tell()
+                input_file.seek(0, 0)
+
+                self.pbar.emit((PBarCommands.SET_RANGE, 0, input_file_size))
+                self.pbar.emit((PBarCommands.SET_VALUE, 0))
+                self.pbar.emit((PBarCommands.SHOW,))
+
+                while (block := input_file.read(MAX_CHARS_READ)) and self._is_worked:
+                    encrypted_block = self._cipher.make(block, self._mode)
+                    output_file.write(encrypted_block)
+
+                    self.pbar.emit((PBarCommands.SET_VALUE, input_file.tell()))
+
+        except Exception as e:
+            self.message.emit("An error occurred while working with files or when "
+                              "determining the file size. (Check encryption mode)\n"
+                              f"({e.args[0]})")
+
+        finally:
+            self.pbar.emit((PBarCommands.CLOSE,))
+

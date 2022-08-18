@@ -1,16 +1,14 @@
-from PyQt6.QtWidgets import (
-    QWidget,
-    QMessageBox
-)
+from PyQt6.QtWidgets import QMessageBox
 
 from .scytale_ui import Ui_Scytale
 from app.crypto.symmetric.scytale import (
     Scytale,
     ScytaleError
 )
+from app.gui.widgets import BaseQWidget
 
 
-class ScytaleWidget(QWidget):
+class ScytaleWidget(BaseQWidget):
     def __init__(self):
         super(ScytaleWidget, self).__init__()
         self.ui = Ui_Scytale()

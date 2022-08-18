@@ -1,22 +1,16 @@
-from PyQt6.QtCore import (
-    QRegularExpression as QRegExp
-)
-from PyQt6.QtWidgets import (
-    QWidget,
-    QMessageBox
-)
-from PyQt6.QtGui import (
-    QRegularExpressionValidator as QRegExpVal
-)
+from PyQt6.QtCore import QRegularExpression as QRegExp
+from PyQt6.QtWidgets import QMessageBox
+from PyQt6.QtGui import QRegularExpressionValidator as QRegExpVal
 
 from .gronsfeld_ui import Ui_Gronsfeld
 from app.crypto.symmetric.gronsfeld import (
     Gronsfeld,
     GronsfeldError
 )
+from app.gui.widgets import BaseQWidget
 
 
-class GronsfeldWidget(QWidget):
+class GronsfeldWidget(BaseQWidget):
     def __init__(self):
         super(GronsfeldWidget, self).__init__()
         self.ui = Ui_Gronsfeld()

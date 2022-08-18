@@ -1,24 +1,14 @@
 from PyQt6.QtWidgets import (
-    QWidget,
     QMessageBox,
     QMenu,
     QFileDialog,
-    QVBoxLayout,
+    QVBoxLayout
 )
-from PyQt6.QtCore import (
-    QUrl,
-    QThread,
-    pyqtSignal,
-)
+from PyQt6.QtCore import QUrl
 
 import numpy as np
 
 from .xor_ui import Ui_XOR
-from app.gui.widgets import DragDropWidget, PBar
-from app.gui.const import (
-    XOR_SUPPORT_EXT,
-    MAX_BYTES_READ
-)
 from app.crypto.symmetric.xor import (
     XOR,
     XORError
@@ -27,9 +17,19 @@ from app.crypto.prngs.rc4 import (
     RC4,
     RC4Error
 )
+from app.gui.widgets import (
+    DragDropWidget,
+    PBarCommands,
+    BaseQWidget,
+    BaseQThread
+)
+from app.gui.const import (
+    XOR_SUPPORT_EXT,
+    MAX_BYTES_READ
+)
 
 
-class XORWidget(QWidget):
+class XORWidget(BaseQWidget):
     def __init__(self):
         super(XORWidget, self).__init__()
         self.ui = Ui_XOR()
@@ -38,12 +38,6 @@ class XORWidget(QWidget):
         self.title = "XOR"
 
         self.file_path = QUrl()
-
-        self.pbar = PBar()
-        self.file_worker_thread = FileProcessing(self)
-        self.file_worker_thread.update_pbar.connect(self.pbar.signal_handler)
-        self.file_worker_thread.message.connect(lambda m: QMessageBox.warning(self, "Warning!", m))
-        self.pbar.close_clicked.connect(lambda: self.file_worker_thread.close())
 
         # Add Drag and drop widget
         self.drag_drop_widget = DragDropWidget(self.ui.tab_document)
@@ -115,13 +109,8 @@ class XORWidget(QWidget):
         if not file_path_output:
             return
 
-        self.file_worker_thread.set_options(
-            cipher=cipher,
-            mode=mode,
-            input_file=self.file_path.toLocalFile(),
-            output_file=file_path_output
-        )
-        self.file_worker_thread.start()
+        thread_worker = FileProcessing(cipher, mode, self.file_path.toLocalFile(), file_path_output)
+        self.thread_ready.emit(thread_worker)
 
     def _action_gen_iv_clicked(self):
         iv = np.random.randint(0, 256, self.ui.spin_box_iv_size.value())
@@ -185,52 +174,42 @@ class XORWidget(QWidget):
         self.file_path = file
 
 
-class FileProcessing(QThread):
-    update_pbar = pyqtSignal(tuple)
-    message = pyqtSignal(str)
-
-    def __init__(self, parent):
-        super(FileProcessing, self).__init__(parent)
-        self.cipher = None
-        self.mode = None
-        self.input_file = None
-        self.output_file = None
+class FileProcessing(BaseQThread):
+    def __init__(self, cipher: XOR, mode: str, input_file: str, output_file: str):
+        super(FileProcessing, self).__init__()
+        self._cipher = cipher
+        self._mode = mode
+        self._input_file = input_file
+        self._output_file = output_file
 
         self._is_worked = True
-
-    def set_options(self, cipher: XOR, mode: str, input_file: str, output_file: str):
-        self.cipher = cipher
-        self.mode = mode
-        self.input_file = input_file
-        self.output_file = output_file
 
     def close(self):
         self._is_worked = False
         self.wait()
 
     def run(self) -> None:
-        self._is_worked = True
-
         try:
-            with open(self.input_file, "rb") as input_file, \
-                    open(self.output_file, "wb") as output_file:
+            with open(self._input_file, "rb") as input_file, \
+                    open(self._output_file, "wb") as output_file:
                 input_file.seek(0, 2)
                 input_file_size = input_file.tell()
                 input_file.seek(0, 0)
 
-                self.update_pbar.emit(("range", 0, input_file_size))
-                self.update_pbar.emit(("show",))
+                self.pbar.emit((PBarCommands.SET_RANGE, 0, input_file_size))
+                self.pbar.emit((PBarCommands.SET_VALUE, 0))
+                self.pbar.emit((PBarCommands.SHOW,))
 
                 while (block := input_file.read(MAX_BYTES_READ)) and self._is_worked:
-                    encrypted_block = self.cipher.make(block, self.mode, reset_state=False)
+                    encrypted_block = self._cipher.make(block, self._mode, reset_state=False)
                     output_file.write(encrypted_block)
-                    self.update_pbar.emit(("current_value", input_file.tell()))
 
-                self.update_pbar.emit(("close",))
+                    self.pbar.emit((PBarCommands.SET_VALUE, input_file.tell()))
 
         except Exception as e:
-            self.update_pbar.emit(("close",))
             self.message.emit("An error occurred while working with files or when "
                               "determining the file size. (Check encryption mode)\n"
                               f"({e.args[0]})")
-            return
+
+        finally:
+            self.pbar.emit((PBarCommands.CLOSE,))

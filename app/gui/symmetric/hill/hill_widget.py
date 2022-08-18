@@ -1,18 +1,16 @@
 import string
 
-from PyQt6.QtWidgets import (
-    QWidget,
-    QMessageBox
-)
+from PyQt6.QtWidgets import QMessageBox
 
 from .hill_ui import Ui_Hill
 from app.crypto.symmetric.hill import (
     Hill,
     HillError
 )
+from app.gui.widgets import BaseQWidget
 
 
-class HillWidget(QWidget):
+class HillWidget(BaseQWidget):
     def __init__(self):
         super(HillWidget, self).__init__()
         self.ui = Ui_Hill()

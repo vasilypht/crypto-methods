@@ -54,11 +54,84 @@
 
 ## :hammer_and_wrench: Installation
 
-To install the program, just run this script:
+### Automatic installer
+
+To install the program, just run this script (via pip):
 
 ```shell
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/vasilypht/crypto-methods/main/install.sh)"
 ```
+
+### Manual installation
+
+Clone the repository and go to the project folder:
+
+```shell
+git clone https://github.com/vasilypht/crypto-methods.git
+cd crypto-methods
+```
+
+#### Install via pip
+
+Create and activate the environment:
+
+```shell
+python3 -m venv venv
+source ./venv/bin/activate
+```
+
+Next, update pip and install the required libraries:
+
+```shell
+pip install -U pip
+pip install -r requirements.txt # or "requirements-dev.txt" for development
+```
+
+
+> To activate the virtual environment:
+> ```shell
+> source ./venv/bin/activate
+> ```
+>
+> To deactivate the virtual environment:
+> ```shell
+> deactivate
+> ```
+
+#### Install via poetry
+
+Create and activate the environment:
+
+```shell
+poetry shell
+```
+
+Next, install the required libraries:
+
+```shell
+poetry install --no-dev # or "poetry install" for development
+```
+
+> To activate the virtual environment:
+> ```shell
+> poetry shell
+> ```
+>
+> To deactivate the virtual environment:
+> ```shell
+> exit
+> ```
+
+### Application launch
+
+> Virtual environment must be activated.
+
+To run the application use the following command:
+
+```shell
+python -m app
+```
+
 
 ## :link: Attribution links
 

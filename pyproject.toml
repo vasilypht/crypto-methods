@@ -5,7 +5,7 @@ description = ""
 authors = ["Vasily Perekhrest <perekhrest-vasily@mail.ru>"]
 
 [tool.poetry.dependencies]
-python = "3.10"
+python = "^3.10,<3.11"
 PyQt6 = "^6.2.3"
 numpy = "^1.22"
 sympy = "^1.9"

@@ -43,6 +43,9 @@ class FreqAnalysisWidget(QWidget):
         # letter from text: letter from table
         self.letter_match = {}
 
+        self.ui.combo_box_lang.addItems((lang.name.capitalize() for lang in Languages))
+        self.ui.combo_box_text_style.addItems((style.name.capitalize() for style in TextStyle))
+
         # Add Drag and drop widget
         self.drag_drop_widget = DragDropWidget(self.ui.tab_document)
         self.drag_drop_widget.set_filter_extensions(FREQ_ANALYSIS_SUPPORT_EXT)

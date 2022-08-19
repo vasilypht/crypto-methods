@@ -227,37 +227,10 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QComboBox" name="combo_box_lang">
-                <item>
-                 <property name="text">
-                  <string>English</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Russian</string>
-                 </property>
-                </item>
-               </widget>
+               <widget class="QComboBox" name="combo_box_lang"/>
               </item>
               <item row="1" column="1">
-               <widget class="QComboBox" name="combo_box_text_style">
-                <item>
-                 <property name="text">
-                  <string>Common</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Literature</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Math</string>
-                 </property>
-                </item>
-               </widget>
+               <widget class="QComboBox" name="combo_box_text_style"/>
               </item>
               <item row="1" column="0">
                <widget class="QLabel" name="label_text_style">

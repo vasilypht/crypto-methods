@@ -30,7 +30,7 @@ class AutocorrelationWidget(QWidget):
         self.file_path = QUrl()
 
         # Init languages
-        self.ui.combo_box_lang.addItems(map(lambda x: x.name.capitalize(), ALPHABET_TABLE.keys()))
+        self.ui.combo_box_lang.addItems((lang.name.capitalize() for lang in Languages))
 
         # Add Drag and drop widget
         self.drag_drop_widget = DragDropWidget(self.ui.tab_document)

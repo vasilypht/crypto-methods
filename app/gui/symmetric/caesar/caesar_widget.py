@@ -10,6 +10,7 @@ from app.crypto.symmetric.caesar import (
     Caesar,
     CaesarError
 )
+from app.crypto.common import EncProc
 from app.gui.const import (
     MAX_CHARS_READ,
     CAESAR_SUPPORT_EXT
@@ -47,25 +48,25 @@ class CaesarWidget(BaseQWidget):
     def _button_make_clicked(self) -> None:
         """Caesar | (Slot) Method for handling button click. (Encryption/decryption)"""
         shift = self.ui.spin_box_shift.value()
-        mode = self.ui.combo_box_mode.currentText().lower()
+        enc_proc = EncProc.from_str(self.ui.combo_box_mode.currentText())
 
         cipher = Caesar(shift)
 
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                self._tab_text_processing(cipher, mode)
+                self._tab_text_processing(cipher, enc_proc)
 
             case self.ui.tab_document:
-                self._tab_document_processing(cipher, mode)
+                self._tab_document_processing(cipher, enc_proc)
 
             case _:
                 pass
 
-    def _tab_text_processing(self, cipher: Caesar, mode: str):
+    def _tab_text_processing(self, cipher: Caesar, enc_proc: EncProc):
         data = self.ui.text_edit_input.toPlainText()
 
         try:
-            processed_text = cipher.make(data, mode)
+            processed_text = cipher.make(data, enc_proc)
 
         except CaesarError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
@@ -73,7 +74,7 @@ class CaesarWidget(BaseQWidget):
 
         self.ui.text_edit_output.setText(processed_text)
 
-    def _tab_document_processing(self, cipher: Caesar, mode: str):
+    def _tab_document_processing(self, cipher: Caesar, enc_proc: EncProc):
         if self.file_path_input.isEmpty():
             QMessageBox.warning(self, "Warning!", "File not selected!")
             return
@@ -89,7 +90,7 @@ class CaesarWidget(BaseQWidget):
         if not file_path_output:
             return
 
-        thread_worker = FileProcessing(cipher, mode, self.file_path_input.toLocalFile(), file_path_output)
+        thread_worker = FileProcessing(cipher, enc_proc, self.file_path_input.toLocalFile(), file_path_output)
         self.thread_ready.emit(thread_worker)
 
     def _change_file_path(self, file: QUrl):
@@ -97,10 +98,10 @@ class CaesarWidget(BaseQWidget):
 
 
 class FileProcessing(BaseQThread):
-    def __init__(self, cipher: Caesar, mode: str, input_file: str, output_file: str):
+    def __init__(self, cipher: Caesar, enc_proc: EncProc, input_file: str, output_file: str):
         super(FileProcessing, self).__init__()
         self._cipher = cipher
-        self._mode = mode
+        self._enc_proc = enc_proc
         self._input_file = input_file
         self._output_file = output_file
 
@@ -123,7 +124,7 @@ class FileProcessing(BaseQThread):
                 self.pbar.emit((PBarCommands.SHOW,))
 
                 while (block := input_file.read(MAX_CHARS_READ)) and self._is_worked:
-                    encrypted_block = self._cipher.make(block, self._mode)
+                    encrypted_block = self._cipher.make(block, self._enc_proc)
                     output_file.write(encrypted_block)
 
                     self.pbar.emit((PBarCommands.SET_VALUE, input_file.tell()))

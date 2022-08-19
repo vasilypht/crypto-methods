@@ -9,8 +9,10 @@ from PyQt6.QtGui import QColor
 from .cardan_grille_ui import Ui_CardanGrille
 from app.crypto.symmetric.cardan_grille import (
     CarganGrille,
-    CarganGrilleError
+    CarganGrilleError,
+    EncMode
 )
+from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 
 
@@ -84,11 +86,11 @@ class CardanGrilleWidget(BaseQWidget):
 
     def _button_make_clicked(self) -> None:
         """Cardan grille | (Slot) Method for handling button click. (Encryption/decryption)"""
-        trash = self.ui.combo_box_trash.currentText().lower()
-        mode = self.ui.combo_box_mode.currentText().lower()
+        enc_mode = EncMode.from_str(self.ui.combo_box_trash.currentText())
+        enc_proc = EncProc.from_str(self.ui.combo_box_mode.currentText())
 
         try:
-            cipher = CarganGrille(self.stencil, trash)
+            cipher = CarganGrille(self.stencil, enc_mode)
 
         except CarganGrilleError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
@@ -96,18 +98,18 @@ class CardanGrilleWidget(BaseQWidget):
 
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                self._tab_text_processing(cipher, mode)
+                self._tab_text_processing(cipher, enc_proc)
 
             case _:
                 pass
 
-    def _tab_text_processing(self, cipher: CarganGrille, mode: str):
+    def _tab_text_processing(self, cipher: CarganGrille, enc_proc: EncProc):
         # clear preview table
         self.ui.table_widget_preview.clear()
         data = self.ui.text_edit_input.toPlainText()
 
         try:
-            processed_text = cipher.make(data, mode)
+            processed_text = cipher.make(data, enc_proc)
 
         except CarganGrilleError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])

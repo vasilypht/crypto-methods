@@ -9,6 +9,10 @@ from app.crypto.const import (
     IC_TABLE,
     FREQ_TABLES
 )
+from app.crypto.common import (
+    Languages,
+    TextStyle
+)
 
 
 class AutocorrError(Exception):
@@ -16,7 +20,7 @@ class AutocorrError(Exception):
 
 
 class Autocorrelation:
-    def __init__(self, text, delta: float = 0.001, max_len: int = 20, lang: str = "english"):
+    def __init__(self, text, delta: float = 0.001, max_len: int = 20, lang: Languages = Languages.ENGLISH):
         self.text = text.lower()
         self.delta = delta
         self.max_len = max_len
@@ -33,7 +37,7 @@ class Autocorrelation:
         self.lang = lang
         self.alphabet = ALPHABET_TABLE.get(lang)
         self.threshold = IC_TABLE.get(lang)
-        freq_table = FREQ_TABLES.get(lang).get("common")
+        freq_table = FREQ_TABLES.get(lang).get(TextStyle.COMMON)
         freq_table_norm = self.freq_normalize(freq_table)
         self.freq_table = list(freq_table_norm.values())
 

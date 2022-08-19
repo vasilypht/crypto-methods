@@ -7,6 +7,7 @@ from app.crypto.symmetric.hill import (
     Hill,
     HillError
 )
+from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 
 
@@ -25,7 +26,7 @@ class HillWidget(BaseQWidget):
         """Hill | (Slot) Method for handling button click. (Encryption/decryption)"""
         key = self.ui.line_edit_key.text()
         alphabet = self.ui.line_edit_alphabet.text()
-        mode = self.ui.combo_box_mode.currentText().lower()
+        enc_proc = EncProc.from_str(self.ui.combo_box_mode.currentText())
 
         try:
             cipher = Hill(key, alphabet)
@@ -36,16 +37,16 @@ class HillWidget(BaseQWidget):
 
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                self._tab_text_processing(cipher, mode)
+                self._tab_text_processing(cipher, enc_proc)
 
             case _:
                 pass
 
-    def _tab_text_processing(self, cipher: Hill, mode: str):
+    def _tab_text_processing(self, cipher: Hill, enc_proc: EncProc):
         data = self.ui.text_edit_input.toPlainText()
 
         try:
-            processed_text = cipher.make(data, mode)
+            processed_text = cipher.make(data, enc_proc)
 
         except HillError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])

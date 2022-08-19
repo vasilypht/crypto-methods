@@ -6,8 +6,10 @@ from .polybius_square_ui import Ui_PolybiusSquare
 from app.gui.widgets import BaseQWidget
 from app.crypto.symmetric.polybius_square import (
     PolybiusSquareError,
-    PolybiusSquare
+    PolybiusSquare,
+    MethodMode
 )
+from app.crypto.common import EncProc
 
 
 class PolybiusSquareWidget(BaseQWidget):
@@ -33,11 +35,11 @@ class PolybiusSquareWidget(BaseQWidget):
     def _button_make_clicked(self) -> None:
         """Polybius square | (Slot) Method for handling button click. (Encryption/decryption)"""
         shift = self.ui.spin_box_shift.value()
-        method = self.ui.combo_box_method.currentText().lower()
-        mode = self.ui.combo_box_mode.currentText().lower()
+        method_mode = MethodMode.from_str(self.ui.combo_box_method.currentText())
+        enc_proc = EncProc.from_str(self.ui.combo_box_mode.currentText())
 
         try:
-            cipher = PolybiusSquare(shift, method)
+            cipher = PolybiusSquare(shift, method_mode)
 
         except PolybiusSquareError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
@@ -45,16 +47,16 @@ class PolybiusSquareWidget(BaseQWidget):
 
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                self._tab_text_processing(cipher, mode)
+                self._tab_text_processing(cipher, enc_proc)
 
             case _:
                 pass
 
-    def _tab_text_processing(self, cipher: PolybiusSquare, mode: str):
+    def _tab_text_processing(self, cipher: PolybiusSquare, enc_proc: EncProc):
         data = self.ui.text_edit_input.toPlainText()
 
         try:
-            processed_text = cipher.make(data, mode)
+            processed_text = cipher.make(data, enc_proc)
 
         except PolybiusSquareError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])

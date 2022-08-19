@@ -1,9 +1,40 @@
+from enum import (
+    Enum,
+    auto
+)
+
 from app.crypto.const import (
     DES_IP_TABLE, DES_IP_INV_TABLE,
     DES_PC_1_TABLE, DES_PC_2_TABLE,
     DES_E_TABLE, DES_P_TABLE,
     DES_S_TABLE, DES_SHIFT_TABLE
 )
+from app.crypto.common import EncProc
+
+
+class EncMode(Enum):
+    ECB = auto()
+    CBC = auto()
+    CFB = auto()
+    OFB = auto()
+
+    @staticmethod
+    def from_str(value: str):
+        match value:
+            case "ECB":
+                return EncMode.ECB
+
+            case "CBC":
+                return EncMode.CBC
+
+            case "CFB":
+                return EncMode.CFB
+
+            case "OFB":
+                return EncMode.OFB
+
+            case _:
+                raise NotImplementedError
 
 
 class DESError(Exception):
@@ -11,11 +42,11 @@ class DESError(Exception):
 
 
 class DES:
-    def __init__(self, key: str, iv: str = None, mode: str = "ECB"):
-        self._modes = {"ECB": self._ECB,
-                       "CBC": self._CBC,
-                       "CFB": self._CFB,
-                       "OFB": self._OFB}
+    def __init__(self, key: str, iv: str = None, enc_mode: EncMode = EncMode.ECB):
+        self._modes = {EncMode.ECB: self._ECB,
+                       EncMode.CBC: self._CBC,
+                       EncMode.CFB: self._CFB,
+                       EncMode.OFB: self._OFB}
 
         if len(key) != 14:
             raise DESError(f"Key length must be 56 bits (7 bytes)! ({len(key) // 2} bytes entered)")
@@ -36,14 +67,14 @@ class DES:
 
             self.vector = self.iv
 
-        if iv is None and mode != "ECB":
-            raise DESError(f"Encryption in '{mode}' mode requires an initialization vector!")
+        if iv is None and enc_mode is not EncMode.ECB:
+            raise DESError(f"Encryption in '{enc_mode}' mode requires an initialization vector!")
 
-        if mode not in self._modes.keys():
-            raise DESError(f"Invalid encryption mode entered ({mode})! "
+        if enc_mode not in self._modes.keys():
+            raise DESError(f"Invalid encryption mode entered ({enc_mode})! "
                            f"Possible modes: {tuple(self._modes.keys())}")
 
-        self._mode = self._modes.get(mode)
+        self._fn_mode = self._modes.get(enc_mode)
         self.keys = self.generate_keys(self.key)
 
     def generate_keys(self, key: int):
@@ -80,26 +111,27 @@ class DES:
 
         return keys
 
-    def _permutation(self, key: int, bit_len: int, table: tuple):
+    @staticmethod
+    def _permutation(key: int, bit_len: int, table: tuple):
         key = bin(key)[2:].zfill(bit_len)
         return int("".join(key[i - 1] for i in table), 2)
 
-    def _transform(self, block: int, mode: str = "encrypt"):
+    def _transform(self, block: int, enc_proc: EncProc):
         block = self._permutation(block, 64, DES_IP_TABLE)
         chunk_l = block >> 32
         chunk_r = block & 0xFFFFFFFF
 
-        match mode:
-            case "encrypt":
+        match enc_proc:
+            case EncProc.ENCRYPT:
                 for i in range(16):
                     chunk_l, chunk_r = chunk_r, chunk_l ^ self._f(chunk_r, self.keys[i])
 
-            case "decrypt":
+            case EncProc.DECRYPT:
                 for i in range(15, -1, -1):
                     chunk_r, chunk_l = chunk_l, chunk_r ^ self._f(chunk_l, self.keys[i])
 
             case _:
-                raise DESError(f"Invalid processing mode! -> {mode}")
+                raise DESError(f"Invalid processing mode! -> {enc_proc}")
 
         block = (chunk_l << 32) | chunk_r
         return self._permutation(block, 64, DES_IP_INV_TABLE)
@@ -116,130 +148,130 @@ class DES:
 
         return self._permutation(new_chunk, 48, DES_P_TABLE)
 
-    def _ECB(self, data: bytes, mode: str = "encrypt"):
+    def _ECB(self, data: bytes, enc_proc: EncProc):
         processed_data = bytes()
 
         for pos in range(0, len(data), 8):
             block = int.from_bytes(data[pos:pos + 8], "little")
-            processed_block = self._transform(block, mode)
+            processed_block = self._transform(block, enc_proc)
             processed_data += processed_block.to_bytes(8, "little")
 
         return processed_data
 
-    def _CBC(self, data: bytes, mode: str = "encrypt"):
+    def _CBC(self, data: bytes, enc_proc: EncProc):
         processed_data = bytes()
 
         for pos in range(0, len(data), 8):
             block = int.from_bytes(data[pos:pos + 8], "little")
 
-            match mode:
-                case "encrypt":
-                    processed_block = self._transform(block ^ self.vector, "encrypt")
+            match enc_proc:
+                case EncProc.ENCRYPT:
+                    processed_block = self._transform(block ^ self.vector, EncProc.ENCRYPT)
                     self.vector = processed_block
 
-                case "decrypt":
-                    processed_block = self._transform(block, "decrypt") ^ self.vector
+                case EncProc.DECRYPT:
+                    processed_block = self._transform(block, EncProc.DECRYPT) ^ self.vector
                     self.vector = block
 
                 case _:
-                    raise DESError(f"Invalid processing mode! -> {mode}")
+                    raise DESError(f"Invalid processing mode! -> {enc_proc}")
 
             processed_data += processed_block.to_bytes(8, "little")
 
         return processed_data
 
-    def _CFB(self, data: bytes, mode: str = "encrypt"):
+    def _CFB(self, data: bytes, enc_proc: EncProc):
         processed_data = bytes()
 
         for pos in range(0, len(data), 8):
             block = int.from_bytes(data[pos:pos + 8], "little")
 
-            match mode:
-                case "encrypt":
-                    processed_block = self._transform(self.vector, "encrypt") ^ block
+            match enc_proc:
+                case EncProc.ENCRYPT:
+                    processed_block = self._transform(self.vector, EncProc.ENCRYPT) ^ block
                     self.vector = processed_block
 
-                case "decrypt":
-                    processed_block = self._transform(self.vector, "encrypt") ^ block
+                case EncProc.DECRYPT:
+                    processed_block = self._transform(self.vector, EncProc.ENCRYPT) ^ block
                     self.vector = block
 
                 case _:
-                    raise DESError(f"Invalid processing mode! -> {mode}")
+                    raise DESError(f"Invalid processing mode! -> {enc_proc}")
 
             processed_data += processed_block.to_bytes(8, "little")
 
         return processed_data
 
-    def _OFB(self, data: bytes, mode: str = "encrypt"):
+    def _OFB(self, data: bytes, enc_proc: EncProc):
         processed_data = bytes()
 
         for pos in range(0, len(data), 8):
             block = int.from_bytes(data[pos:pos + 8], "little")
 
-            match mode:
-                case "encrypt":
-                    self.vector = self._transform(self.vector, "encrypt")
+            match enc_proc:
+                case EncProc.ENCRYPT:
+                    self.vector = self._transform(self.vector, EncProc.ENCRYPT)
                     processed_block = self.vector ^ block
 
-                case "decrypt":
-                    self.vector = self._transform(self.vector, "encrypt")
+                case EncProc.DECRYPT:
+                    self.vector = self._transform(self.vector, EncProc.ENCRYPT)
                     processed_block = self.vector ^ block
 
                 case _:
-                    raise DESError(f"Invalid processing mode! -> {mode}")
+                    raise DESError(f"Invalid processing mode! -> {enc_proc}")
 
             processed_data += processed_block.to_bytes(8, "little")
 
         return processed_data
 
-    def _data_processing(self, data: bytes or str, mode: str = "encrypt", reset_iv: bool = True):
-        match mode, data:
-            case "encrypt", str():
+    def _data_processing(self, data: bytes or str, enc_proc: EncProc, reset_iv: bool = True):
+        match enc_proc, data:
+            case EncProc.ENCRYPT, str():
                 data_bytes = data.encode("utf-8")
 
-            case "decrypt", str():
+            case EncProc.DECRYPT, str():
                 data_bytes = bytes.fromhex(data)
 
             case _, bytes():
                 data_bytes = data
 
             case _:
-                raise DESError(f"Invalid processing mode! -> {mode}")
+                raise DESError(f"Invalid processing mode! -> {enc_proc}")
 
-        if mode == "encrypt" and (k := len(data_bytes) % 8) != 0:
+        if enc_proc is EncProc.ENCRYPT and (k := len(data_bytes) % 8) != 0:
             data_bytes += b"\00" * (8 - k)
 
         if reset_iv:
             self.vector = self.iv
 
-        processed_data = self._mode(data_bytes, mode)
+        processed_data = self._fn_mode(data_bytes, enc_proc)
 
-        match mode, data:
-            case "encrypt", str():
+        match enc_proc, data:
+            case EncProc.ENCRYPT, str():
                 return processed_data.hex()
 
-            case "decrypt", str():
+            case EncProc.DECRYPT, str():
                 return processed_data.decode("utf-8")
 
             case _, bytes():
                 return processed_data
 
             case _:
-                raise DESError(f"Invalid processing mode! -> {mode}")
+                raise DESError(f"Invalid processing mode! -> {enc_proc}")
 
     def encrypt(self, data: bytes or str, reset_iv: bool = True):
-        return self._data_processing(data, "encrypt", reset_iv)
+        return self._data_processing(data, EncProc.ENCRYPT, reset_iv)
 
     def decrypt(self, data: bytes or str, reset_iv: bool = True):
-        return self._data_processing(data, "decrypt", reset_iv)
+        return self._data_processing(data, EncProc.DECRYPT, reset_iv)
 
-    def make(self, data: bytes or str, mode: str = "encrypt", reset_iv: bool = True):
-        match mode:
-            case "encrypt":
+    def make(self, data: bytes or str, enc_proc: EncProc = EncProc.ENCRYPT, reset_iv: bool = True):
+        match enc_proc:
+            case EncProc.ENCRYPT:
                 return self.encrypt(data, reset_iv)
 
-            case "decrypt":
+            case EncProc.DECRYPT:
                 return self.decrypt(data, reset_iv)
 
             case _:
-                raise DESError(f"Invalid processing mode! -> {mode}")
+                raise DESError(f"Invalid processing mode! -> {enc_proc}")

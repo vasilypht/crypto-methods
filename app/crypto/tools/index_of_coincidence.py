@@ -5,6 +5,7 @@ from app.crypto.const import (
     ALPHABET_TABLE,
     IC_TABLE
 )
+from app.crypto.common import Languages
 
 
 class ICError(Exception):
@@ -12,7 +13,7 @@ class ICError(Exception):
 
 
 class IndexOfCoincidence:
-    def __init__(self, text: str, max_len: int = 20, delta: float = 0.001, lang: str = "english"):
+    def __init__(self, text: str, max_len: int = 20, delta: float = 0.001, lang: Languages = Languages.ENGLISH):
         self.text = text.lower()
         self.max_len = max_len
         self.delta = delta

@@ -1,3 +1,5 @@
+from app.crypto.common import EncProc
+
 
 class ScytaleError(Exception):
     pass
@@ -47,13 +49,13 @@ class Scytale:
 
         return "".join(lines_list)
 
-    def make(self, text: str, mode: str = "encrypt") -> str:
-        match mode:
-            case "encrypt":
+    def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT) -> str:
+        match enc_proc:
+            case EncProc.ENCRYPT:
                 return self.encrypt(text)
 
-            case "decrypt":
+            case EncProc.DECRYPT:
                 return self.decrypt(text)
 
             case _:
-                raise ScytaleError(f"Invalid processing type! -> {mode}")
+                raise ScytaleError(f"Invalid processing type! -> {enc_proc}")

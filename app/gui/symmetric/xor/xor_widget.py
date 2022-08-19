@@ -17,6 +17,7 @@ from app.crypto.prngs.rc4 import (
     RC4,
     RC4Error
 )
+from app.crypto.common import EncProc
 from app.gui.widgets import (
     DragDropWidget,
     PBarCommands,
@@ -62,7 +63,7 @@ class XORWidget(BaseQWidget):
     def _button_make_clicked(self) -> None:
         """XOR | (Slot) Method for handling button click. (Encryption/decryption)"""
         key = self.gen_xor_key()
-        mode = self.ui.combo_box_mode.currentText().lower()
+        enc_proc = EncProc.from_str(self.ui.combo_box_mode.currentText())
 
         try:
             cipher = XOR(key)
@@ -73,19 +74,19 @@ class XORWidget(BaseQWidget):
 
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                self._tab_text_processing(cipher, mode)
+                self._tab_text_processing(cipher, enc_proc)
 
             case self.ui.tab_document:
-                self._tab_document_processing(cipher, mode)
+                self._tab_document_processing(cipher, enc_proc)
 
             case _:
                 pass
 
-    def _tab_text_processing(self, cipher: XOR, mode: str):
-        data = self.ui.text_edit_input.toPlainText(),
+    def _tab_text_processing(self, cipher: XOR, enc_proc: EncProc):
+        data = self.ui.text_edit_input.toPlainText()
 
         try:
-            processed_data = cipher.make(data, mode)
+            processed_data = cipher.make(data, enc_proc)
 
         except XORError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
@@ -93,7 +94,7 @@ class XORWidget(BaseQWidget):
 
         self.ui.text_edit_output.setText(processed_data)
 
-    def _tab_document_processing(self, cipher: XOR, mode: str):
+    def _tab_document_processing(self, cipher: XOR, enc_proc: EncProc):
         if self.file_path.isEmpty():
             QMessageBox.warning(self, "Warning!", "File not selected!")
             return
@@ -109,7 +110,7 @@ class XORWidget(BaseQWidget):
         if not file_path_output:
             return
 
-        thread_worker = FileProcessing(cipher, mode, self.file_path.toLocalFile(), file_path_output)
+        thread_worker = FileProcessing(cipher, enc_proc, self.file_path.toLocalFile(), file_path_output)
         self.thread_ready.emit(thread_worker)
 
     def _action_gen_iv_clicked(self):
@@ -175,10 +176,10 @@ class XORWidget(BaseQWidget):
 
 
 class FileProcessing(BaseQThread):
-    def __init__(self, cipher: XOR, mode: str, input_file: str, output_file: str):
+    def __init__(self, cipher: XOR, enc_proc: EncProc, input_file: str, output_file: str):
         super(FileProcessing, self).__init__()
         self._cipher = cipher
-        self._mode = mode
+        self._enc_proc = enc_proc
         self._input_file = input_file
         self._output_file = output_file
 
@@ -201,7 +202,7 @@ class FileProcessing(BaseQThread):
                 self.pbar.emit((PBarCommands.SHOW,))
 
                 while (block := input_file.read(MAX_BYTES_READ)) and self._is_worked:
-                    encrypted_block = self._cipher.make(block, self._mode, reset_state=False)
+                    encrypted_block = self._cipher.make(block, self._enc_proc, reset_state=False)
                     output_file.write(encrypted_block)
 
                     self.pbar.emit((PBarCommands.SET_VALUE, input_file.tell()))

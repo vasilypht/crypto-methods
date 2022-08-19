@@ -1,9 +1,5 @@
-from ..utils import (
-    get_alphabet_by_letter
-)
-from ..const import (
-    ALPHABET_TABLE
-)
+from ..utils import get_alphabet_by_letter
+from ..const import ALPHABET_TABLE
 
 
 class AtbashError(Exception):

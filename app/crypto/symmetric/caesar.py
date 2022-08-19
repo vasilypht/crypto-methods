@@ -1,9 +1,6 @@
-from ..utils import (
-    get_alphabet_by_letter
-)
-from ..const import (
-    ALPHABET_TABLE
-)
+from ..utils import get_alphabet_by_letter
+from ..const import ALPHABET_TABLE
+from ..common import EncProc
 
 
 class CaesarError(Exception):
@@ -14,12 +11,11 @@ class Caesar:
     def __init__(self, shift: int = 1):
         self.shift = shift
 
-    def _transform(self, text: str, mode: str = "encrypt") -> str:
+    def _transform(self, text: str, enc_proc: EncProc) -> str:
         """Caesar's cipher. Encryption/decryption function.
 
         Args:
             text: text to be encrypted/decrypted.
-            mode: encryption or decryption (default "encrypt").
 
         Returns:
             Encrypted or decrypted string.
@@ -38,15 +34,15 @@ class Caesar:
             letter_text_index = alphabet.index(letter_text.lower())
 
             # choice of sign
-            match mode:
-                case "encrypt":
+            match enc_proc:
+                case EncProc.ENCRYPT:
                     sign = 1
 
-                case "decrypt":
+                case EncProc.DECRYPT:
                     sign = -1
 
                 case _:
-                    raise CaesarError(f"Invalid processing type! -> {mode}")
+                    raise CaesarError(f"Invalid processing type! -> {enc_proc}")
 
             new_letter_text_index = (letter_text_index + self.shift * sign) % len(alphabet)
             new_letter_text = alphabet[new_letter_text_index]
@@ -67,7 +63,7 @@ class Caesar:
         Returns:
             Encrypted string.
         """
-        return self._transform(text, "encrypt")
+        return self._transform(text, EncProc.ENCRYPT)
 
     def decrypt(self, text: str) -> str:
         """Caesar cipher. Interface for calling decryption functions.
@@ -78,24 +74,23 @@ class Caesar:
         Returns:
             Decrypted string.
         """
-        return self._transform(text, "decrypt")
+        return self._transform(text, EncProc.DECRYPT)
 
-    def make(self, text: str, mode: str = "encrypt") -> str:
+    def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT) -> str:
         """Caesar cipher. Interface for calling encryption/decryption functions.
 
         Args:
             text: text to be encrypted/decrypted.
-            mode: encryption or decryption (default "encrypt").
 
         Returns:
             Encrypted or decrypted string.
         """
-        match mode:
-            case "encrypt":
-                return self._transform(text, "encrypt")
+        match enc_proc:
+            case EncProc.ENCRYPT:
+                return self.encrypt(text)
 
-            case "decrypt":
-                return self._transform(text, "decrypt")
+            case EncProc.DECRYPT:
+                return self.decrypt(text)
 
             case _:
-                raise CaesarError(f"Invalid processing type! -> {mode}")
+                raise CaesarError(f"Invalid processing type! -> {enc_proc}")

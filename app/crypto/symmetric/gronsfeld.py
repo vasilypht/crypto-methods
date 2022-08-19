@@ -1,11 +1,8 @@
 import re
 
-from ..utils import (
-    get_alphabet_by_letter
-)
-from ..const import (
-    ALPHABET_TABLE
-)
+from ..utils import get_alphabet_by_letter
+from ..const import ALPHABET_TABLE
+from ..common import EncProc
 
 
 class GronsfeldError(Exception):
@@ -22,16 +19,7 @@ class Gronsfeld:
 
         self.key = key
 
-    def _transform(self, text: str, mode: str = "encrypt") -> str:
-        """Gronsfeld cipher. Encryption/Decryption function.
-
-        Args:
-            text: text to be encrypted/decrypted.
-            mode: encryption or decryption (default "encrypt").
-
-        Returns:
-            Encrypted or decrypted string.
-        """
+    def _transform(self, text: str, enc_proc: EncProc) -> str:
         if not text:
             raise GronsfeldError("Input text is empty!")
 
@@ -48,15 +36,15 @@ class Gronsfeld:
             shift = int(self.key[i % len(self.key)])
 
             # choice of sign
-            match mode:
-                case "encrypt":
+            match enc_proc:
+                case EncProc.ENCRYPT:
                     sign = 1
 
-                case "decrypt":
+                case EncProc.DECRYPT:
                     sign = -1
 
                 case _:
-                    raise GronsfeldError(f"Invalid processing type! -> {mode}")
+                    raise GronsfeldError(f"Invalid processing type! -> {enc_proc}")
 
             new_letter_index = (letter_text_index + shift * sign) % len(alphabet)
             new_letter_text = alphabet[new_letter_index]
@@ -77,7 +65,7 @@ class Gronsfeld:
         Returns:
             Encrypted string.
         """
-        return self._transform(text, "encrypt")
+        return self._transform(text, EncProc.ENCRYPT)
 
     def decrypt(self, text: str) -> str:
         """Gronsfeld cipher. Interface for calling decryption functions.
@@ -88,24 +76,15 @@ class Gronsfeld:
         Returns:
             Decrypted string.
         """
-        return self._transform(text, "decrypt")
+        return self._transform(text, EncProc.DECRYPT)
 
-    def make(self, text: str, mode: str = "encrypt"):
-        """Gronsfeld cipher. Interface for calling encryption/decryption functions.
+    def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT):
+        match enc_proc:
+            case EncProc.ENCRYPT:
+                return self.encrypt(text)
 
-        Args:
-            text: text to be encrypted/decrypted.
-            mode: encryption or decryption (default "encrypt").
-
-        Returns:
-            Encrypted or decrypted string.
-        """
-        match mode:
-            case "encrypt":
-                return self._transform(text, "encrypt")
-
-            case "decrypt":
-                return self._transform(text, "decrypt")
+            case EncProc.DECRYPT:
+                return self.decrypt(text)
 
             case _:
-                raise GronsfeldError(f"Invalid processing type! -> {mode}")
+                raise GronsfeldError(f"Invalid processing type! -> {enc_proc}")

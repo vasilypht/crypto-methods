@@ -9,6 +9,7 @@ from app.crypto.symmetric.vernam import (
     Vernam,
     VernamError
 )
+from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 
 
@@ -84,7 +85,7 @@ class VernamWidget(BaseQWidget):
     def _button_make_clicked(self) -> None:
         """Vernam | (Slot) Method for handling button click. (Encryption/decryption)"""
         key = self.ui.line_edit_key.text()
-        mode = self.ui.combo_box_mode.currentText().lower()
+        enc_proc = EncProc.from_str(self.ui.combo_box_mode.currentText())
 
         try:
             cipher = Vernam(key)
@@ -95,16 +96,16 @@ class VernamWidget(BaseQWidget):
 
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                self._tab_text_processing(cipher, mode)
+                self._tab_text_processing(cipher, enc_proc)
 
             case _:
                 pass
 
-    def _tab_text_processing(self, cipher: Vernam, mode: str):
+    def _tab_text_processing(self, cipher: Vernam, enc_proc: EncProc):
         data = self.ui.text_edit_input.toPlainText()
 
         try:
-            processed_text = cipher.make(data, mode)
+            processed_text = cipher.make(data, enc_proc)
 
         except VernamError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])

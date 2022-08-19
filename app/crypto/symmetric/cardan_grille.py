@@ -1,11 +1,34 @@
 from random import choice
 from copy import deepcopy
+from enum import (
+    Enum,
+    auto
+)
 
 import numpy as np
+
+from ..common import EncProc
 
 
 class CarganGrilleError(Exception):
     pass
+
+
+class EncMode(Enum):
+    WITH_TRASH = auto()
+    WITHOUT_TRASH = auto()
+
+    @staticmethod
+    def from_str(value: str):
+        match value.lower():
+            case "with trash":
+                return EncMode.WITH_TRASH
+
+            case "without trash":
+                return EncMode.WITHOUT_TRASH
+
+            case _:
+                raise NotImplementedError()
 
 
 class Field:
@@ -24,15 +47,12 @@ class Field:
 
 
 class CarganGrille:
-    def __init__(self, stencil: np.ndarray, litter_type: str = "without trash"):
+    def __init__(self, stencil: np.ndarray, enc_mode: EncMode.WITHOUT_TRASH):
         if not self.check_correct_stencil(stencil):
             raise CarganGrilleError("Wrong stencil!")
 
-        if litter_type not in ("without trash", "with trash"):
-            raise CarganGrilleError("Wrong litter type!")
-
-        self.stencil = stencil
-        self.litter_type = litter_type
+        self._stencil = stencil
+        self._enc_mode = enc_mode
 
     @staticmethod
     def check_correct_stencil(square: np.array) -> bool:
@@ -112,12 +132,12 @@ class CarganGrille:
         if not text:
             raise CarganGrilleError("Input text is empty!")
 
-        n, _ = self.stencil.shape
+        n, _ = self._stencil.shape
 
         # We are looking for all the cells in the stencil where there are holes
         # Next, we take all these cells and sort them by values
-        indices_allow_values = np.where(self.stencil != 0)
-        sorted_allow_values = sorted(self.stencil[indices_allow_values], key=lambda x: x.value)
+        indices_allow_values = np.where(self._stencil != 0)
+        sorted_allow_values = sorted(self._stencil[indices_allow_values], key=lambda x: x.value)
 
         one_iter_len_text = len(sorted_allow_values) * 4
 
@@ -133,18 +153,18 @@ class CarganGrille:
                 substr = text_block[i:i+len(sorted_allow_values)]
 
                 for char, value in zip(substr, sorted_allow_values):
-                    indices_value = np.where(self.stencil == value)
+                    indices_value = np.where(self._stencil == value)
                     square[indices_value] = char
 
-                self.stencil = np.rot90(self.stencil, -1)
+                self._stencil = np.rot90(self._stencil, -1)
 
             indices = np.where(square == "")
-            match self.litter_type:
-                case "with trash":
+            match self._enc_mode:
+                case EncMode.WITH_TRASH:
                     rand_letters = [choice(text) for _ in range(len(indices[0]))]
                     square[indices] = rand_letters
 
-                case "without trash":
+                case EncMode.WITHOUT_TRASH:
                     square[indices] = " "
 
                 case _:
@@ -166,10 +186,10 @@ class CarganGrille:
         if not text:
             raise CarganGrilleError("Input text is empty!")
 
-        n, _ = self.stencil.shape
+        n, _ = self._stencil.shape
 
-        indices_allow_values = np.where(self.stencil != 0)
-        sorted_allow_values = sorted(self.stencil[indices_allow_values], key=lambda x: x.value)
+        indices_allow_values = np.where(self._stencil != 0)
+        sorted_allow_values = sorted(self._stencil[indices_allow_values], key=lambda x: x.value)
 
         text_blocks = [text[i:i + n ** 2] for i in range(0, len(text), n ** 2)]
         text_blocks[-1] += " " * (n**2 - len(text_blocks[-1]))
@@ -181,29 +201,20 @@ class CarganGrille:
 
             for _ in range(4):
                 for value in sorted_allow_values:
-                    i, j = np.where(self.stencil == value)
+                    i, j = np.where(self._stencil == value)
                     decrypted_text += str(square[i[0], j[0]])
 
-                self.stencil = np.rot90(self.stencil, -1)
+                self._stencil = np.rot90(self._stencil, -1)
 
         return decrypted_text
 
-    def make(self, text: str, mode: str = "encrypt") -> str:
-        """Cardan grille cipher. Interface for calling encryption/decryption functions.
-
-        Args:
-            text: text to be encrypted/decrypted.
-            mode: encryption or decryption (default "encrypt").
-
-        Returns:
-            Encrypted or decrypted string.
-        """
-        match mode:
-            case "encrypt":
+    def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT) -> str:
+        match enc_proc:
+            case EncProc.ENCRYPT:
                 return self.encrypt(text)
 
-            case "decrypt":
+            case EncProc.DECRYPT:
                 return self.decrypt(text)
 
             case _:
-                raise CarganGrilleError(f"Invalid processing type! -> {mode}")
+                raise CarganGrilleError(f"Invalid processing type! -> {enc_proc}")

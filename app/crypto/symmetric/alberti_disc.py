@@ -1,11 +1,8 @@
 import re
 
-from ..utils import (
-    get_alphabet_by_letter
-)
-from ..const import (
-    ALPHABET_TABLE
-)
+from ..utils import get_alphabet_by_letter
+from ..const import ALPHABET_TABLE
+from ..common import EncProc
 
 
 class AlbertiError(Exception):
@@ -32,7 +29,7 @@ class Alberti:
 
         self.shift = shift
 
-    def _transform(self, text: str, mode: str = "encrypt") -> str:
+    def _transform(self, text: str, enc_proc: EncProc) -> str:
         if not text:
             raise AlbertiError("Input text is empty!")
 
@@ -46,17 +43,17 @@ class Alberti:
         # Making a shift in the internal alphabet
         internal_alphabet = internal_alphabet[self.shift::] + internal_alphabet[:self.shift:]
 
-        match mode:
-            case "encrypt":
+        match enc_proc:
+            case EncProc.ENCRYPT:
                 key_sign = 1
 
-            case "decrypt":
+            case EncProc.DECRYPT:
                 # swap alphabets
                 internal_alphabet, external_alphabet = external_alphabet, internal_alphabet
                 key_sign = -1
 
             case _:
-                raise AlbertiError(f"Invalid processing type! -> {mode}")
+                raise AlbertiError(f"Invalid processing type! -> {enc_proc}")
 
         text_list: list[str] = list(text)
         internal_shift = 0
@@ -80,18 +77,18 @@ class Alberti:
         return "".join(text_list)
 
     def encrypt(self, text: str) -> str:
-        return self._transform(text, "encrypt")
+        return self._transform(text, EncProc.ENCRYPT)
 
     def decrypt(self, text: str) -> str:
-        return self._transform(text, "decrypt")
+        return self._transform(text, EncProc.DECRYPT)
 
-    def make(self, text: str, mode: str = "encrypt") -> str:
-        match mode:
-            case "encrypt":
-                return self._transform(text, "encrypt")
+    def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT) -> str:
+        match enc_proc:
+            case EncProc.ENCRYPT:
+                return self.encrypt(text)
 
-            case "decrypt":
-                return self._transform(text, "decrypt")
+            case EncProc.DECRYPT:
+                return self.decrypt(text)
 
             case _:
-                raise AlbertiError(f"Invalid processing type! -> {mode}")
+                raise AlbertiError(f"Invalid processing type! -> {enc_proc}")

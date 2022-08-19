@@ -12,8 +12,10 @@ from PyQt6.QtCore import QUrl
 from .des_ui import Ui_DES
 from app.crypto.symmetric.des import (
     DES,
-    DESError
+    DESError,
+    EncMode
 )
+from app.crypto.common import EncProc
 from app.gui.const import (
     DES_SUPPORT_EXT,
     MAX_BYTES_READ
@@ -129,11 +131,12 @@ class DESWidget(BaseQWidget):
         """DES | (Slot) Method for handling button click. (Encryption/decryption)"""
         key_hex = self.ui.line_edit_key.text()
         iv_hex = self.ui.line_edit_iv.text()
-        des_mode = self.ui.combo_box_des_mode.currentText()
-        mode = self.ui.combo_box_mode.currentText().lower()
+
+        enc_mode = EncMode.from_str(self.ui.combo_box_des_mode.currentText())
+        enc_proc = EncProc.from_str(self.ui.combo_box_mode.currentText())
 
         try:
-            cipher = DES(key=key_hex, iv=iv_hex, mode=des_mode)
+            cipher = DES(key_hex, iv_hex, enc_mode)
 
         except DESError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
@@ -141,19 +144,19 @@ class DESWidget(BaseQWidget):
 
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                self._tab_text_processing(cipher, mode)
+                self._tab_text_processing(cipher, enc_proc)
 
             case self.ui.tab_document:
-                self._tab_document_processing(cipher, mode)
+                self._tab_document_processing(cipher, enc_proc)
 
             case _:
                 pass
 
-    def _tab_text_processing(self, cipher: DES, mode: str):
+    def _tab_text_processing(self, cipher: DES, enc_proc: EncProc):
         data = self.ui.text_edit_input.toPlainText()
 
         try:
-            processed_data = cipher.make(data, mode)
+            processed_data = cipher.make(data, enc_proc)
 
         except DESError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
@@ -161,7 +164,7 @@ class DESWidget(BaseQWidget):
 
         self.ui.text_edit_output.setText(processed_data)
 
-    def _tab_document_processing(self, cipher: DES, mode: str):
+    def _tab_document_processing(self, cipher: DES, enc_proc: EncProc):
         if self.file_path.isEmpty():
             QMessageBox.warning(self, "Warning!", "File not selected!")
             return
@@ -177,7 +180,7 @@ class DESWidget(BaseQWidget):
         if not file_path_output:
             return
 
-        thread_worker = FileProcessing(cipher, mode, self.file_path.toLocalFile(), file_path_output)
+        thread_worker = FileProcessing(cipher, enc_proc, self.file_path.toLocalFile(), file_path_output)
         self.thread_ready.emit(thread_worker)
 
     def _file_path_changed(self, file: QUrl):
@@ -185,10 +188,10 @@ class DESWidget(BaseQWidget):
 
 
 class FileProcessing(BaseQThread):
-    def __init__(self, cipher: DES, mode: str, input_file: str, output_file: str):
+    def __init__(self, cipher: DES, enc_proc: EncProc, input_file: str, output_file: str):
         super(FileProcessing, self).__init__()
         self._cipher = cipher
-        self._mode = mode
+        self._enc_proc = enc_proc
         self._input_file = input_file
         self._output_file = output_file
 
@@ -210,14 +213,14 @@ class FileProcessing(BaseQThread):
                 self.pbar.emit((PBarCommands.SET_VALUE, 0))
                 self.pbar.emit((PBarCommands.SHOW,))
 
-                match self._mode:
-                    case "encrypt":
+                match self._enc_proc:
+                    case EncProc.ENCRYPT:
                         # padding to 8 bytes
                         pad = input_file_size.to_bytes(8, "little")
                         encrypted_pad = self._cipher.encrypt(pad, reset_iv=False)
                         output_file.write(encrypted_pad)
 
-                    case "decrypt":
+                    case EncProc.DECRYPT:
                         pad = input_file.read(8)
                         decrypted_pad = self._cipher.decrypt(pad, reset_iv=False)
                         final_file_size = int.from_bytes(decrypted_pad, "little")
@@ -226,12 +229,12 @@ class FileProcessing(BaseQThread):
                         return
 
                 while (block := input_file.read(MAX_BYTES_READ)) and self._is_worked:
-                    processed_block = self._cipher.make(block, self._mode, reset_iv=False)
+                    processed_block = self._cipher.make(block, self._enc_proc, reset_iv=False)
                     output_file.write(processed_block)
 
                     self.pbar.emit((PBarCommands.SET_VALUE, input_file.tell()))
 
-                if self._mode == "decrypt":
+                if self._enc_proc is EncProc.DECRYPT:
                     output_file.truncate(final_file_size)
 
         except Exception as e:

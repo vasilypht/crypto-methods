@@ -1,20 +1,32 @@
 from random import randint
+from enum import (
+    Enum,
+    auto
+)
 
 from ..const import (
-    POLYBIUS_SQUARE_RU,
-    POLYBIUS_SQUARE_EN,
-    RUS_LCASE,
-    ENG_LCASE
+    POLYBIUS_SQUARES_TABLE,
+    ALPHABET_TABLE
 )
-from ..utils import (
-    get_letters_alphabetically
-)
+from ..utils import get_letters_alphabetically
+from ..common import EncProc
 
 
-SQUARES = (
-    POLYBIUS_SQUARE_EN,
-    POLYBIUS_SQUARE_RU
-)
+class MethodMode(Enum):
+    METHOD_1 = auto()
+    METHOD_2 = auto()
+
+    @staticmethod
+    def from_str(value: str):
+        match value.lower():
+            case "method 1":
+                return MethodMode.METHOD_1
+
+            case "method 2":
+                return MethodMode.METHOD_2
+
+            case _:
+                raise NotImplementedError()
 
 
 class PolybiusSquareError(Exception):
@@ -22,12 +34,9 @@ class PolybiusSquareError(Exception):
 
 
 class PolybiusSquare:
-    def __init__(self, shift: int = 0, method: str = "method 1"):
+    def __init__(self, shift: int = 0, method_mode: MethodMode = MethodMode.METHOD_1):
         self.shift = shift
-
-        if method not in ("method 1", "method 2"):
-            raise PolybiusSquareError(f"Invalid method type! -> {method}")
-        self.method = method
+        self.method_mode = method_mode
 
     @staticmethod
     def find_indices_in_square(letter: str, square: dict) -> tuple[int, int] or None:
@@ -65,12 +74,12 @@ class PolybiusSquare:
             if letter.upper() in [item for value in square.values() for item in value]:
                 return square
 
-    def _method_1(self, text: str, mode: str = "encrypt") -> str:
+    def _method_1(self, text: str, enc_proc: EncProc) -> str:
         """Polybius Square. Method 1. Function for encryption and decryption.
 
         Args:
             text: text to encrypt or decrypt.
-            mode: encryption or decryption (default "encrypt").
+            enc_proc: encryption or decryption (default "encrypt").
 
         Returns:
             Encrypted or decrypted string.
@@ -83,26 +92,26 @@ class PolybiusSquare:
         for i in range(len(text)):
             letter = text_list[i]
 
-            if (square := self.get_square_by_letter(letter, SQUARES)) is None:
+            if (square := self.get_square_by_letter(letter, POLYBIUS_SQUARES_TABLE.values())) is None:
                 continue
 
             letter_i, letter_j = self.find_indices_in_square(letter, square)
 
-            match mode:
-                case "encrypt":
+            match enc_proc:
+                case EncProc.ENCRYPT:
                     if letter_j == 5:
                         letter_j = 1
                     else:
                         letter_j += 1
 
-                case "decrypt":
+                case EncProc.DECRYPT:
                     if letter_j == 1:
                         letter_j = 5
                     else:
                         letter_j -= 1
 
                 case _:
-                    raise PolybiusSquareError(f"Invalid processing type! -> {mode}")
+                    raise PolybiusSquareError(f"Invalid processing type! -> {enc_proc}")
 
             new_letters = square.get((letter_i, letter_j))
             new_letter = new_letters[randint(0, 1)] if len(new_letters) == 2 else new_letters[0]
@@ -114,12 +123,12 @@ class PolybiusSquare:
 
         return "".join(text_list)
 
-    def _method_2(self, text: str, mode: str = "encrypt") -> str:
+    def _method_2(self, text: str, enc_proc: EncProc) -> str:
         """Polybius Square. Method 2. Function for encryption and decryption.
 
         Args:
             text: text to encrypt or decrypt.
-            mode: encryption or decryption (default "encrypt").
+            enc_proc: encryption or decryption (default "encrypt").
 
         Returns:
             Encrypted or decrypted string.
@@ -127,37 +136,37 @@ class PolybiusSquare:
         if not text:
             raise PolybiusSquareError("Input text is empty!")
 
-        letters, indices = get_letters_alphabetically(text, ENG_LCASE + RUS_LCASE)
+        letters, indices = get_letters_alphabetically(text, ''.join(ALPHABET_TABLE.values()))
 
         indices_i = []
         indices_j = []
         for letter in letters:
-            square = self.get_square_by_letter(letter, SQUARES)
+            square = self.get_square_by_letter(letter, POLYBIUS_SQUARES_TABLE.values())
             i, j = self.find_indices_in_square(letter, square)
             indices_i.append(i)
             indices_j.append(j)
 
         self.shift %= len(indices_i) + len(indices_j)
 
-        match mode:
-            case "encrypt":
+        match enc_proc:
+            case EncProc.ENCRYPT:
                 indices_ij = indices_i + indices_j
                 indices_ij = indices_ij[self.shift::] + indices_ij[:self.shift:]
                 new_indices = [(indices_ij[i], indices_ij[i + 1]) for i in range(0, len(indices_ij), 2)]
 
-            case "decrypt":
+            case EncProc.DECRYPT:
                 indices_ij = [index for pair in zip(indices_i, indices_j) for index in pair]
                 indices_ij = indices_ij[len(indices_ij) - self.shift:] + indices_ij[:len(indices_ij) - self.shift:]
                 k = len(indices_ij) // 2
                 new_indices = list(zip(indices_ij[:k:], indices_ij[k::]))
 
             case _:
-                raise PolybiusSquareError(f"Invalid processing type! -> {mode}")
+                raise PolybiusSquareError(f"Invalid processing type! -> {enc_proc}")
 
         text_list: list[str] = list(text)
 
         for letter_index, (new_i, new_j) in zip(indices, new_indices):
-            square = self.get_square_by_letter(text[letter_index], SQUARES)
+            square = self.get_square_by_letter(text[letter_index], POLYBIUS_SQUARES_TABLE.values())
 
             values = square.get((new_i, new_j))
             new_letter = values[randint(0, 1)] if len(values) == 2 else values[0]
@@ -178,15 +187,15 @@ class PolybiusSquare:
         Returns:
             Encrypted string.
         """
-        match self.method:
-            case "method 1":
-                return self._method_1(text, "encrypt")
+        match self.method_mode:
+            case MethodMode.METHOD_1:
+                return self._method_1(text, EncProc.ENCRYPT)
 
-            case "method 2":
-                return self._method_2(text, "encrypt")
+            case MethodMode.METHOD_2:
+                return self._method_2(text, EncProc.ENCRYPT)
 
             case _:
-                raise PolybiusSquareError(f"Invalid method type! -> {self.method}")
+                raise PolybiusSquareError(f"Invalid method type! -> {self.method_mode}")
 
     def decrypt(self, text: str) -> str:
         """Polybius square cipher. Interface for calling decryption functions.
@@ -197,31 +206,31 @@ class PolybiusSquare:
         Returns:
             Decrypted string.
         """
-        match self.method:
-            case "method 1":
-                return self._method_1(text, "decrypt")
+        match self.method_mode:
+            case MethodMode.METHOD_1:
+                return self._method_1(text, EncProc.DECRYPT)
 
-            case "method 2":
-                return self._method_2(text, "decrypt")
+            case MethodMode.METHOD_2:
+                return self._method_2(text, EncProc.DECRYPT)
 
             case _:
-                pass
+                raise PolybiusSquareError(f"Invalid method type! -> {self.method_mode}")
 
-    def make(self, text: str, mode: str = "encrypt") -> str:
+    def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT) -> str:
         """Polybius square cipher. Interface for calling encryption/decryption functions.
 
         Args:
             text: text to be encrypted/decrypted.
-            mode: encryption or decryption (default "encrypt").
+            enc_proc: encryption or decryption (default "encrypt").
 
         Returns:
             Encrypted or decrypted string.
         """
-        match mode:
-            case "encrypt":
+        match enc_proc:
+            case EncProc.ENCRYPT:
                 return self.encrypt(text)
 
-            case "decrypt":
+            case EncProc.DECRYPT:
                 return self.decrypt(text)
 
             case _:

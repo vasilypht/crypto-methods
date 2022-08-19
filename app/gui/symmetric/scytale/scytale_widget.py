@@ -5,6 +5,7 @@ from app.crypto.symmetric.scytale import (
     Scytale,
     ScytaleError
 )
+from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 
 
@@ -33,7 +34,7 @@ class ScytaleWidget(BaseQWidget):
         n = self.ui.spin_box_rows.value()
         m = self.ui.spin_box_columns.value()
         auto_m = not self.ui.check_box_columns.isChecked()
-        mode = self.ui.combo_box_mode.currentText().lower()
+        enc_proc = EncProc.from_str(self.ui.combo_box_mode.currentText())
 
         try:
             cipher = Scytale(n, m, auto_m)
@@ -44,16 +45,16 @@ class ScytaleWidget(BaseQWidget):
 
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                self._tab_text_processing(cipher, mode)
+                self._tab_text_processing(cipher, enc_proc)
 
             case _:
                 return
 
-    def _tab_text_processing(self, cipher: Scytale, mode: str):
+    def _tab_text_processing(self, cipher: Scytale, enc_proc: EncProc):
         data = self.ui.text_edit_input.toPlainText()
 
         try:
-            processed_text = cipher.make(data, mode)
+            processed_text = cipher.make(data, enc_proc)
 
         except ScytaleError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])

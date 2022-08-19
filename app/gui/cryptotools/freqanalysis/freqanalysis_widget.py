@@ -21,6 +21,10 @@ from app.crypto.tools.freqanalysis import (
     FreqAnalysis,
     FreqAnalysisError
 )
+from app.crypto.common import (
+    Languages,
+    TextStyle
+)
 
 
 class FreqAnalysisWidget(QWidget):
@@ -30,7 +34,7 @@ class FreqAnalysisWidget(QWidget):
         self.ui.setupUi(self)
 
         self.title = "Frequency cryptanalysis"
-        self.current_lang = "english"
+        self.current_lang = Languages.ENGLISH
 
         self.file_path = QUrl()
 
@@ -85,10 +89,10 @@ class FreqAnalysisWidget(QWidget):
         self.ui.combo_box_text_style.currentTextChanged.connect(self._text_style_changed)
 
     def _button_analysis_clicked(self):
-        self.current_lang = self.ui.combo_box_lang.currentText().lower()
+        self.current_lang = Languages.from_str(self.ui.combo_box_lang.currentText())
         self.freq_table = FreqAnalysis.get_freq_table(
-            lang=self.current_lang.lower(),
-            text_type=self.ui.combo_box_text_style.currentText().lower()
+            lang=self.current_lang,
+            text_type=TextStyle.from_str(self.ui.combo_box_text_style.currentText())
         )
         self.update_bar_graph(self.bar_graph_freq_table, self.freq_table)
         self.plot.getAxis("bottom").setTicks([list(enumerate(self.freq_table.keys()))])
@@ -186,40 +190,20 @@ class FreqAnalysisWidget(QWidget):
         if not file_path_output:
             return
 
-        # Attempt to open input file
         try:
-            file_input = open(self.file_path.toLocalFile(), "r")
+            with open(self.file_path.toLocalFile(), "r") as input_file, \
+                    open(file_path_output, "w") as output_file:
+                while block := input_file.read(MAX_CHARS_READ):
+                    processed_block = FreqAnalysis.decipher(block, self.letter_match)
+                    output_file.write(processed_block)
 
         except OSError:
-            QMessageBox.warning(self, "Warning!", "Error opening input file!")
+            QMessageBox.warning(self, "Warning!", "Error opening input/output file!")
             return
-
-        # Attempt to open output file
-        try:
-            file_output = open(file_path_output, "w")
-
-        except OSError:
-            # Closing the input file
-            file_input.close()
-            QMessageBox.warning(self, "Warning!", "Error opening output file!")
-            return
-
-        try:
-            while block := file_input.read(MAX_CHARS_READ):
-                processed_block = FreqAnalysis.decipher(block, self.letter_match)
-                file_output.write(processed_block)
 
         except FreqAnalysisError as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
-
-        except OSError:
-            QMessageBox.warning(self, "Warning!", "An error occurred while writing to file!")
-            return
-
-        finally:
-            file_input.close()
-            file_output.close()
 
     @staticmethod
     def update_bar_graph(graph: pg.BarGraphItem, freq_table: dict):
@@ -292,8 +276,8 @@ class FreqAnalysisWidget(QWidget):
 
     def _text_style_changed(self, text_style: str):
         self.freq_table = FreqAnalysis.get_freq_table(
-            lang=self.current_lang.lower(),
-            text_type=text_style.lower()
+            lang=self.current_lang,
+            text_type=TextStyle.from_str(text_style)
         )
         self.update_bar_graph(self.bar_graph_freq_table, self.freq_table)
         self.update_table_match()

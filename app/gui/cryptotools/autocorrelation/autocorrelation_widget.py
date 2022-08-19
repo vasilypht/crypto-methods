@@ -11,6 +11,7 @@ from app.crypto.tools.autocorrelation import (
     AutocorrError
 )
 from app.crypto.const import ALPHABET_TABLE
+from app.crypto.common import Languages
 from app.gui.widgets import DragDropWidget
 from app.gui.const import (
     AUTOCORRELATION_SUPPORT_EXT,
@@ -29,7 +30,7 @@ class AutocorrelationWidget(QWidget):
         self.file_path = QUrl()
 
         # Init languages
-        self.ui.combo_box_lang.addItems(map(lambda x: x.capitalize(), ALPHABET_TABLE.keys()))
+        self.ui.combo_box_lang.addItems(map(lambda x: x.name.capitalize(), ALPHABET_TABLE.keys()))
 
         # Add Drag and drop widget
         self.drag_drop_widget = DragDropWidget(self.ui.tab_document)
@@ -49,7 +50,7 @@ class AutocorrelationWidget(QWidget):
     def _button_analysis_clicked(self):
         self.ui.text_edit_stats.clear()
 
-        lang = self.ui.combo_box_lang.currentText().lower()
+        lang = Languages.from_str(self.ui.combo_box_lang.currentText())
         delta = self.ui.double_spin_box_delta.value()
         max_key_length = self.ui.spin_box_max_key_length.value()
 
@@ -74,7 +75,7 @@ class AutocorrelationWidget(QWidget):
                 return
 
         try:
-            crypto_tool = Autocorrelation(text, max_key_length, delta, lang)
+            crypto_tool = Autocorrelation(text, delta, max_key_length, lang)
 
             if self.ui.check_box_custom_key_length.isChecked():
                 key_length = self.ui.spin_box_custom_key_length.value()

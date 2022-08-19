@@ -1,17 +1,22 @@
 from typing import Final
 
+from .common import (
+    Languages,
+    TextStyle
+)
+
 
 ENG_LCASE: Final = "abcdefghijklmnopqrstuvwxyz"
 RUS_LCASE: Final = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 
 ALPHABET_TABLE: Final = {
-    "russian": RUS_LCASE,
-    "english": ENG_LCASE
+    Languages.RUSSIAN: RUS_LCASE,
+    Languages.ENGLISH: ENG_LCASE
 }
 
 IC_TABLE: Final = {
-    "russian": 0.0553,
-    "english": 0.0644
+    Languages.RUSSIAN: 0.0553,
+    Languages.ENGLISH: 0.0644
 }
 
 POLYBIUS_SQUARE_EN: Final = {
@@ -30,9 +35,10 @@ POLYBIUS_SQUARE_RU: Final = {
     (1, 5): ("Ш", "Щ"), (2, 5): ("Ы",),     (3, 5): ("Ь",),     (4, 5): ("Ю",), (5, 5): ("Я",)
 }
 
-KOI8R_STOPBYTES = (
-    0x0D,
-)
+POLYBIUS_SQUARES_TABLE: Final = {
+    Languages.RUSSIAN: POLYBIUS_SQUARE_RU,
+    Languages.ENGLISH: POLYBIUS_SQUARE_EN
+}
 
 ENG_LETTER_FREQ_COMMON: Final = {
     "a": 8.12,  "b": 1.49,  "c": 2.71,  "d": 4.32,  "e": 12.02, "f": 2.30,  "g": 2.03,
@@ -81,15 +87,15 @@ RUS_LETTER_FREQ_LITERATURE: Final = {
 }
 
 FREQ_TABLES: Final = {
-    "english": {
-        "common": ENG_LETTER_FREQ_COMMON,
-        "math": ENG_LETTER_FREQ_MATH,
-        "literature": ENG_LETTER_FREQ_LITERATURE
+    Languages.ENGLISH: {
+        TextStyle.COMMON:     ENG_LETTER_FREQ_COMMON,
+        TextStyle.MATH:       ENG_LETTER_FREQ_MATH,
+        TextStyle.LITERATURE: ENG_LETTER_FREQ_LITERATURE
     },
-    "russian": {
-        "common": RUS_LETTER_FREQ_COMMON,
-        "math": RUS_LETTER_FREQ_MATH,
-        "literature": RUS_LETTER_FREQ_LITERATURE
+    Languages.RUSSIAN: {
+        TextStyle.COMMON:     RUS_LETTER_FREQ_COMMON,
+        TextStyle.MATH:       RUS_LETTER_FREQ_MATH,
+        TextStyle.LITERATURE: RUS_LETTER_FREQ_LITERATURE
     }
 }
 

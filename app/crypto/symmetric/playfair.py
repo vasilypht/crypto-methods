@@ -6,8 +6,10 @@ from ..utils import (
     get_alphabet_by_letter,
     get_letters_alphabetically
 )
-from ..const import (
-    ALPHABET_TABLE
+from ..const import ALPHABET_TABLE
+from ..common import (
+    EncProc,
+    Languages
 )
 
 
@@ -25,12 +27,12 @@ class Playfair:
 
         self.key = key
 
-    def _transform(self, text: str, mode: str = "encrypt") -> str:
+    def _transform(self, text: str, enc_proc: EncProc) -> str:
         """Playfair cipher. Encryption/Decryption function.
 
         Args:
             text: text to be encrypted/decrypted.
-            mode: encryption or decryption (default "encrypt").
+            enc_proc: encryption or decryption (default "encrypt").
 
         Returns:
             Encrypted or decrypted string.
@@ -38,33 +40,33 @@ class Playfair:
         if not text:
             raise PlayfairError("Input text is empty!")
 
-        match mode:
-            case "encrypt":
+        match enc_proc:
+            case EncProc.ENCRYPT:
                 key_sign = 1
 
-            case "decrypt":
+            case EncProc.DECRYPT:
                 key_sign = -1
 
             case _:
-                raise PlayfairError(f"Invalid processing type! -> {mode}")
+                raise PlayfairError(f"Invalid processing type! -> {enc_proc}")
 
         lang, alphabet = get_alphabet_by_letter(self.key[0], ALPHABET_TABLE)
 
         match lang:
-            case "english":
+            case Languages.ENGLISH:
                 shape = (5, 5)
                 letter_swap = ("j", "i")
                 first_add_letter = "x"
                 second_add_letter = "y"
 
-            case "russian":
+            case Languages.RUSSIAN:
                 shape = (4, 8)
                 letter_swap = ("ъ", "ь")
                 first_add_letter = "х"
                 second_add_letter = "у"
 
             case _:
-                raise Exception("Error lang!")
+                raise NotImplementedError()
 
         alphabet = alphabet.replace(letter_swap[0], "")
         text = text.replace(*letter_swap)
@@ -138,36 +140,35 @@ class Playfair:
         Returns:
             Encrypted string.
         """
-        return self._transform(text, "encrypt")
+        return self._transform(text, EncProc.ENCRYPT)
 
     def decrypt(self, text: str) -> str:
         """Playfair cipher. Interface for calling decryption functions.
 
         Args:
             text: text to be decrypted.
-            key: a set of letters of the same alphabet.
 
         Returns:
             Decrypted string.
         """
-        return self._transform(text, "decrypt")
+        return self._transform(text, EncProc.DECRYPT)
 
-    def make(self, text: str, mode: str = "encrypt") -> str:
+    def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT) -> str:
         """Playfair cipher. Interface for calling encryption/decryption functions.
 
         Args:
             text: text to be encrypted/decrypted.
-            mode: encryption or decryption (default "encrypt").
+            enc_proc: encryption or decryption (default "encrypt").
 
         Returns:
             Encrypted or decrypted string.
         """
-        match mode:
-            case "encrypt":
-                return self._transform(text, mode)
+        match enc_proc:
+            case EncProc.ENCRYPT:
+                return self.encrypt(text)
 
-            case "decrypt":
-                return self._transform(text, mode)
+            case EncProc.DECRYPT:
+                return self.decrypt(text)
 
             case _:
-                raise PlayfairError(f"Invalid processing type! -> {mode}")
+                raise PlayfairError(f"Invalid processing type! -> {enc_proc}")

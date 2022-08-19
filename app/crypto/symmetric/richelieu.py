@@ -1,5 +1,7 @@
 import re
 
+from ..common import EncProc
+
 
 class RichelieuError(Exception):
     pass
@@ -31,12 +33,12 @@ class Richelieu:
 
         return tuple(key_list)
 
-    def _transform(self, text: str, mode: str = "encrypt") -> str:
+    def _transform(self, text: str, enc_proc: EncProc) -> str:
         """Richelieu cipher. Encryption/decryption function.
 
         Args:
             text: text to be encrypted/decrypted.
-            mode: encryption or decryption (default "encrypt").
+            enc_proc: encryption or decryption (default "encrypt").
 
         Returns:
             Encrypted or decrypted string.
@@ -58,15 +60,15 @@ class Richelieu:
             substr = text[text_index:text_index + len(subkey)]
 
             for i, k in enumerate(subkey):
-                match mode:
-                    case "encrypt":
+                match enc_proc:
+                    case EncProc.ENCRYPT:
                         text_list[text_index + k - 1] = substr[i]
 
-                    case "decrypt":
+                    case EncProc.DECRYPT:
                         text_list[text_index + i] = substr[k - 1]
 
                     case _:
-                        raise RichelieuError(f"Invalid processing type! -> {mode}")
+                        raise RichelieuError(f"Invalid processing type! -> {enc_proc}")
 
             text_index += len(subkey)
             key_index = (key_index + 1) % len(self.key)
@@ -82,7 +84,7 @@ class Richelieu:
         Returns:
             Encrypted string.
         """
-        return self._transform(text, "encrypt")
+        return self._transform(text, EncProc.ENCRYPT)
 
     def decrypt(self, text: str) -> str:
         """Richelieu cipher. Interface for calling decryption functions.
@@ -93,24 +95,24 @@ class Richelieu:
         Returns:
             Decrypted string.
         """
-        return self._transform(text, "decrypt")
+        return self._transform(text, EncProc.DECRYPT)
 
-    def make(self, text: str, mode: str = "encrypt") -> str:
+    def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT) -> str:
         """Richelieu cipher. Interface for calling encryption/decryption functions.
 
         Args:
             text: text to be encrypted/decrypted.
-            mode: encryption or decryption (default "encrypt").
+            enc_proc: encryption or decryption (default "encrypt").
 
         Returns:
             Encrypted or decrypted string.
         """
-        match mode:
-            case "encrypt":
-                return self._transform(text, "encrypt")
+        match enc_proc:
+            case EncProc.ENCRYPT:
+                return self.encrypt(text)
 
-            case "decrypt":
-                return self._transform(text, "decrypt")
+            case EncProc.DECRYPT:
+                return self.decrypt(text)
 
             case _:
-                raise RichelieuError(f"Invalid processing type! -> {mode}")
+                raise RichelieuError(f"Invalid processing type! -> {enc_proc}")

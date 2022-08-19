@@ -1,10 +1,10 @@
 from collections import Counter
 
-from app.crypto.utils import (
-    get_letters_alphabetically
-)
-from app.crypto.const import (
-    FREQ_TABLES
+from app.crypto.utils import get_letters_alphabetically
+from app.crypto.const import FREQ_TABLES
+from app.crypto.common import (
+    Languages,
+    TextStyle
 )
 
 
@@ -14,7 +14,7 @@ class FreqAnalysisError(Exception):
 
 class FreqAnalysis:
     @staticmethod
-    def get_freq_table(lang: str = "english", text_type: str = "common") -> dict:
+    def get_freq_table(lang: Languages = Languages.ENGLISH, text_type: TextStyle = TextStyle.COMMON) -> dict:
         return FREQ_TABLES.get(lang, {}).get(text_type, {})
 
     @staticmethod

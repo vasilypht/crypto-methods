@@ -1,11 +1,8 @@
 import re
 
-from ..utils import (
-    get_alphabet_by_letter
-)
-from ..const import (
-    ALPHABET_TABLE
-)
+from ..utils import get_alphabet_by_letter
+from ..const import ALPHABET_TABLE
+from ..common import EncProc
 
 
 class VigenereError(Exception):
@@ -22,12 +19,12 @@ class Vigenere:
 
         self.key = key
 
-    def _transform(self, text: str, mode: str = "encrypt") -> str:
+    def _transform(self, text: str, enc_proc: EncProc) -> str:
         """Vigenere cipher. Encryption/Decryption function.
 
         Args:
             text: text to be encrypted/decrypted.
-            mode: encryption or decryption (default "encrypt").
+            enc_proc: encryption or decryption (default "encrypt").
 
         Returns:
             Encrypted or decrypted string.
@@ -53,15 +50,15 @@ class Vigenere:
             letter_key_index = alphabet_key.index(letter_key.lower())
 
             # choice of sign
-            match mode:
-                case "encrypt":
+            match enc_proc:
+                case EncProc.ENCRYPT:
                     key_sign = 1
 
-                case "decrypt":
+                case EncProc.DECRYPT:
                     key_sign = -1
 
                 case _:
-                    raise VigenereError(f"Invalid processing type! -> {mode}")
+                    raise VigenereError(f"Invalid processing type! -> {enc_proc}")
 
             new_letter_text_index = (letter_text_index + letter_key_index * key_sign) % len(alphabet_text)
             new_letter_text = alphabet_text[new_letter_text_index]
@@ -82,7 +79,7 @@ class Vigenere:
         Returns:
             Encrypted string.
         """
-        return self._transform(text, "encrypt")
+        return self._transform(text, EncProc.ENCRYPT)
 
     def decrypt(self, text: str) -> str:
         """Vigenere cipher. Interface for calling decryption functions.
@@ -93,24 +90,24 @@ class Vigenere:
         Returns:
             Decrypted string.
         """
-        return self._transform(text, "decrypt")
+        return self._transform(text, EncProc.DECRYPT)
 
-    def make(self, text: str, mode: str) -> str:
+    def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT) -> str:
         """Vigenere cipher. Interface for calling encryption/decryption functions.
 
         Args:
             text: text to be encrypted/decrypted.
-            mode: encryption or decryption (default "encrypt").
+            enc_proc: encryption or decryption (default "encrypt").
 
         Returns:
             Encrypted or decrypted string.
         """
-        match mode:
-            case "encrypt":
-                return self._transform(text, mode)
+        match enc_proc:
+            case EncProc.ENCRYPT:
+                return self.encrypt(text)
 
-            case "decrypt":
-                return self._transform(text, mode)
+            case EncProc.DECRYPT:
+                return self.decrypt(text)
 
             case _:
-                raise VigenereError(f"Invalid processing type! -> {mode}")
+                raise VigenereError(f"Invalid processing type! -> {enc_proc}")

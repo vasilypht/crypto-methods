@@ -149,7 +149,7 @@ class Alberti:
                 If the data object is of a different type, then an exception will be raised AlbertiError.
 
         Returns:
-
+            Encrypted or decrypted string.
         """
         match enc_proc:
             case EncProc.ENCRYPT:

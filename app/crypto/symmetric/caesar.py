@@ -1,21 +1,30 @@
+# This module contains the implementation of the cipher "Caesar's cipher"
 from ..utils import get_alphabet_by_letter
 from ..const import ALPHABET_TABLE
 from ..common import EncProc
 
 
 class CaesarError(Exception):
+    """The exception that is thrown when an error occurs in the Caesar class"""
     pass
 
 
 class Caesar:
-    def __init__(self, shift: int = 1):
+    def __init__(self, shift: int = 1) -> None:
+        """
+        Caesar class constructor.
+
+        Args:
+            shift: the value by which the letter in the alphabet will be shifted.
+        """
         self.shift = shift
 
     def _transform(self, text: str, enc_proc: EncProc) -> str:
-        """Caesar's cipher. Encryption/decryption function.
+        """
+        Data encryption/decryption method.
 
         Args:
-            text: text to be encrypted/decrypted.
+            text: the string to be encrypted or decrypted.
 
         Returns:
             Encrypted or decrypted string.
@@ -27,23 +36,31 @@ class Caesar:
 
         for i in range(len(text)):
             letter_text = text_list[i]
+
+            # For each letter of the text, we look for the corresponding alphabet.
+            # If there is none, we skip the iteration, skipping the given letter.
             if (lang_alphabet := get_alphabet_by_letter(letter_text, ALPHABET_TABLE)) is None:
                 continue
 
             _, alphabet = lang_alphabet
-            letter_text_index = alphabet.index(letter_text.lower())
 
-            # choice of sign
+            # Set the sign for encryption
             match enc_proc:
                 case EncProc.ENCRYPT:
+                    # The sign is positive, the shift value will be added
+                    # to the character index
                     sign = 1
 
                 case EncProc.DECRYPT:
+                    # The sign is negative, the shift value will be subtracted
+                    # from the character index
                     sign = -1
 
                 case _:
                     raise CaesarError(f"Invalid processing type! -> {enc_proc}")
 
+            # We get the index of the current letter and calculate the new index.
+            letter_text_index = alphabet.index(letter_text.lower())
             new_letter_text_index = (letter_text_index + self.shift * sign) % len(alphabet)
             new_letter_text = alphabet[new_letter_text_index]
 
@@ -55,10 +72,11 @@ class Caesar:
         return "".join(text_list)
 
     def encrypt(self, text: str) -> str:
-        """Caesar cipher. Interface for calling encryption functions.
+        """
+        Method - interface for encrypting input data.
 
         Args:
-            text: text to be encrypted.
+            text: the string to be encrypted.
 
         Returns:
             Encrypted string.
@@ -66,10 +84,11 @@ class Caesar:
         return self._transform(text, EncProc.ENCRYPT)
 
     def decrypt(self, text: str) -> str:
-        """Caesar cipher. Interface for calling decryption functions.
+        """
+        Method - interface for decrypting input data.
 
         Args:
-            text: text to be decrypted.
+            text: the string to be decrypted.
 
         Returns:
             Decrypted string.
@@ -77,10 +96,14 @@ class Caesar:
         return self._transform(text, EncProc.DECRYPT)
 
     def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT) -> str:
-        """Caesar cipher. Interface for calling encryption/decryption functions.
+        """
+        Method - interface for encrypting/decrypting input data.
 
         Args:
-            text: text to be encrypted/decrypted.
+            text: the string to be encrypted or decrypted.
+
+            enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
+                If the data object is of a different type, then an exception will be raised CaesarError.
 
         Returns:
             Encrypted or decrypted string.

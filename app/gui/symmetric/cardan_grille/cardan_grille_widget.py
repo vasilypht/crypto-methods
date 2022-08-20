@@ -1,3 +1,5 @@
+# This module contains the implementation of the widget for working
+# with the encryption algorithm "Grille Cardano".
 from PyQt6.QtWidgets import (
     QMessageBox,
     QAbstractItemView,
@@ -18,12 +20,18 @@ from app.gui.widgets import BaseQWidget
 
 class CardanGrilleWidget(BaseQWidget):
     def __init__(self):
+        """CardanGrilleWidget class constructor"""
         super(CardanGrilleWidget, self).__init__()
         self.ui = Ui_CardanGrille()
         self.ui.setupUi(self)
 
+        # Define the name of the widget that will be displayed in the list of widgets.
         self.title = "Cardan grille"
         self.stencil = None
+
+        # Initialization of possible encryption processes/modes.
+        self.ui.combo_box_enc_proc.addItems((item.name.capitalize() for item in EncProc))
+        self.ui.combo_box_enc_mode.addItems((item.name.capitalize() for item in EncMode))
 
         self.ui.table_widget_stencil.setSelectionMode(QAbstractItemView.SelectionMode(0))
 
@@ -39,28 +47,35 @@ class CardanGrilleWidget(BaseQWidget):
         self.ui.table_widget_stencil.clicked.connect(self._table_widget_change)
 
     def _action_gen_stencil_clicked(self) -> None:
-        """Cardan grille | (Slot) Method for creating a stencil on button click"""
+        """Method for generating a stencil."""
         k = self.ui.spin_box_dim_stencil.value()
         self.stencil = CarganGrille.gen_stencil(k)
 
+        # Adjusting the size of the table widget.
         self.ui.table_widget_stencil.setRowCount(2 * k)
         self.ui.table_widget_stencil.setColumnCount(2 * k)
 
         for i in range(2 * k):
             for j in range(2 * k):
+                # We fill in the fields of the widget, if the value is marked,
+                # then we paint the cell in orange
                 item = QTableWidgetItem(str(self.stencil[i, j].value))
+
                 if self.stencil[i, j].cond:
                     item.setBackground(QColor("orange"))
+
                 self.ui.table_widget_stencil.setItem(i, j, item)
 
+        # Fitting the Widget to the Data
         self.ui.table_widget_stencil.resizeRowsToContents()
         self.ui.table_widget_stencil.resizeColumnsToContents()
 
     def _action_gen_clean_stencil_clicked(self) -> None:
-        """Cardan grille | (Slot) Method for creating a clean stencil on button click."""
+        """Method for generating a clean stencil."""
         k = self.ui.spin_box_dim_stencil.value()
         self.stencil = CarganGrille.gen_stencil(k)
 
+        # Adjusting the size of the table widget.
         self.ui.table_widget_stencil.setRowCount(2 * k)
         self.ui.table_widget_stencil.setColumnCount(2 * k)
 
@@ -69,14 +84,18 @@ class CardanGrilleWidget(BaseQWidget):
                 item = QTableWidgetItem(str(self.stencil[i, j].value))
                 self.ui.table_widget_stencil.setItem(i, j, item)
 
+        # Fitting the Widget to the Data
         self.ui.table_widget_stencil.resizeRowsToContents()
         self.ui.table_widget_stencil.resizeColumnsToContents()
 
     def _table_widget_change(self) -> None:
-        """Cardan grille | (Slot) Method to change table cell color when cell is clicked."""
+        """Method - a slot for processing a signal on clicking on an element of the stencil widget."""
+        # Get the indexes of the current item.
         item = self.ui.table_widget_stencil.currentItem()
         i, j = item.row(), item.column()
 
+        # If the field has been checked, uncheck it and paint the field in the widget
+        # in the normal color. Otherwise, paint orange and mark the field.
         if item.background() == QColor("orange"):
             item.setBackground(QColor(0, 0, 0, 0))
             self.stencil[i][j].cond = False
@@ -85,9 +104,9 @@ class CardanGrilleWidget(BaseQWidget):
             self.stencil[i][j].cond = True
 
     def _button_make_clicked(self) -> None:
-        """Cardan grille | (Slot) Method for handling button click. (Encryption/decryption)"""
-        enc_mode = EncMode.from_str(self.ui.combo_box_trash.currentText())
-        enc_proc = EncProc.from_str(self.ui.combo_box_mode.currentText())
+        """Method - a slot for processing a signal when a button is pressed."""
+        enc_mode = EncMode.from_str(self.ui.combo_box_enc_mode.currentText())
+        enc_proc = EncProc.from_str(self.ui.combo_box_enc_proc.currentText())
 
         try:
             cipher = CarganGrille(self.stencil, enc_mode)
@@ -104,8 +123,10 @@ class CardanGrilleWidget(BaseQWidget):
                 pass
 
     def _tab_text_processing(self, cipher: CarganGrille, enc_proc: EncProc):
+        """Method for encryption on the text processing tab."""
         # clear preview table
         self.ui.table_widget_preview.clear()
+
         data = self.ui.text_edit_input.toPlainText()
 
         try:
@@ -116,17 +137,22 @@ class CardanGrilleWidget(BaseQWidget):
             return
 
         self.ui.text_edit_output.setText(processed_text)
-        n, _ = self.stencil.shape
 
+        # We divide the received text into blocks.
+        n, _ = self.stencil.shape
         text_blocks = [processed_text[i:i + n ** 2] for i in range(0, len(processed_text), n ** 2)]
 
+        # Set the size of the widget depending on the number of blocks.
         self.ui.table_widget_preview.setColumnCount(n)
         self.ui.table_widget_preview.setRowCount(n * len(text_blocks) + len(text_blocks))
 
         # Output of processed text after stencil
+        # The value relative to which the square will be filled.
         offset_i = 0
         row_labels = []
         for text_block in text_blocks:
+            # We add an empty string so that there is a distance between the
+            # encrypted squares in the widget.
             text_block += " " * (n ** 2 - len(text_block))
 
             for i in range(n):
@@ -139,6 +165,7 @@ class CardanGrilleWidget(BaseQWidget):
             row_labels.append("")
             offset_i += n + 1
 
+        # Fitting the Widget to the Data
         self.ui.table_widget_preview.setVerticalHeaderLabels(row_labels)
         self.ui.table_widget_preview.resizeRowsToContents()
         self.ui.table_widget_preview.resizeColumnsToContents()

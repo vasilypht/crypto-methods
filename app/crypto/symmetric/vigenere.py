@@ -1,3 +1,4 @@
+# This module contains the implementation of the cipher "Vigenere cipher"
 import re
 
 from ..utils import get_alphabet_by_letter
@@ -6,25 +7,33 @@ from ..common import EncProc
 
 
 class VigenereError(Exception):
+    """The exception that is thrown when an error occurs in the Caesar class"""
     pass
 
 
 class Vigenere:
     def __init__(self, key: str):
+        """
+        Vigenere class constructor.
+
+        Args:
+            key: a string consisting Russian or English alphabet.
+        """
         if not key:
             raise VigenereError("The key is missing!")
 
-        if not re.match(r"^[а-яА-ЯёЁa-zA-Z]*$", key):
+        if not re.match(r"^[а-яёa-z]*$", key, re.IGNORECASE):
             raise VigenereError("Invalid key!")
 
         self.key = key
 
     def _transform(self, text: str, enc_proc: EncProc) -> str:
-        """Vigenere cipher. Encryption/Decryption function.
+        """
+        Data encryption/decryption method.
 
         Args:
-            text: text to be encrypted/decrypted.
-            enc_proc: encryption or decryption (default "encrypt").
+            text: the string to be encrypted or decrypted.
+            enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
 
         Returns:
             Encrypted or decrypted string.
@@ -36,10 +45,12 @@ class Vigenere:
 
         for i in range(len(text)):
             letter_text = text_list[i]
+            # Get the alphabet for the text character.
             if (lang_alphabet_text := get_alphabet_by_letter(letter_text, ALPHABET_TABLE)) is None:
                 continue
 
             letter_key = self.key[i % len(self.key)]
+            # # Get the alphabet for the key character.
             if (lang_alphabet_key := get_alphabet_by_letter(letter_key, ALPHABET_TABLE)) is None:
                 continue
 
@@ -71,10 +82,11 @@ class Vigenere:
         return "".join(text_list)
 
     def encrypt(self, text: str) -> str:
-        """Vigenere cipher. Interface for calling encryption functions.
+        """
+        Method - interface for encrypting input data.
 
         Args:
-            text: text to be encrypted.
+            text: the string to be encrypted.
 
         Returns:
             Encrypted string.
@@ -82,10 +94,11 @@ class Vigenere:
         return self._transform(text, EncProc.ENCRYPT)
 
     def decrypt(self, text: str) -> str:
-        """Vigenere cipher. Interface for calling decryption functions.
+        """
+        Method - interface for decrypting input data.
 
         Args:
-            text: text to be decrypted.
+            text: the string to be decrypted.
 
         Returns:
             Decrypted string.
@@ -93,11 +106,14 @@ class Vigenere:
         return self._transform(text, EncProc.DECRYPT)
 
     def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT) -> str:
-        """Vigenere cipher. Interface for calling encryption/decryption functions.
+        """
+        Method - interface for encrypting/decrypting input data.
 
         Args:
-            text: text to be encrypted/decrypted.
-            enc_proc: encryption or decryption (default "encrypt").
+            text: the string to be encrypted or decrypted.
+
+            enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
+                If the data object is of a different type, then an exception will be raised VigenereError.
 
         Returns:
             Encrypted or decrypted string.

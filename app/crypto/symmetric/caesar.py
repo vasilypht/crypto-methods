@@ -25,6 +25,7 @@ class Caesar:
 
         Args:
             text: the string to be encrypted or decrypted.
+            enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
 
         Returns:
             Encrypted or decrypted string.

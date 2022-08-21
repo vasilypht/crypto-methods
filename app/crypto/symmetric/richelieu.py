@@ -1,14 +1,24 @@
+# This module contains the implementation of the cipher "Richelieu cipher"
 import re
 
 from ..common import EncProc
 
 
 class RichelieuError(Exception):
+    """The exception that is thrown when an error occurs in the Richelieu class"""
     pass
 
 
 class Richelieu:
     def __init__(self, key: str):
+        """
+        Caesar class constructor.
+
+        Args:
+            key: a string of numbers combined into groups of brackets, example: (1,3,2,4)(4,2,1,3).
+                If the sequence is violated or there are no brackets, or extra characters,
+                then the RichelieuError exception will be raised.
+        """
         if not key:
             raise RichelieuError("The key is missing!")
 
@@ -20,7 +30,7 @@ class Richelieu:
 
     @staticmethod
     def _parse_key(key: str) -> tuple:
-        # parse key str
+        """Method for key parsing."""
         key_list = []
         for subkey in key.strip("()").split(")("):
             key_list.append(tuple(map(int, subkey.split(","))))
@@ -34,11 +44,13 @@ class Richelieu:
         return tuple(key_list)
 
     def _transform(self, text: str, enc_proc: EncProc) -> str:
-        """Richelieu cipher. Encryption/decryption function.
+        """
+            Data encryption/decryption method.
+
 
         Args:
-            text: text to be encrypted/decrypted.
-            enc_proc: encryption or decryption (default "encrypt").
+            text: the string to be encrypted or decrypted.
+            enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
 
         Returns:
             Encrypted or decrypted string.
@@ -76,10 +88,11 @@ class Richelieu:
         return "".join(text_list)
 
     def encrypt(self, text: str) -> str:
-        """Richelieu cipher. Interface for calling encryption functions.
+        """
+        Method - interface for encrypting input data.
 
         Args:
-            text: text to be encrypted.
+            text: the string to be encrypted.
 
         Returns:
             Encrypted string.
@@ -87,10 +100,11 @@ class Richelieu:
         return self._transform(text, EncProc.ENCRYPT)
 
     def decrypt(self, text: str) -> str:
-        """Richelieu cipher. Interface for calling decryption functions.
+        """
+        Method - interface for decrypting input data.
 
         Args:
-            text: text to be decrypted.
+            text: the string to be decrypted.
 
         Returns:
             Decrypted string.
@@ -98,11 +112,14 @@ class Richelieu:
         return self._transform(text, EncProc.DECRYPT)
 
     def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT) -> str:
-        """Richelieu cipher. Interface for calling encryption/decryption functions.
+        """
+        Method - interface for encrypting/decrypting input data.
 
         Args:
-            text: text to be encrypted/decrypted.
-            enc_proc: encryption or decryption (default "encrypt").
+            text: the string to be encrypted or decrypted.
+
+            enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
+                If the data object is of a different type, then an exception will be raised RichelieuError.
 
         Returns:
             Encrypted or decrypted string.

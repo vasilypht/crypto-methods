@@ -1,3 +1,4 @@
+# This module contains the implementation of the cipher "Gronsfeld cipher"
 import re
 
 from ..utils import get_alphabet_by_letter
@@ -6,11 +7,18 @@ from ..common import EncProc
 
 
 class GronsfeldError(Exception):
+    """The exception that is thrown when an error occurs in the Gronsfeld class"""
     pass
 
 
 class Gronsfeld:
-    def __init__(self, key: str):
+    def __init__(self, key: str) -> None:
+        """
+        Gronsfeld class constructor.
+
+        Args:
+            key: a string of numbers. If the condition is not met, an GronsfeldError exception will be raised.
+        """
         if not key:
             raise GronsfeldError("The key is missing!")
 
@@ -20,6 +28,16 @@ class Gronsfeld:
         self.key = key
 
     def _transform(self, text: str, enc_proc: EncProc) -> str:
+        """
+        Data encryption/decryption method.
+
+        Args:
+            text: the string to be encrypted or decrypted.
+            enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
+
+        Returns:
+            Encrypted or decrypted string.
+        """
         if not text:
             raise GronsfeldError("Input text is empty!")
 
@@ -28,14 +46,15 @@ class Gronsfeld:
         for i in range(len(text)):
             letter_text = text_list[i]
 
+            # For each letter of the text, we look for the corresponding alphabet.
+            # If there is none, we skip the iteration, skipping the given letter.
             if (lang_alphabet := get_alphabet_by_letter(letter_text, ALPHABET_TABLE)) is None:
                 continue
 
             _, alphabet = lang_alphabet
-            letter_text_index = alphabet.index(letter_text.lower())
             shift = int(self.key[i % len(self.key)])
 
-            # choice of sign
+            # Set the sign for encryption
             match enc_proc:
                 case EncProc.ENCRYPT:
                     sign = 1
@@ -46,6 +65,8 @@ class Gronsfeld:
                 case _:
                     raise GronsfeldError(f"Invalid processing type! -> {enc_proc}")
 
+            # We get the index of the current letter and calculate the new index.
+            letter_text_index = alphabet.index(letter_text.lower())
             new_letter_index = (letter_text_index + shift * sign) % len(alphabet)
             new_letter_text = alphabet[new_letter_index]
 
@@ -57,10 +78,11 @@ class Gronsfeld:
         return "".join(text_list)
 
     def encrypt(self, text: str) -> str:
-        """Gronsfeld cipher. Interface for calling encryption functions.
+        """
+        Method - interface for encrypting input data.
 
         Args:
-            text: text to be encrypted.
+            text: the string to be encrypted.
 
         Returns:
             Encrypted string.
@@ -68,17 +90,30 @@ class Gronsfeld:
         return self._transform(text, EncProc.ENCRYPT)
 
     def decrypt(self, text: str) -> str:
-        """Gronsfeld cipher. Interface for calling decryption functions.
+        """
+        Method - interface for decrypting input data.
 
         Args:
-            text: text to be decrypted.
+            text: the string to be decrypted.
 
         Returns:
             Decrypted string.
         """
         return self._transform(text, EncProc.DECRYPT)
 
-    def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT):
+    def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT) -> str:
+        """
+        Method - interface for encrypting/decrypting input data.
+
+        Args:
+            text: the string to be encrypted or decrypted.
+
+            enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
+                If the data object is of a different type, then an exception will be raised GronsfeldError.
+
+        Returns:
+            Encrypted or decrypted string.
+        """
         match enc_proc:
             case EncProc.ENCRYPT:
                 return self.encrypt(text)

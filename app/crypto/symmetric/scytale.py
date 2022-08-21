@@ -1,12 +1,22 @@
+# This module contains the implementation of the cipher "Scytale cipher"
 from app.crypto.common import EncProc
 
 
 class ScytaleError(Exception):
+    """The exception that is thrown when an error occurs in the Caesar class"""
     pass
 
 
 class Scytale:
     def __init__(self, n: int, m: int = None, auto_m: bool = True):
+        """
+        Caesar class constructor.
+
+        Args:
+            n: a value that specifies the number of rows.
+            m: a value that specifies the number of columns.
+            auto_m: flag that determines the automatic calculation of the number of columns.
+        """
         if not auto_m and m is None:
             raise ScytaleError("You must set the value of 'm', or set the automatic calculation flag 'auto_m'!")
 
@@ -21,6 +31,15 @@ class Scytale:
         self.auto_m = auto_m
 
     def encrypt(self, text: str) -> str:
+        """
+        Method - interface for encrypting input data.
+
+        Args:
+            text: the string to be encrypted.
+
+        Returns:
+            Encrypted string.
+        """
         if not text:
             raise ScytaleError("Input text is empty!")
 
@@ -29,6 +48,7 @@ class Scytale:
 
         lines_list: list[list[str]] = []
 
+        # Breaking the line into blocks
         for i in range(self.n):
             line = list(text[i * self.m:(i + 1) * self.m])
             line += (self.m - len(line)) * [" "]
@@ -38,6 +58,15 @@ class Scytale:
         return "".join("".join(i) for i in flip_lines_list)
 
     def decrypt(self, text: str) -> str:
+        """
+        Method - interface for decrypting input data.
+
+        Args:
+            text: the string to be decrypted.
+
+        Returns:
+            Decrypted string.
+        """
         if not text:
             raise ScytaleError("Input text is empty!")
 
@@ -50,6 +79,18 @@ class Scytale:
         return "".join(lines_list)
 
     def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT) -> str:
+        """
+        Method - interface for encrypting/decrypting input data.
+
+        Args:
+            text: the string to be encrypted or decrypted.
+
+            enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
+                If the data object is of a different type, then an exception will be raised ScytaleError.
+
+        Returns:
+            Encrypted or decrypted string.
+        """
         match enc_proc:
             case EncProc.ENCRYPT:
                 return self.encrypt(text)

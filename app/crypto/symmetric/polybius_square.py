@@ -1,3 +1,4 @@
+# This module contains the implementation of the cipher "Polybius Square"
 from random import randint
 from enum import (
     Enum,
@@ -13,6 +14,7 @@ from ..common import EncProc
 
 
 class MethodMode(Enum):
+    """Method Modes for Polybius Square cipher."""
     METHOD_1 = auto()
     METHOD_2 = auto()
 
@@ -30,17 +32,30 @@ class MethodMode(Enum):
 
 
 class PolybiusSquareError(Exception):
+    """The exception that is thrown when an error occurs in the CarganGrille class"""
     pass
 
 
 class PolybiusSquare:
-    def __init__(self, shift: int = 0, method_mode: MethodMode = MethodMode.METHOD_1):
+    def __init__(self, shift: int = 0, method_mode: MethodMode = MethodMode.METHOD_1) -> None:
+        """
+        Constructor of the Polybius Square class.
+
+        Args:
+            shift: the value by which the coordinates will be cyclically shifted.
+                This parameter is used only in the second method.
+
+            method_mode: encryption method. There are two kinds of methods for this
+                cipher, and the second method can be used both with a zero shift
+                and with a non-zero one.
+        """
         self.shift = shift
         self.method_mode = method_mode
 
     @staticmethod
     def find_indices_in_square(letter: str, square: dict) -> tuple[int, int] or None:
-        """The function of finding the index of an element in a given square.
+        """
+        Method for finding the index of an element in a given square.
 
         Args:
             letter: the letter whose index will be searched for.
@@ -58,7 +73,8 @@ class PolybiusSquare:
 
     @staticmethod
     def get_square_by_letter(letter: str, squares: tuple) -> tuple[dict, dict, str] or None:
-        """Function to determine which square a letter belongs to.
+        """
+        Method for determining which cell a letter belongs to.
 
         Args:
             letter: the letter for which you want to find the square.
@@ -75,11 +91,12 @@ class PolybiusSquare:
                 return square
 
     def _method_1(self, text: str, enc_proc: EncProc) -> str:
-        """Polybius Square. Method 1. Function for encryption and decryption.
+        """
+        Method 1. Function for encryption and decryption.
 
         Args:
-            text: text to encrypt or decrypt.
-            enc_proc: encryption or decryption (default "encrypt").
+            text: the string to be encrypted or decrypted.
+            enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
 
         Returns:
             Encrypted or decrypted string.
@@ -92,9 +109,11 @@ class PolybiusSquare:
         for i in range(len(text)):
             letter = text_list[i]
 
+            # We get a square by letter, if not, then we skip the iteration.
             if (square := self.get_square_by_letter(letter, POLYBIUS_SQUARES_TABLE.values())) is None:
                 continue
 
+            # We get the indices of the letter in the square.
             letter_i, letter_j = self.find_indices_in_square(letter, square)
 
             match enc_proc:
@@ -114,6 +133,8 @@ class PolybiusSquare:
                     raise PolybiusSquareError(f"Invalid processing type! -> {enc_proc}")
 
             new_letters = square.get((letter_i, letter_j))
+            # Some cells of the square have several letters, so we
+            # choose one of the two with some probability.
             new_letter = new_letters[randint(0, 1)] if len(new_letters) == 2 else new_letters[0]
 
             if letter.islower():
@@ -136,11 +157,13 @@ class PolybiusSquare:
         if not text:
             raise PolybiusSquareError("Input text is empty!")
 
+        # We get only those letters and their indices in the source data that are in the squares.
         letters, indices = get_letters_alphabetically(text, ''.join(ALPHABET_TABLE.values()))
 
         indices_i = []
         indices_j = []
         for letter in letters:
+            # We get a square by letter, if not, then we skip the iteration.
             square = self.get_square_by_letter(letter, POLYBIUS_SQUARES_TABLE.values())
             i, j = self.find_indices_in_square(letter, square)
             indices_i.append(i)
@@ -150,13 +173,20 @@ class PolybiusSquare:
 
         match enc_proc:
             case EncProc.ENCRYPT:
+                # Connecting superscripts and subscripts, and then shifting cyclically to the right.
                 indices_ij = indices_i + indices_j
                 indices_ij = indices_ij[self.shift::] + indices_ij[:self.shift:]
+
+                # We form new pairs from the resulting sequence.
                 new_indices = [(indices_ij[i], indices_ij[i + 1]) for i in range(0, len(indices_ij), 2)]
 
             case EncProc.DECRYPT:
+                # We expand each pair of indices into one sequence.
                 indices_ij = [index for pair in zip(indices_i, indices_j) for index in pair]
+                # We make a reverse shift.
                 indices_ij = indices_ij[len(indices_ij) - self.shift:] + indices_ij[:len(indices_ij) - self.shift:]
+
+                # Forming new pairs of indices.
                 k = len(indices_ij) // 2
                 new_indices = list(zip(indices_ij[:k:], indices_ij[k::]))
 
@@ -165,10 +195,13 @@ class PolybiusSquare:
 
         text_list: list[str] = list(text)
 
+        # We place the changed letters back into the text.
         for letter_index, (new_i, new_j) in zip(indices, new_indices):
             square = self.get_square_by_letter(text[letter_index], POLYBIUS_SQUARES_TABLE.values())
 
             values = square.get((new_i, new_j))
+            # Some cells of the square have several letters, so we
+            # choose one of the two with some probability.
             new_letter = values[randint(0, 1)] if len(values) == 2 else values[0]
 
             if text_list[letter_index].islower():
@@ -179,10 +212,11 @@ class PolybiusSquare:
         return "".join(text_list)
 
     def encrypt(self, text: str) -> str:
-        """Polybius square cipher. Interface for calling encryption functions.
+        """
+        Method for encrypting input data.
 
         Args:
-            text: text to be encrypted.
+            text: the string to be encrypted.
 
         Returns:
             Encrypted string.
@@ -198,10 +232,11 @@ class PolybiusSquare:
                 raise PolybiusSquareError(f"Invalid method type! -> {self.method_mode}")
 
     def decrypt(self, text: str) -> str:
-        """Polybius square cipher. Interface for calling decryption functions.
+        """
+        Method for decrypting input data.
 
         Args:
-            text: text to be decrypted.
+            text: the string to be decrypted.
 
         Returns:
             Decrypted string.
@@ -217,11 +252,14 @@ class PolybiusSquare:
                 raise PolybiusSquareError(f"Invalid method type! -> {self.method_mode}")
 
     def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT) -> str:
-        """Polybius square cipher. Interface for calling encryption/decryption functions.
+        """
+        Method - interface for encrypting/decrypting input data.
 
         Args:
-            text: text to be encrypted/decrypted.
-            enc_proc: encryption or decryption (default "encrypt").
+            text: the string to be encrypted or decrypted.
+
+            enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
+                If the data object is of a different type, then an exception will be raised PolybiusSquareError.
 
         Returns:
             Encrypted or decrypted string.

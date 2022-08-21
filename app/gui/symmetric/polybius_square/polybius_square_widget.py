@@ -1,3 +1,5 @@
+# This module contains the implementation of the widget for working
+# with the encryption algorithm "Polybius Square".
 from PyQt6.QtWidgets import (
     QMessageBox
 )
@@ -14,18 +16,24 @@ from app.crypto.common import EncProc
 
 class PolybiusSquareWidget(BaseQWidget):
     def __init__(self):
+        """PolybiusSquareWidget class constructor"""
         super(PolybiusSquareWidget, self).__init__()
         self.ui = Ui_PolybiusSquare()
         self.ui.setupUi(self)
 
+        # Define the name of the widget that will be displayed in the list of widgets.
         self.title = "Polybius square"
 
-        self.ui.combo_box_method.currentIndexChanged.connect(self._combo_box_check)
+        # Initialization of possible encryption processes.
+        self.ui.combo_box_enc_proc.addItems((item.name.capitalize() for item in EncProc))
+        self.ui.combo_box_method_mode.addItems((item.name.replace("_", " ").capitalize() for item in MethodMode))
+
+        self.ui.combo_box_method_mode.currentIndexChanged.connect(self._combo_box_check)
         self.ui.button_make.clicked.connect(self._button_make_clicked)
 
     def _combo_box_check(self) -> None:
-        """Polybius square | (Slot) Method for activating/deactivating a spinbox."""
-        if self.ui.combo_box_method.currentText() == "Method 2":
+        """Method for activating/deactivating a spinbox."""
+        if self.ui.combo_box_method_mode.currentText() == "Method 2":
             self.ui.spin_box_shift.setDisabled(False)
             self.ui.label_shift.setDisabled(False)
         else:
@@ -33,10 +41,10 @@ class PolybiusSquareWidget(BaseQWidget):
             self.ui.label_shift.setDisabled(True)
 
     def _button_make_clicked(self) -> None:
-        """Polybius square | (Slot) Method for handling button click. (Encryption/decryption)"""
+        """Method - a slot for processing a signal when a button is pressed."""
         shift = self.ui.spin_box_shift.value()
-        method_mode = MethodMode.from_str(self.ui.combo_box_method.currentText())
-        enc_proc = EncProc.from_str(self.ui.combo_box_mode.currentText())
+        method_mode = MethodMode.from_str(self.ui.combo_box_method_mode.currentText())
+        enc_proc = EncProc.from_str(self.ui.combo_box_enc_proc.currentText())
 
         try:
             cipher = PolybiusSquare(shift, method_mode)
@@ -52,7 +60,8 @@ class PolybiusSquareWidget(BaseQWidget):
             case _:
                 pass
 
-    def _tab_text_processing(self, cipher: PolybiusSquare, enc_proc: EncProc):
+    def _tab_text_processing(self, cipher: PolybiusSquare, enc_proc: EncProc) -> None:
+        """Method for encryption on the text processing tab."""
         data = self.ui.text_edit_input.toPlainText()
 
         try:
@@ -63,4 +72,3 @@ class PolybiusSquareWidget(BaseQWidget):
             return
 
         self.ui.text_edit_output.setText(processed_text)
-

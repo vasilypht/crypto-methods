@@ -303,18 +303,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontal_layout_2">
           <item>
-           <widget class="QComboBox" name="combo_box_mode">
-            <item>
-             <property name="text">
-              <string>Encrypt</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Decrypt</string>
-             </property>
-            </item>
-           </widget>
+           <widget class="QComboBox" name="combo_box_enc_proc"/>
           </item>
           <item>
            <widget class="QPushButton" name="button_make">

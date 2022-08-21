@@ -1,3 +1,5 @@
+# This module contains the implementation of the widget for working
+# with the encryption algorithm "Vernam".
 from PyQt6.QtWidgets import (
     QMessageBox,
     QMenu,
@@ -18,7 +20,12 @@ class VernamWidget(BaseQWidget):
         super(VernamWidget, self).__init__()
         self.ui = Ui_vernam()
         self.ui.setupUi(self)
+
+        # Define the name of the widget that will be displayed in the list of widgets.
         self.title = "Vernam"
+
+        # Initialization of possible encryption processes.
+        self.ui.combo_box_enc_proc.addItems((item.name.capitalize() for item in EncProc))
 
         self.ui.button_make.clicked.connect(self._button_make_clicked)
 
@@ -31,6 +38,7 @@ class VernamWidget(BaseQWidget):
         self.ui.button_options.setMenu(menu)
 
     def _action_clicked_gen_key(self):
+        """Method for generating a key."""
         if not self.ui.text_edit_input.toPlainText():
             QMessageBox.warning(self, "Warning!", "Input text field is empty!")
             return
@@ -39,6 +47,7 @@ class VernamWidget(BaseQWidget):
         self.ui.line_edit_key.setText(key_hex)
 
     def _action_clicked_save_key(self):
+        """Method for storing the key."""
         if not self.ui.line_edit_key.text():
             QMessageBox.warning(self, "Warning!", "The field with the key is empty!")
             return
@@ -63,6 +72,7 @@ class VernamWidget(BaseQWidget):
             return
 
     def _action_clicked_load_key(self):
+        """Method for loading the key."""
         filename, _ = QFileDialog.getOpenFileName(
             parent=self,
             caption="Open a key file",
@@ -83,9 +93,9 @@ class VernamWidget(BaseQWidget):
             return
 
     def _button_make_clicked(self) -> None:
-        """Vernam | (Slot) Method for handling button click. (Encryption/decryption)"""
+        """Method - a slot for processing a signal when a button is pressed."""
         key = self.ui.line_edit_key.text()
-        enc_proc = EncProc.from_str(self.ui.combo_box_mode.currentText())
+        enc_proc = EncProc.from_str(self.ui.combo_box_enc_proc.currentText())
 
         try:
             cipher = Vernam(key)
@@ -102,6 +112,7 @@ class VernamWidget(BaseQWidget):
                 pass
 
     def _tab_text_processing(self, cipher: Vernam, enc_proc: EncProc):
+        """Method for encryption on the text processing tab."""
         data = self.ui.text_edit_input.toPlainText()
 
         try:

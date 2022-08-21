@@ -216,23 +216,13 @@
           <number>-1</number>
          </property>
          <item>
-          <widget class="QComboBox" name="combo_box_mode">
+          <widget class="QComboBox" name="combo_box_enc_proc">
            <property name="minimumSize">
             <size>
              <width>0</width>
              <height>0</height>
             </size>
            </property>
-           <item>
-            <property name="text">
-             <string>Encrypt</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Decrypt</string>
-            </property>
-           </item>
           </widget>
          </item>
          <item>

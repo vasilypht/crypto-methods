@@ -1,3 +1,4 @@
+# This module contains the implementation of the cipher "DES"
 from enum import (
     Enum,
     auto
@@ -13,6 +14,7 @@ from app.crypto.common import EncProc
 
 
 class EncMode(Enum):
+    """Encryption Modes for DES."""
     ECB = auto()
     CBC = auto()
     CFB = auto()
@@ -38,16 +40,27 @@ class EncMode(Enum):
 
 
 class DESError(Exception):
+    """The exception that is thrown when an error occurs in the DES class"""
     pass
 
 
 class DES:
-    def __init__(self, key: str, iv: str = None, enc_mode: EncMode = EncMode.ECB):
-        self._modes = {EncMode.ECB: self._ECB,
-                       EncMode.CBC: self._CBC,
-                       EncMode.CFB: self._CFB,
-                       EncMode.OFB: self._OFB}
+    def __init__(self, key: str, iv: str = None, enc_mode: EncMode = EncMode.ECB) -> None:
+        """
+        DES class constructor.
 
+        Args:
+            key: a string representing the 16th number. The key consists of 7 bytes,
+                the string must have 14 characters. If the conditions are not met, an
+                DESError exception will be raised.
+
+            iv: a string representing the 16th number. The initialization vector
+                consists of 8 bytes, the string must have 16 characters. If the conditions
+                 are not met, an DESError exception will be raised.
+
+            enc_mode: encryption mode, for this cipher there are several
+                modes: ECB, CBC, CFB, OFB.
+        """
         if len(key) != 14:
             raise DESError(f"Key length must be 56 bits (7 bytes)! ({len(key) // 2} bytes entered)")
 
@@ -70,14 +83,20 @@ class DES:
         if iv is None and enc_mode is not EncMode.ECB:
             raise DESError(f"Encryption in '{enc_mode}' mode requires an initialization vector!")
 
-        if enc_mode not in self._modes.keys():
-            raise DESError(f"Invalid encryption mode entered ({enc_mode})! "
-                           f"Possible modes: {tuple(self._modes.keys())}")
+        self._mode_fns = {EncMode.ECB: self._ECB,
+                          EncMode.CBC: self._CBC,
+                          EncMode.CFB: self._CFB,
+                          EncMode.OFB: self._OFB}
 
-        self._fn_mode = self._modes.get(enc_mode)
+        if enc_mode not in self._mode_fns.keys():
+            raise DESError(f"Invalid encryption mode entered ({enc_mode})! "
+                           f"Possible modes: {tuple(self._mode_fns.keys())}")
+
+        self._mode_fn = self._mode_fns.get(enc_mode)
         self.keys = self.generate_keys(self.key)
 
-    def generate_keys(self, key: int):
+    def generate_keys(self, key: int) -> list[int]:
+        """Method for generating encryption keys."""
         ext_key = 0
 
         # Getting a 64-bit key
@@ -91,7 +110,6 @@ class DES:
                 case 1:
                     ext_key |= ((k << 1) | 0b0) << (8 * i)
 
-        # Permutation
         new_key = self._permutation(ext_key, 64, DES_PC_1_TABLE)
 
         chunk_l = new_key >> 28
@@ -104,7 +122,6 @@ class DES:
             chunk_l = ((chunk_l << shift) | (chunk_l >> (28 - shift))) & 0xFFFFFFF
             chunk_d = ((chunk_d << shift) | (chunk_d >> (28 - shift))) & 0xFFFFFFF
 
-            # Final permutation
             block = (chunk_l << 28) | chunk_d
             new_key = self._permutation(block, 56, DES_PC_2_TABLE)
             keys.append(new_key)
@@ -112,11 +129,22 @@ class DES:
         return keys
 
     @staticmethod
-    def _permutation(key: int, bit_len: int, table: tuple):
+    def _permutation(key: int, bit_len: int, table: tuple) -> int:
+        """Method for performing bit swapping on a table."""
         key = bin(key)[2:].zfill(bit_len)
         return int("".join(key[i - 1] for i in table), 2)
 
-    def _transform(self, block: int, enc_proc: EncProc):
+    def _transform(self, block: int, enc_proc: EncProc) -> int:
+        """
+        Data encryption/decryption method.
+
+        Args:
+            block: bytes converted to a number.
+            enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
+
+        Returns:
+            Encrypted/decrypted block as a number.
+        """
         block = self._permutation(block, 64, DES_IP_TABLE)
         chunk_l = block >> 32
         chunk_r = block & 0xFFFFFFFF
@@ -136,7 +164,8 @@ class DES:
         block = (chunk_l << 32) | chunk_r
         return self._permutation(block, 64, DES_IP_INV_TABLE)
 
-    def _f(self, chunk: int, key: int):
+    def _f(self, chunk: int, key: int) -> int:
+        """Method for calculating the Feistel function"""
         chunk = self._permutation(chunk, 32, DES_E_TABLE) ^ key
 
         new_chunk = 0
@@ -148,7 +177,8 @@ class DES:
 
         return self._permutation(new_chunk, 48, DES_P_TABLE)
 
-    def _ECB(self, data: bytes, enc_proc: EncProc):
+    def _ECB(self, data: bytes, enc_proc: EncProc) -> bytes:
+        """Method for processing data in ECB mode"""
         processed_data = bytes()
 
         for pos in range(0, len(data), 8):
@@ -158,7 +188,8 @@ class DES:
 
         return processed_data
 
-    def _CBC(self, data: bytes, enc_proc: EncProc):
+    def _CBC(self, data: bytes, enc_proc: EncProc) -> bytes:
+        """Method for processing data in CBC mode"""
         processed_data = bytes()
 
         for pos in range(0, len(data), 8):
@@ -180,7 +211,8 @@ class DES:
 
         return processed_data
 
-    def _CFB(self, data: bytes, enc_proc: EncProc):
+    def _CFB(self, data: bytes, enc_proc: EncProc) -> bytes:
+        """Method for processing data in CFB mode"""
         processed_data = bytes()
 
         for pos in range(0, len(data), 8):
@@ -202,7 +234,8 @@ class DES:
 
         return processed_data
 
-    def _OFB(self, data: bytes, enc_proc: EncProc):
+    def _OFB(self, data: bytes, enc_proc: EncProc) -> bytes:
+        """Method for processing data in OFB mode"""
         processed_data = bytes()
 
         for pos in range(0, len(data), 8):
@@ -224,7 +257,28 @@ class DES:
 
         return processed_data
 
-    def _data_processing(self, data: bytes or str, enc_proc: EncProc, reset_iv: bool = True):
+    def _data_processing(self, data: bytes or str, enc_proc: EncProc, reset_iv: bool = True) -> str or bytes:
+        """
+        Method for processing data. This method converts the input data to bytes,
+        then conversions are performed and the output data is converted to a specific type.
+
+        * If the input is a string and the encryption mode, then the output will
+          be a string containing data in hexadecimal mode.
+
+        * If the input is bytes and the encryption or decryption mode, then the output will be bytes.
+
+        * If the input is a string (hex) and the decryption mode, then the output will be a
+          string with data in utf-8
+
+        Args:
+            data: bytes or string to be encrypted/decrypted.
+            enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
+            reset_iv: parameter indicating whether to reset the initialization vector
+                before encoding/decrypting the input data.
+
+        Returns:
+            Encrypted or decrypted strings or bytes.
+        """
         match enc_proc, data:
             case EncProc.ENCRYPT, str():
                 data_bytes = data.encode("utf-8")
@@ -244,7 +298,7 @@ class DES:
         if reset_iv:
             self.vector = self.iv
 
-        processed_data = self._fn_mode(data_bytes, enc_proc)
+        processed_data = self._mode_fn(data_bytes, enc_proc)
 
         match enc_proc, data:
             case EncProc.ENCRYPT, str():
@@ -259,13 +313,65 @@ class DES:
             case _:
                 raise DESError(f"Invalid processing mode! -> {enc_proc}")
 
-    def encrypt(self, data: bytes or str, reset_iv: bool = True):
+    def encrypt(self, data: bytes or str, reset_iv: bool = True) -> str or bytes:
+        """
+        Method - interface for encrypting input data.
+
+        * If the input is a string and the encryption mode, then the output will
+          be a string containing data in hexadecimal mode.
+
+        * If the input is bytes and the encryption mode, then the output will be bytes.
+
+        Args:
+            data: bytes or string to be encrypted.
+            reset_iv: parameter indicating whether to reset the initialization vector
+                before encrypting the input data.
+
+        Returns:
+            Encrypted strings or bytes.
+        """
         return self._data_processing(data, EncProc.ENCRYPT, reset_iv)
 
-    def decrypt(self, data: bytes or str, reset_iv: bool = True):
+    def decrypt(self, data: bytes or str, reset_iv: bool = True) -> str or bytes:
+        """
+        Method - interface for encrypting input data.
+
+        * If the input is bytes and the decryption mode, then the output will be bytes.
+
+        * If the input is a string (hex) and the decryption mode, then the output will be a
+          string with data in utf-8
+
+        Args:
+            data: bytes or string to be decrypted.
+            reset_iv: parameter indicating whether to reset the initialization vector
+                before decrypting the input data.
+
+        Returns:
+            Decrypted strings or bytes.
+        """
         return self._data_processing(data, EncProc.DECRYPT, reset_iv)
 
-    def make(self, data: bytes or str, enc_proc: EncProc = EncProc.ENCRYPT, reset_iv: bool = True):
+    def make(self, data: bytes or str, enc_proc: EncProc = EncProc.ENCRYPT, reset_iv: bool = True) -> str or bytes:
+        """
+        Method - interface for encrypting/decrypting input data.
+
+        * If the input is a string and the encryption mode, then the output will
+          be a string containing data in hexadecimal mode.
+
+        * If the input is bytes and the encryption or decryption mode, then the output will be bytes.
+
+        * If the input is a string (hex) and the decryption mode, then the output will be a
+          string with data in utf-8
+
+        Args:
+            data: bytes or string to be encrypted/decrypted.
+            enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
+            reset_iv: parameter indicating whether to reset the initialization vector
+                before encoding/decrypting the input data.
+
+        Returns:
+            Encrypted or decrypted strings or bytes.
+        """
         match enc_proc:
             case EncProc.ENCRYPT:
                 return self.encrypt(data, reset_iv)

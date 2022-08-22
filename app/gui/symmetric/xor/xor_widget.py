@@ -85,6 +85,7 @@ class XORWidget(BaseQWidget):
                 self._tab_text_processing(cipher, enc_proc)
 
             case self.ui.tab_document:
+                cipher.set_reset_state_flag(False)
                 self._tab_document_processing(cipher, enc_proc)
 
             case _:
@@ -192,7 +193,7 @@ class XORWidget(BaseQWidget):
 
 
 class FileProcessing(BaseQThread):
-    def __init__(self, cipher: XOR, enc_proc: EncProc, input_file: str, output_file: str):
+    def __init__(self, cipher: ..., enc_proc: EncProc, input_file: str, output_file: str):
         """
         FileProcessing class constructor. This class is designed to encrypt
         a file in a separate stream.
@@ -241,7 +242,7 @@ class FileProcessing(BaseQThread):
                 # We read a piece of data, encrypt it and write it to the output file,
                 # simultaneously updating the value in the progress bar.
                 while (block := input_file.read(MAX_BYTES_READ)) and self._is_worked:
-                    encrypted_block = self._cipher.make(block, self._enc_proc, reset_state=False)
+                    encrypted_block = self._cipher.make(block, self._enc_proc)
                     output_file.write(encrypted_block)
 
                     self.pbar.emit((PBarCommands.SET_VALUE, input_file.tell()))

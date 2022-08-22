@@ -4,11 +4,13 @@ from ..exceptions import XORError
 
 
 class XOR:
-    def __init__(self, key: str):
+    def __init__(self, key: str, reset_state: bool = True):
         """
 
         Args:
             key: a string representing the 16th number.
+            reset_state: parameter indicating whether to reset the state before
+                encrypting/decrypting the input data.
         """
         if not key:
             raise XORError("Key input value is empty!")
@@ -18,9 +20,15 @@ class XOR:
         except ValueError:
             raise XORError("Wrong format key entered (Hex)")
 
+        self._reset_state = reset_state
+
         self.index_key = 0
 
-    def _transform(self, data: bytes or str, enc_proc: EncProc, reset_state: bool = True) -> str or bytes:
+    def set_reset_state_flag(self, flag: bool = False):
+        """Method for setting the flag/clearing the flag by resetting the state."""
+        self._reset_state = flag
+
+    def _transform(self, data: bytes or str, enc_proc: EncProc) -> str or bytes:
         """
         Method for processing data. This method converts the input data to bytes,
         then conversions are performed and the output data is converted to a specific type.
@@ -36,8 +44,6 @@ class XOR:
         Args:
             data: bytes or string to be encrypted/decrypted.
             enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
-            reset_state: parameter indicating whether to reset the state before
-                encrypting/decrypting the input data.
 
         Returns:
             Encrypted or decrypted strings or bytes.
@@ -59,7 +65,7 @@ class XOR:
             case _:
                 raise XORError(f"Invalid processing type! -> {enc_proc}")
 
-        if reset_state:
+        if self._reset_state:
             self.index_key = 0
 
         for i in range(len(data_bytes)):
@@ -80,7 +86,7 @@ class XOR:
             case _:
                 raise XORError(f"Invalid processing type! -> {enc_proc}")
 
-    def encrypt(self, data: str or bytes, reset_state: bool = True) -> str or bytes:
+    def encrypt(self, data: str or bytes) -> str or bytes:
         """
         Method - interface for encrypting input data.
 
@@ -91,15 +97,13 @@ class XOR:
 
         Args:
             data: bytes or string to be encrypted.
-            reset_state: parameter indicating whether to reset the state
-                before encrypting the input data.
 
         Returns:
             Encrypted strings or bytes.
         """
-        return self._transform(data, EncProc.ENCRYPT, reset_state)
+        return self._transform(data, EncProc.ENCRYPT)
 
-    def decrypt(self, data: str or bytes, reset_state: bool = True) -> str or bytes:
+    def decrypt(self, data: str or bytes) -> str or bytes:
         """
         Method - interface for encrypting input data.
 
@@ -110,15 +114,13 @@ class XOR:
 
         Args:
             data: bytes or string to be decrypted.
-            reset_state: parameter indicating whether to reset the state
-                before decrypting the input data.
 
         Returns:
             Decrypted strings or bytes.
         """
-        return self._transform(data, EncProc.DECRYPT, reset_state)
+        return self._transform(data, EncProc.DECRYPT)
 
-    def make(self, data: str or bytes, enc_proc: EncProc = EncProc.ENCRYPT, reset_state: bool = True) -> str or bytes:
+    def make(self, data: str or bytes, enc_proc: EncProc = EncProc.ENCRYPT) -> str or bytes:
         """
         Method - interface for encrypting/decrypting input data.
 
@@ -133,18 +135,16 @@ class XOR:
         Args:
             data: bytes or string to be encrypted/decrypted.
             enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
-            reset_state: parameter indicating whether to reset the state
-                before encrypting/decrypting the input data.
 
         Returns:
             Encrypted or decrypted strings or bytes.
         """
         match enc_proc:
             case EncProc.ENCRYPT:
-                return self.encrypt(data, reset_state)
+                return self.encrypt(data)
 
             case EncProc.DECRYPT:
-                return self.decrypt(data, reset_state)
+                return self.decrypt(data)
 
             case _:
                 raise XORError(f"Wrong encryption mode! ({enc_proc})")

@@ -5,10 +5,8 @@ from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtGui import QRegularExpressionValidator as QRegExpVal
 
 from .richelieu_ui import Ui_Richelieu
-from app.crypto.symmetric.richelieu import (
-    Richelieu,
-    RichelieuError
-)
+from app.crypto.symmetric.richelieu import Richelieu
+from app.crypto.exceptions import RichelieuError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 

@@ -4,11 +4,7 @@ import re
 from ..utils import get_alphabet_by_letter
 from ..const import ALPHABET_TABLE
 from ..common import EncProc
-
-
-class AlbertiError(Exception):
-    """The exception that is thrown when an error occurs in the Alberti class"""
-    pass
+from ..exceptions import AlbertiError
 
 
 class Alberti:

@@ -1,13 +1,15 @@
-from . import (
-    atbash,
-    scytale,
-    polybius_square,
-    caesar,
-    cardan_grille,
-    richelieu,
-    gronsfeld,
-    vigenere,
-    alberti_disc,
-    hill,
-    vernam
-)
+from .alberti_disc import Alberti
+from .atbash import Atbash
+from .caesar import Caesar
+from .cardan_grille import CarganGrille
+from .des import DES
+from .gost import GOST
+from .gronsfeld import Gronsfeld
+from .hill import Hill
+from .playfair import Playfair
+from .polybius_square import PolybiusSquare
+from .richelieu import Richelieu
+from .scytale import Scytale
+from .vernam import Vernam
+from .vigenere import Vigenere
+from .xor import XOR

@@ -11,32 +11,27 @@ from ..const import (
 )
 from ..utils import get_letters_alphabetically
 from ..common import EncProc
-
-
-class MethodMode(Enum):
-    """Method Modes for Polybius Square cipher."""
-    METHOD_1 = auto()
-    METHOD_2 = auto()
-
-    @staticmethod
-    def from_str(value: str):
-        match value.lower():
-            case "method 1":
-                return MethodMode.METHOD_1
-
-            case "method 2":
-                return MethodMode.METHOD_2
-
-            case _:
-                raise NotImplementedError()
-
-
-class PolybiusSquareError(Exception):
-    """The exception that is thrown when an error occurs in the CarganGrille class"""
-    pass
+from ..exceptions import PolybiusSquareError
 
 
 class PolybiusSquare:
+    class MethodMode(Enum):
+        """Method Modes for Polybius Square cipher."""
+        METHOD_1 = auto()
+        METHOD_2 = auto()
+
+        @staticmethod
+        def from_str(value: str):
+            match value.lower():
+                case "method 1":
+                    return PolybiusSquare.MethodMode.METHOD_1
+
+                case "method 2":
+                    return PolybiusSquare.MethodMode.METHOD_2
+
+                case _:
+                    raise NotImplementedError()
+
     def __init__(self, shift: int = 0, method_mode: MethodMode = MethodMode.METHOD_1) -> None:
         """
         Constructor of the Polybius Square class.
@@ -222,10 +217,10 @@ class PolybiusSquare:
             Encrypted string.
         """
         match self.method_mode:
-            case MethodMode.METHOD_1:
+            case PolybiusSquare.MethodMode.METHOD_1:
                 return self._method_1(text, EncProc.ENCRYPT)
 
-            case MethodMode.METHOD_2:
+            case PolybiusSquare.MethodMode.METHOD_2:
                 return self._method_2(text, EncProc.ENCRYPT)
 
             case _:
@@ -242,10 +237,10 @@ class PolybiusSquare:
             Decrypted string.
         """
         match self.method_mode:
-            case MethodMode.METHOD_1:
+            case PolybiusSquare.MethodMode.METHOD_1:
                 return self._method_1(text, EncProc.DECRYPT)
 
-            case MethodMode.METHOD_2:
+            case PolybiusSquare.MethodMode.METHOD_2:
                 return self._method_2(text, EncProc.DECRYPT)
 
             case _:

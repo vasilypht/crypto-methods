@@ -5,10 +5,8 @@ from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtGui import QRegularExpressionValidator as QRegExpVal
 
 from .vigenere_ui import Ui_Vigenere
-from app.crypto.symmetric.vigenere import (
-    Vigenere,
-    VigenereError
-)
+from app.crypto.symmetric.vigenere import Vigenere
+from app.crypto.exceptions import VigenereError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 

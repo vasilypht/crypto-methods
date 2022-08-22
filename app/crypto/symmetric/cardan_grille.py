@@ -9,29 +9,7 @@ from enum import (
 import numpy as np
 
 from ..common import EncProc
-
-
-class CarganGrilleError(Exception):
-    """The exception that is thrown when an error occurs in the CarganGrille class"""
-    pass
-
-
-class EncMode(Enum):
-    """Encryption Modes for Cipher Cardano Lattice."""
-    WITH_TRASH = auto()
-    WITHOUT_TRASH = auto()
-
-    @staticmethod
-    def from_str(value: str):
-        match value.lower():
-            case "with trash":
-                return EncMode.WITH_TRASH
-
-            case "without trash":
-                return EncMode.WITHOUT_TRASH
-
-            case _:
-                raise NotImplementedError()
+from ..exceptions import CarganGrilleError
 
 
 class Field:
@@ -60,6 +38,23 @@ class Field:
 
 
 class CarganGrille:
+    class EncMode(Enum):
+        """Encryption Modes for Cipher Cardano Lattice."""
+        WITH_TRASH = auto()
+        WITHOUT_TRASH = auto()
+
+        @staticmethod
+        def from_str(value: str):
+            match value.lower():
+                case "with trash":
+                    return CarganGrille.EncMode.WITH_TRASH
+
+                case "without trash":
+                    return CarganGrille.EncMode.WITHOUT_TRASH
+
+                case _:
+                    raise NotImplementedError()
+
     def __init__(self, stencil: np.ndarray, enc_mode: EncMode.WITHOUT_TRASH):
         """
         Constructor of the Cardano Lattice class.
@@ -193,12 +188,12 @@ class CarganGrille:
             # We fill in the empty fields of the lattice.
             indices = np.where(square == "")
             match self._enc_mode:
-                case EncMode.WITH_TRASH:
+                case CarganGrille.EncMode.WITH_TRASH:
                     # Random letters of text.
                     rand_letters = [choice(text) for _ in range(len(indices[0]))]
                     square[indices] = rand_letters
 
-                case EncMode.WITHOUT_TRASH:
+                case CarganGrille.EncMode.WITHOUT_TRASH:
                     # Filling with spaces
                     square[indices] = " "
 

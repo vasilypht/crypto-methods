@@ -1,10 +1,6 @@
 # This module contains the implementation of the cipher "Scytale cipher"
 from app.crypto.common import EncProc
-
-
-class ScytaleError(Exception):
-    """The exception that is thrown when an error occurs in the Caesar class"""
-    pass
+from ..exceptions import ScytaleError
 
 
 class Scytale:

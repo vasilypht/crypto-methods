@@ -7,11 +7,7 @@ from sympy import Matrix
 
 from ..utils import get_letters_alphabetically
 from ..common import EncProc
-
-
-class HillError(Exception):
-    """The exception that is thrown when an error occurs in the Hill class"""
-    pass
+from ..exceptions import HillError
 
 
 class Hill:

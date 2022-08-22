@@ -11,10 +11,8 @@ from PyQt6.QtCore import QUrl
 import numpy as np
 
 from .xor_ui import Ui_XOR
-from app.crypto.symmetric.xor import (
-    XOR,
-    XORError
-)
+from app.crypto.symmetric.xor import XOR
+from app.crypto.exceptions import XORError
 from app.crypto.prngs.rc4 import (
     RC4,
     RC4Error

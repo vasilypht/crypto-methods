@@ -2,11 +2,7 @@
 import re
 
 from ..common import EncProc
-
-
-class RichelieuError(Exception):
-    """The exception that is thrown when an error occurs in the Richelieu class"""
-    pass
+from ..exceptions import RichelieuError
 
 
 class Richelieu:

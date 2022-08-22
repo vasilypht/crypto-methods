@@ -4,11 +4,7 @@ import re
 from ..utils import get_alphabet_by_letter
 from ..const import ALPHABET_TABLE
 from ..common import EncProc
-
-
-class GronsfeldError(Exception):
-    """The exception that is thrown when an error occurs in the Gronsfeld class"""
-    pass
+from ..exceptions import GronsfeldError
 
 
 class Gronsfeld:

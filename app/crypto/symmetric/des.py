@@ -11,40 +11,35 @@ from app.crypto.const import (
     DES_S_TABLE, DES_SHIFT_TABLE
 )
 from app.crypto.common import EncProc
-
-
-class EncMode(Enum):
-    """Encryption Modes for DES."""
-    ECB = auto()
-    CBC = auto()
-    CFB = auto()
-    OFB = auto()
-
-    @staticmethod
-    def from_str(value: str):
-        match value:
-            case "ECB":
-                return EncMode.ECB
-
-            case "CBC":
-                return EncMode.CBC
-
-            case "CFB":
-                return EncMode.CFB
-
-            case "OFB":
-                return EncMode.OFB
-
-            case _:
-                raise NotImplementedError
-
-
-class DESError(Exception):
-    """The exception that is thrown when an error occurs in the DES class"""
-    pass
+from ..exceptions import DESError
 
 
 class DES:
+    class EncMode(Enum):
+        """Encryption Modes for DES."""
+        ECB = auto()
+        CBC = auto()
+        CFB = auto()
+        OFB = auto()
+
+        @staticmethod
+        def from_str(value: str):
+            match value:
+                case "ECB":
+                    return DES.EncMode.ECB
+
+                case "CBC":
+                    return DES.EncMode.CBC
+
+                case "CFB":
+                    return DES.EncMode.CFB
+
+                case "OFB":
+                    return DES.EncMode.OFB
+
+                case _:
+                    raise NotImplementedError
+
     def __init__(self, key: str, iv: str = None, enc_mode: EncMode = EncMode.ECB) -> None:
         """
         DES class constructor.
@@ -80,13 +75,13 @@ class DES:
 
             self.vector = self.iv
 
-        if iv is None and enc_mode is not EncMode.ECB:
+        if iv is None and enc_mode is not DES.EncMode.ECB:
             raise DESError(f"Encryption in '{enc_mode}' mode requires an initialization vector!")
 
-        self._mode_fns = {EncMode.ECB: self._ECB,
-                          EncMode.CBC: self._CBC,
-                          EncMode.CFB: self._CFB,
-                          EncMode.OFB: self._OFB}
+        self._mode_fns = {DES.EncMode.ECB: self._ECB,
+                          DES.EncMode.CBC: self._CBC,
+                          DES.EncMode.CFB: self._CFB,
+                          DES.EncMode.OFB: self._OFB}
 
         if enc_mode not in self._mode_fns.keys():
             raise DESError(f"Invalid encryption mode entered ({enc_mode})! "

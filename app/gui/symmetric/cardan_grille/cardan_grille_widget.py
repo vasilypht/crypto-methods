@@ -9,13 +9,13 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QColor
 
 from .cardan_grille_ui import Ui_CardanGrille
-from app.crypto.symmetric.cardan_grille import (
-    CarganGrille,
-    CarganGrilleError,
-    EncMode
-)
+from app.crypto.symmetric import CarganGrille
+from app.crypto.exceptions import CarganGrilleError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
+
+
+EncMode = CarganGrille.EncMode
 
 
 class CardanGrilleWidget(BaseQWidget):
@@ -31,7 +31,7 @@ class CardanGrilleWidget(BaseQWidget):
 
         # Initialization of possible encryption processes/modes.
         self.ui.combo_box_enc_proc.addItems((item.name.capitalize() for item in EncProc))
-        self.ui.combo_box_enc_mode.addItems((item.name.capitalize() for item in EncMode))
+        self.ui.combo_box_enc_mode.addItems((item.name.replace("_", " ").capitalize() for item in EncMode))
 
         self.ui.table_widget_stencil.setSelectionMode(QAbstractItemView.SelectionMode(0))
 

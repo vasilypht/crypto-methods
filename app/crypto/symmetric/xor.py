@@ -1,10 +1,6 @@
 # This module contains the implementation of the cipher "XOR cipher"
 from ..common import EncProc
-
-
-class XORError(Exception):
-    """The exception that is thrown when an error occurs in the XOR class"""
-    pass
+from ..exceptions import XORError
 
 
 class XOR:

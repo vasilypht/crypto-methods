@@ -1,11 +1,7 @@
 # This module contains the implementation of the cipher "Cipher Atbash"
 from ..utils import get_alphabet_by_letter
 from ..const import ALPHABET_TABLE
-
-
-class AtbashError(Exception):
-    """The exception that is thrown when an error occurs in the Atbash class"""
-    pass
+from ..exceptions import AtbashError
 
 
 class Atbash:

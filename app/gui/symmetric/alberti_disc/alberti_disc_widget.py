@@ -5,10 +5,8 @@ from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtGui import QRegularExpressionValidator as QRegExpVal
 
 from .alberti_disc_ui import Ui_AlbertiDisk
-from app.crypto.symmetric.alberti_disc import (
-    Alberti,
-    AlbertiError
-)
+from app.crypto.symmetric import Alberti
+from app.crypto.exceptions import AlbertiError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 

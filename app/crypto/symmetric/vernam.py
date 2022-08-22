@@ -2,11 +2,7 @@
 import numpy as np
 
 from ..common import EncProc
-
-
-class VernamError(Exception):
-    """The exception that is thrown when an error occurs in the Vernam class"""
-    pass
+from ..exceptions import VernamError
 
 
 class Vernam:

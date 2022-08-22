@@ -12,11 +12,7 @@ from ..common import (
     EncProc,
     Languages
 )
-
-
-class PlayfairError(Exception):
-    """The exception that is thrown when an error occurs in the Playfair class"""
-    pass
+from ..exceptions import PlayfairError
 
 
 class Playfair:

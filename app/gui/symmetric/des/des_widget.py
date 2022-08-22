@@ -12,11 +12,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import QUrl
 
 from .des_ui import Ui_DES
-from app.crypto.symmetric.des import (
-    DES,
-    DESError,
-    EncMode
-)
+from app.crypto.symmetric.des import DES
+from app.crypto.exceptions import DESError
 from app.crypto.common import EncProc
 from app.gui.const import (
     DES_SUPPORT_EXT,
@@ -42,7 +39,7 @@ class DESWidget(BaseQWidget):
 
         # Initialization of possible encryption processes.
         self.ui.combo_box_enc_proc.addItems((item.name.capitalize() for item in EncProc))
-        self.ui.combo_box_enc_mode.addItems((item.name for item in EncMode))
+        self.ui.combo_box_enc_mode.addItems((item.name for item in DES.EncMode))
 
         # Path received from dragdrop widget
         self.file_path = QUrl()
@@ -147,7 +144,7 @@ class DESWidget(BaseQWidget):
         key_hex = self.ui.line_edit_key.text()
         iv_hex = self.ui.line_edit_iv.text()
 
-        enc_mode = EncMode.from_str(self.ui.combo_box_enc_mode.currentText())
+        enc_mode = DES.EncMode.from_str(self.ui.combo_box_enc_mode.currentText())
         enc_proc = EncProc.from_str(self.ui.combo_box_enc_proc.currentText())
 
         try:

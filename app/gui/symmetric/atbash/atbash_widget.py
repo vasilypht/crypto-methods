@@ -3,10 +3,8 @@
 from PyQt6.QtWidgets import QMessageBox
 
 from .atbash_ui import Ui_Atbash
-from app.crypto.symmetric.atbash import (
-    Atbash,
-    AtbashError
-)
+from app.crypto.symmetric import Atbash
+from app.crypto.exceptions import AtbashError
 from app.gui.widgets import BaseQWidget
 
 

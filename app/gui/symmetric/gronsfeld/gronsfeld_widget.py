@@ -5,10 +5,8 @@ from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtGui import QRegularExpressionValidator as QRegExpVal
 
 from .gronsfeld_ui import Ui_Gronsfeld
-from app.crypto.symmetric.gronsfeld import (
-    Gronsfeld,
-    GronsfeldError
-)
+from app.crypto.symmetric.gronsfeld import Gronsfeld
+from app.crypto.exceptions import GronsfeldError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 

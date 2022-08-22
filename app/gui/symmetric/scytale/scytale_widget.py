@@ -3,10 +3,8 @@
 from PyQt6.QtWidgets import QMessageBox
 
 from .scytale_ui import Ui_Scytale
-from app.crypto.symmetric.scytale import (
-    Scytale,
-    ScytaleError
-)
+from app.crypto.symmetric.scytale import Scytale
+from app.crypto.exceptions import ScytaleError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 

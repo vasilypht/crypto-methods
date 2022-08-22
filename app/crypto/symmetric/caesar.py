@@ -2,11 +2,7 @@
 from ..utils import get_alphabet_by_letter
 from ..const import ALPHABET_TABLE
 from ..common import EncProc
-
-
-class CaesarError(Exception):
-    """The exception that is thrown when an error occurs in the Caesar class"""
-    pass
+from ..exceptions import CaesarError
 
 
 class Caesar:

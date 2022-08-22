@@ -12,11 +12,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import QUrl
 
 from .gost_ui import Ui_GOST
-from app.crypto.symmetric.gost import (
-    GOST,
-    GOSTError,
-    EncMode
-)
+from app.crypto.symmetric.gost import GOST
+from app.crypto.exceptions import GOSTError
 from app.crypto.common import EncProc
 from app.gui.widgets import (
     DragDropWidget,
@@ -42,7 +39,7 @@ class GOSTWidget(BaseQWidget):
 
         # Initialization of possible encryption processes.
         self.ui.combo_box_enc_proc.addItems((item.name.capitalize() for item in EncProc))
-        self.ui.combo_box_enc_mode.addItems((item.name for item in EncMode))
+        self.ui.combo_box_enc_mode.addItems((item.name for item in GOST.EncMode))
 
         # Path received from dragdrop widget
         self.file_path = QUrl()
@@ -146,7 +143,7 @@ class GOSTWidget(BaseQWidget):
         """Method - a slot for processing a signal when a button is pressed."""
         key_hex = self.ui.line_edit_key.text()
         iv_hex = self.ui.line_edit_iv.text()
-        enc_mode = EncMode.from_str(self.ui.combo_box_enc_mode.currentText())
+        enc_mode = GOST.EncMode.from_str(self.ui.combo_box_enc_mode.currentText())
         enc_proc = EncProc.from_str(self.ui.combo_box_enc_proc.currentText())
 
         try:

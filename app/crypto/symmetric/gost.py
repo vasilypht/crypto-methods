@@ -10,40 +10,35 @@ from app.crypto.const import (
     GOST_SBLOCK
 )
 from app.crypto.common import EncProc
-
-
-class EncMode(Enum):
-    """Encryption Modes for GOST 28147-89."""
-    ECB = auto()
-    CBC = auto()
-    CFB = auto()
-    OFB = auto()
-
-    @staticmethod
-    def from_str(value: str):
-        match value:
-            case "ECB":
-                return EncMode.ECB
-
-            case "CBC":
-                return EncMode.CBC
-
-            case "CFB":
-                return EncMode.CFB
-
-            case "OFB":
-                return EncMode.OFB
-
-            case _:
-                raise NotImplementedError
-
-
-class GOSTError(Exception):
-    """The exception that is thrown when an error occurs in the GOST class"""
-    pass
+from ..exceptions import GOSTError
 
 
 class GOST:
+    class EncMode(Enum):
+        """Encryption Modes for GOST 28147-89."""
+        ECB = auto()
+        CBC = auto()
+        CFB = auto()
+        OFB = auto()
+
+        @staticmethod
+        def from_str(value: str):
+            match value:
+                case "ECB":
+                    return GOST.EncMode.ECB
+
+                case "CBC":
+                    return GOST.EncMode.CBC
+
+                case "CFB":
+                    return GOST.EncMode.CFB
+
+                case "OFB":
+                    return GOST.EncMode.OFB
+
+                case _:
+                    raise NotImplementedError
+
     def __init__(self, key: str, iv: str = None, enc_mode: EncMode = EncMode.ECB) -> None:
         """
         GOST class constructor.
@@ -79,16 +74,16 @@ class GOST:
 
             self.vector = self.iv
 
-        if iv is None and enc_mode is not EncMode.ECB:
+        if iv is None and enc_mode is not GOST.EncMode.ECB:
             raise GOSTError(f"Encryption in '{enc_mode}' mode requires an initialization vector!")
 
         # Generation of encryption keys.
         self.subkeys = tuple((self.key >> (32 * i)) & 0xFFFFFFFF for i in range(8))
 
-        self._mode_fns = {EncMode.ECB: self._ECB,
-                          EncMode.CBC: self._CBC,
-                          EncMode.CFB: self._CFB,
-                          EncMode.OFB: self._OFB}
+        self._mode_fns = {GOST.EncMode.ECB: self._ECB,
+                          GOST.EncMode.CBC: self._CBC,
+                          GOST.EncMode.CFB: self._CFB,
+                          GOST.EncMode.OFB: self._OFB}
 
         if enc_mode not in self._mode_fns.keys():
             raise GOSTError(f"Invalid encryption mode entered ({enc_mode})! "

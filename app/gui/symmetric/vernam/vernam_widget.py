@@ -7,10 +7,8 @@ from PyQt6.QtWidgets import (
 )
 
 from .vernam_ui import Ui_vernam
-from app.crypto.symmetric.vernam import (
-    Vernam,
-    VernamError
-)
+from app.crypto.symmetric.vernam import Vernam
+from app.crypto.exceptions import VernamError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 

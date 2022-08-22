@@ -6,11 +6,8 @@ from PyQt6.QtWidgets import (
 
 from .polybius_square_ui import Ui_PolybiusSquare
 from app.gui.widgets import BaseQWidget
-from app.crypto.symmetric.polybius_square import (
-    PolybiusSquareError,
-    PolybiusSquare,
-    MethodMode
-)
+from app.crypto.symmetric.polybius_square import PolybiusSquare
+from app.crypto.exceptions import PolybiusSquareError
 from app.crypto.common import EncProc
 
 
@@ -26,7 +23,8 @@ class PolybiusSquareWidget(BaseQWidget):
 
         # Initialization of possible encryption processes.
         self.ui.combo_box_enc_proc.addItems((item.name.capitalize() for item in EncProc))
-        self.ui.combo_box_method_mode.addItems((item.name.replace("_", " ").capitalize() for item in MethodMode))
+        self.ui.combo_box_method_mode.addItems(
+            (item.name.replace("_", " ").capitalize() for item in PolybiusSquare.MethodMode))
 
         self.ui.combo_box_method_mode.currentIndexChanged.connect(self._combo_box_check)
         self.ui.button_make.clicked.connect(self._button_make_clicked)
@@ -43,7 +41,7 @@ class PolybiusSquareWidget(BaseQWidget):
     def _button_make_clicked(self) -> None:
         """Method - a slot for processing a signal when a button is pressed."""
         shift = self.ui.spin_box_shift.value()
-        method_mode = MethodMode.from_str(self.ui.combo_box_method_mode.currentText())
+        method_mode = PolybiusSquare.MethodMode.from_str(self.ui.combo_box_method_mode.currentText())
         enc_proc = EncProc.from_str(self.ui.combo_box_enc_proc.currentText())
 
         try:

@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import QUrl
 
 from .des_ui import Ui_DES
-from app.crypto.symmetric.des import DES
+from app.crypto.symmetric import DES
 from app.crypto.exceptions import DESError
 from app.crypto.common import EncProc
 from app.gui.const import (

@@ -1,9 +1,17 @@
-class RC4Error(Exception):
-    pass
+# This module contains an implementation of a pseudo-random number generator
+# based on the RC4 stream encryption algorithm
+from ..exceptions import RC4Error
 
 
 class RC4:
     def __init__(self, iv: str, n: int = 8):
+        """
+        Pseudorandom number generator based on the RC4 algorithm for streaming encryption.
+
+        Args:
+            iv: a string in hexadecimal format that initializes the value.
+            n: size of generated number in bits.
+        """
         if not iv:
             raise RC4Error("Initialization vector is empty!")
 
@@ -13,26 +21,13 @@ class RC4:
             raise RC4Error("Error iv value! (must be hex)")
 
         self.n = n
-
-        self._reset_state()
-
-    def _reset_state(self):
         self.s = []
         self.i = 0
         self.j = 0
-
         self._ksa()
 
-    def set_options(self, iv: str, n: int = 8):
-        try:
-            self.iv = bytes.fromhex(iv)
-        except ValueError:
-            raise RC4Error("Error iv value! (must be hex)")
-        self.n = n
-
-        self._reset_state()
-
     def _ksa(self):
+        """S-box initialization."""
         len_iv = len(self.iv)
         module = 2 ** self.n
 
@@ -44,6 +39,7 @@ class RC4:
             self.s[i], self.s[j] = self.s[j], self.s[i]
 
     def _prga(self):
+        """Pseudo-random word generation K."""
         module = 2 ** self.n
         i, j = self.i, self.j
 

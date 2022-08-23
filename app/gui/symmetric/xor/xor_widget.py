@@ -11,12 +11,12 @@ from PyQt6.QtCore import QUrl
 import numpy as np
 
 from .xor_ui import Ui_XOR
-from app.crypto.symmetric.xor import XOR
-from app.crypto.exceptions import XORError
-from app.crypto.prngs.rc4 import (
-    RC4,
+from app.crypto.symmetric import XOR
+from app.crypto.exceptions import (
+    XORError,
     RC4Error
 )
+from app.crypto.prngs import RC4
 from app.crypto.common import EncProc
 from app.gui.widgets import (
     DragDropWidget,

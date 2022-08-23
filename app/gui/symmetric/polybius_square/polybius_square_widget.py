@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import (
 
 from .polybius_square_ui import Ui_PolybiusSquare
 from app.gui.widgets import BaseQWidget
-from app.crypto.symmetric.polybius_square import PolybiusSquare
+from app.crypto.symmetric import PolybiusSquare
 from app.crypto.exceptions import PolybiusSquareError
 from app.crypto.common import EncProc
 

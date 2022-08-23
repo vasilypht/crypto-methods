@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtGui import QRegularExpressionValidator as QRegExpVal
 
 from .playfair_ui import Ui_Playfair
-from app.crypto.symmetric.playfair import Playfair
+from app.crypto.symmetric import Playfair
 from app.crypto.exceptions import PlayfairError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget

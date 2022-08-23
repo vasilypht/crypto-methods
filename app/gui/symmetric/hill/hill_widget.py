@@ -5,7 +5,7 @@ import string
 from PyQt6.QtWidgets import QMessageBox
 
 from .hill_ui import Ui_Hill
-from app.crypto.symmetric.hill import Hill
+from app.crypto.symmetric import Hill
 from app.crypto.exceptions import HillError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget

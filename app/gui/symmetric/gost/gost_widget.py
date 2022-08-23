@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import QUrl
 
 from .gost_ui import Ui_GOST
-from app.crypto.symmetric.gost import GOST
+from app.crypto.symmetric import GOST
 from app.crypto.exceptions import GOSTError
 from app.crypto.common import EncProc
 from app.gui.widgets import (

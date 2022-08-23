@@ -18,10 +18,4 @@ class VigenereError(BaseCryptoError): ...
 class XORError(BaseCryptoError): ...
 
 
-
-
-
-
-
-
-
+class RC4Error(BaseCryptoError): ...

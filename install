@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+
+REP_LINK=https://github.com/vasilypht/crypto-methods.git 
+INSTALL_PATH=$HOME/crypto-methods
+PYREQ_FILE="requirements.txt"
+
+
+command_exists() {
+    command -v $* >/dev/null
+}
+
+
+# Checking if git is installed
+command_exists git || {
+    printf "%s\n"   "git is not installed!"
+    printf "%s\n\n" "Install git and try again..."
+    exit 1
+}
+
+printf "%s " "Cloning a repository:" \
+    && git clone $REP_LINK $INSTALL_PATH &>/dev/null \
+    && printf "%s\n" "OK!" \
+    || {
+    printf "%s\n\n" "FAIL!"
+    exit 1
+}
+
+
+cd $INSTALL_PATH
+
+# Checking if python3 is installed
+command_exists python3 || {
+    printf "%s\n"   "Python3 is not installed!"
+    printf "%s\n\n" "Install python3 and try again..."
+    exit 1
+}
+
+command_exists pip3 || {
+    printf "%s\n"   "pip3 is not installed!"
+    printf "%s\n\n" "Install pip3 and try again..."
+    exit 1
+}
+
+
+# Checking for developer mode
+printf "%s " "Install in developer mode? (y|N):"
+read answer
+
+case $answer in
+    "y")
+        PYREQ_FILE="requirements-dev.txt"
+        ;;
+esac
+
+
+printf "%s " "Creating a virtual environment:" \
+    && python3 -m venv venv &>/dev/null \
+    && printf "%s\n" "OK!" \
+    || {
+    printf "%s\n\n" "FAIL!"
+    exit 1
+}
+
+
+printf "%s " "Activating the virtual environment:" \
+    && source ./venv/bin/activate &>/dev/null \
+    && printf "%s\n" "OK!" \
+    || {
+    printf "%s\n\n" "FAIL!"
+    exit 1
+}
+
+
+printf "%s " "Installing Libraries:" \
+    && pip install -U pip &>/dev/null \
+    && pip install -r $PYREQ_FILE &>/dev/null \
+    && printf "%s\n" "OK!" \
+    || {
+    printf "%s\n\n" "FAIL!"
+    exit 1
+}
+
+
+printf "%s " "Deactivating a virtual environment:" \
+    && deactivate \
+    && printf "%s\n" "OK!" \
+    || {
+    printf "%s\n\n" "FAIL!"
+    exit 1
+}
+
+printf "\n%s\n\n" "Installation completed successfully!"
+printf "%s\n\n"   "To run the program, go to the $INSTALL_PATH directory and activate the environment:"
+printf "%s\n\n"   "    source ./venv/bin/activate"
+printf "%s\n\n"   "Then run the program with the following command:"
+printf "%s\n\n"   "    python -m app"
+printf "%s\n\n"   "NOTE: To deactivate the environment, use the following command:"
+printf "%s\n\n"   "    deactivate"
+

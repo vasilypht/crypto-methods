@@ -1,9 +1,9 @@
 # This module contains an implementation of a class for encrypting a file with
 # a specific cipher in a separate thread.
 from app.crypto.common import EncProc
-from .widgets import (
+from app.gui.widgets import (
     BaseQThread,
-    PBarCommands
+    PBar
 )
 
 
@@ -64,9 +64,9 @@ class FileProcessing(BaseQThread):
                 input_file.seek(0, 0)
 
                 # Initializes the progress bar by sending signals to the main window.
-                self.pbar.emit((PBarCommands.SET_RANGE, 0, input_file_size))
-                self.pbar.emit((PBarCommands.SET_VALUE, 0))
-                self.pbar.emit((PBarCommands.SHOW,))
+                self.pbar.emit((PBar.Commands.SET_RANGE, 0, input_file_size))
+                self.pbar.emit((PBar.Commands.SET_VALUE, 0))
+                self.pbar.emit((PBar.Commands.SHOW,))
 
                 if self._file_size_control:
                     # If the encryption process, then encrypt the file size with the first block,
@@ -92,7 +92,7 @@ class FileProcessing(BaseQThread):
                     processed_block = self._cipher.make(block, self._enc_proc)
                     output_file.write(processed_block)
 
-                    self.pbar.emit((PBarCommands.SET_VALUE, input_file.tell()))
+                    self.pbar.emit((PBar.Commands.SET_VALUE, input_file.tell()))
 
                 if self._file_size_control:
                     # If the decryption mode, set the true size of the file.
@@ -107,4 +107,4 @@ class FileProcessing(BaseQThread):
 
         finally:
             # Close the processbar.
-            self.pbar.emit((PBarCommands.CLOSE,))
+            self.pbar.emit((PBar.Commands.CLOSE,))

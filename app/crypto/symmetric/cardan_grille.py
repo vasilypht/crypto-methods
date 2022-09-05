@@ -156,12 +156,13 @@ class CarganGrille:
         if not text:
             raise CarganGrilleError("Input text is empty!")
 
-        n, _ = self._stencil.shape
+        stencil = self._stencil.copy()
+        n, _ = stencil.shape
 
         # We are looking for all the cells in the stencil where there are holes.
         # Next, we take all these cells and sort them by values.
-        indices_allow_values = np.where(self._stencil != 0)
-        sorted_allow_values = sorted(self._stencil[indices_allow_values], key=lambda x: x.value)
+        indices_allow_values = np.where(stencil != 0)
+        sorted_allow_values = sorted(stencil[indices_allow_values], key=lambda x: x.value)
 
         one_iter_len_text = len(sorted_allow_values) * 4
 
@@ -180,10 +181,10 @@ class CarganGrille:
                 # We insert letters by sorted values, then rotate the square by
                 # 90 degrees and repeat the encryption again.
                 for char, value in zip(substr, sorted_allow_values):
-                    indices_value = np.where(self._stencil == value)
+                    indices_value = np.where(stencil == value)
                     square[indices_value] = char
 
-                self._stencil = np.rot90(self._stencil, -1)
+                stencil = np.rot90(stencil, -1)
 
             # We fill in the empty fields of the lattice.
             indices = np.where(square == "")
@@ -217,12 +218,13 @@ class CarganGrille:
         if not text:
             raise CarganGrilleError("Input text is empty!")
 
-        n, _ = self._stencil.shape
+        stencil = self._stencil.copy()
+        n, _ = stencil.shape
 
         # We are looking for all the cells in the stencil where there are holes.
         # Next, we take all these cells and sort them by values.
-        indices_allow_values = np.where(self._stencil != 0)
-        sorted_allow_values = sorted(self._stencil[indices_allow_values], key=lambda x: x.value)
+        indices_allow_values = np.where(stencil != 0)
+        sorted_allow_values = sorted(stencil[indices_allow_values], key=lambda x: x.value)
 
         # We divide the text into blocks.
         text_blocks = [text[i:i + n ** 2] for i in range(0, len(text), n ** 2)]
@@ -238,10 +240,10 @@ class CarganGrille:
                 # By sorted values, we take letters from the formed square. By sorted values,
                 # we take letters from the formed square. Then rotate the square 90 degrees and repeat.
                 for value in sorted_allow_values:
-                    i, j = np.where(self._stencil == value)
+                    i, j = np.where(stencil == value)
                     decrypted_text += str(square[i[0], j[0]])
 
-                self._stencil = np.rot90(self._stencil, -1)
+                stencil = np.rot90(stencil, -1)
 
         return decrypted_text
 

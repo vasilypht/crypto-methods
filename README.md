@@ -59,7 +59,7 @@
 To install the program, just run this script (via pip):
 
 ```shell
-curl -fsSL https://raw.githubusercontent.com/vasilypht/crypto-methods/main/install | bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/vasilypht/crypto-methods/main/install)"
 ```
 
 ### Manual installation

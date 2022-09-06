@@ -19,8 +19,9 @@ class Scytale:
         if n <= 0:
             raise ScytaleError("'n' must be positive!")
 
-        if m <= 0:
-            raise ScytaleError("'n' must be positive!")
+        if not auto_m:
+            if m <= 0:
+                raise ScytaleError("'n' must be positive!")
 
         self.n = n
         self.m = m

@@ -13,6 +13,9 @@ class Vernam:
         Args:
             key: a string representing the 16th number.
         """
+        if not key:
+            raise VernamError("The key is missing!")
+
         try:
             self.key = bytes.fromhex(key)
         except ValueError:

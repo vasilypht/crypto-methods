@@ -259,7 +259,7 @@ class GOST:
         if self._reset_iv:
             self.vector = self.iv
 
-        processed_data = self._mode_fn(data_bytes, enc_proc)
+        processed_data = self._mode_fn(data_bytes, enc_proc).rstrip(b"\00")
 
         match enc_proc, data:
             case EncProc.ENCRYPT, str():

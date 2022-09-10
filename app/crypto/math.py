@@ -19,6 +19,11 @@ def fpow(a, n, m=None) -> int:
 
 
 def ext_gcd(a, b):
+    """
+    Extended Euclidean Algorithm.
+
+    Returns (d, x, y)
+    """
     s0, s1 = 1, 0
     t0, t1 = 0, 1
 

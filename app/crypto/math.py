@@ -1,6 +1,6 @@
 
 def fpow(a, n, m=None) -> int:
-    """Fast pow"""
+    """Function for fast exponentiation modulo."""
     result = 1
 
     while n > 0:

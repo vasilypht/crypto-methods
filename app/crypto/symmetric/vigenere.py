@@ -10,7 +10,7 @@ from ..exceptions import VigenereError
 class Vigenere:
     def __init__(self, key: str):
         """
-        Vigenere class constructor.
+        Implementation of the symmetric Vigenère cipher.
 
         Args:
             key: a string consisting Russian or English alphabet.

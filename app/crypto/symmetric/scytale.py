@@ -6,7 +6,7 @@ from ..exceptions import ScytaleError
 class Scytale:
     def __init__(self, n: int, m: int = None, auto_m: bool = True):
         """
-        Caesar class constructor.
+        Implementation of the symmetric cipher "Scytale".
 
         Args:
             n: a value that specifies the number of rows.

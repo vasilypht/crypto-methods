@@ -57,7 +57,7 @@ class CarganGrille:
 
     def __init__(self, stencil: np.ndarray, enc_mode: EncMode.WITHOUT_TRASH):
         """
-        Constructor of the Cardano Lattice class.
+        Implementation of the symmetric cipher "Cardano Lattice".
 
         Args:
             stencil: lattice over which encryption will occur.

@@ -6,6 +6,7 @@ from ..exceptions import XORError
 class XOR:
     def __init__(self, key: str, reset_state: bool = True):
         """
+        Implementation of the symmetric cipher "XOR".
 
         Args:
             key: a string representing the 16th number.

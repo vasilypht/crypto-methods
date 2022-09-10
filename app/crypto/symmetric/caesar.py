@@ -8,7 +8,7 @@ from ..exceptions import CaesarError
 class Caesar:
     def __init__(self, shift: int = 1) -> None:
         """
-        Caesar class constructor.
+        Implementation of a symmetric Caesar cipher. 
 
         Args:
             shift: the value by which the letter in the alphabet will be shifted.

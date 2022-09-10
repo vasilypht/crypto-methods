@@ -13,7 +13,7 @@ from ..exceptions import HillError
 class Hill:
     def __init__(self, key: str, alphabet: str) -> None:
         """
-        Hill class constructor.
+        Implementation of the symmetric Hill cipher.
 
         Args:
             key: a string consisting of alphabetic characters. If the condition is not met,

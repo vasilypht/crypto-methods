@@ -42,7 +42,8 @@ class DES:
 
     def __init__(self, key: str, iv: str = None, enc_mode: EncMode = EncMode.ECB, reset_iv: bool = True) -> None:
         """
-        DES class constructor.
+        Implementation of the "DES" symmetric encryption algorithm. The following 
+        encryption modes are available: ECB, CBC, CFB, OFB.
 
         Args:
             key: a string representing the 16th number. The key consists of 7 bytes,

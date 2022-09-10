@@ -10,7 +10,7 @@ from ..exceptions import AlbertiError
 class Alberti:
     def __init__(self, key: str, step: int = 0, shift: int = 0) -> None:
         """
-        Alberti class constructor.
+        Implementation of the symmetric cipher "Alberti's Disk".
 
         Args:
             key: a string containing only characters of the English alphabet, or only the Russian alphabet.

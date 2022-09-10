@@ -1,3 +1,4 @@
+"""Module containing math functions"""
 
 def fpow(a, n, m=None) -> int:
     """Function for fast exponentiation modulo."""

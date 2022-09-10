@@ -5,6 +5,17 @@ def get_alphabet_by_letter(
         letter: str,
         alphabets: dict[str, str]
 ) -> tuple[str, str] or None:
+    """
+    A function to find an alphabet from a dictionary with different 
+    alphabets given a given letter.
+
+    The first argument is the letter whose alphabet is to be found. 
+    The letter can be in any case. The second argument is a dictionary
+    that contains the language of the alphabet (enumeration) as a key,
+    and a string with the alphabet itself as a value.
+
+    Returns a tuple (language, alphabet) on success, None on failure.
+    """
     letter = letter.lower()
 
     for lang, alphabet in alphabets.items():
@@ -18,6 +29,16 @@ def get_letters_alphabetically(
         string: str,
         alphabet: Iterable[str]
 ) -> tuple[str, list[int]]:
+    """
+    A function to get letters from the given alphabet, as well as the
+    indices at which these letters stand in the string.
+
+    The first argument is the string in which the letters will be searched.
+    The second argument is the alphabet to search for.
+
+    Returns a tuple (found letters in the original case, indices where 
+    the letters were in the string) on success, Nothing on failure.
+    """
     indices = []
 
     letters = ""
@@ -27,3 +48,4 @@ def get_letters_alphabetically(
             indices.append(i)
 
     return letters, indices
+

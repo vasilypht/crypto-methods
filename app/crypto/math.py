@@ -1,5 +1,6 @@
 
 def fpow(a, n, m=None) -> int:
+    """Fast pow"""
     result = 1
 
     while n > 0:

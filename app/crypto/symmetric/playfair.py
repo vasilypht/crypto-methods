@@ -18,7 +18,7 @@ from ..exceptions import PlayfairError
 class Playfair:
     def __init__(self, key: str) -> None:
         """
-        Playfair class constructor.
+        Implementation of the symmetric Playfair cipher.
 
         Args:
             key: a string consisting only of the Russian or only of the English alphabet.

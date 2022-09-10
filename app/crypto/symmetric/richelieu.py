@@ -8,7 +8,7 @@ from ..exceptions import RichelieuError
 class Richelieu:
     def __init__(self, key: str):
         """
-        Caesar class constructor.
+        Implementation of the symmetric Richelieu cipher.
 
         Args:
             key: a string of numbers combined into groups of brackets, example: (1,3,2,4)(4,2,1,3).

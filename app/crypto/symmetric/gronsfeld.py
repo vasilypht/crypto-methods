@@ -10,7 +10,7 @@ from ..exceptions import GronsfeldError
 class Gronsfeld:
     def __init__(self, key: str) -> None:
         """
-        Gronsfeld class constructor.
+        Implementation of the symmetric Gronsfeld cipher.
 
         Args:
             key: a string of numbers. If the condition is not met, an GronsfeldError exception will be raised.

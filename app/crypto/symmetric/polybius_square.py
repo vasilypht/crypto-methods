@@ -34,7 +34,7 @@ class PolybiusSquare:
 
     def __init__(self, shift: int = 0, method_mode: MethodMode = MethodMode.METHOD_1) -> None:
         """
-        Constructor of the Polybius Square class.
+        Implementation of the symmetric cipher "Polybius Square".
 
         Args:
             shift: the value by which the coordinates will be cyclically shifted.

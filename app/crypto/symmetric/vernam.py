@@ -8,7 +8,7 @@ from ..exceptions import VernamError
 class Vernam:
     def __init__(self, key: str) -> None:
         """
-        Vernam class constructor.
+        Implementation of the symmetric Vernam cipher.
 
         Args:
             key: a string representing the 16th number.

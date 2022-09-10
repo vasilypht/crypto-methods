@@ -41,7 +41,8 @@ class GOST:
 
     def __init__(self, key: str, iv: str = None, enc_mode: EncMode = EncMode.ECB, reset_iv: bool = True) -> None:
         """
-        GOST class constructor.
+        Implementation of the "GOST 28147-89" symmetric encryption algorithm. The following 
+        encryption modes are available: ECB, CBC, CFB, OFB.
 
         Args:
             key: a string representing the 16th number. The key consists of 32 bytes,

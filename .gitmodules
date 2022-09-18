@@ -1,3 +1,0 @@
-[submodule "app/crypto/pyecm"]
-	path = app/crypto/pyecm
-	url = https://github.com/martingkelly/pyecm

@@ -4,10 +4,10 @@ from typing import NamedTuple
 def fpow(a: int, n: int, m: int = None) -> int:
     """Function for fast exponentiation modulo."""
     if not (isinstance(a, int) and isinstance(n, int)):
-        raise ValueError("Function arguments must be integers.")
+        raise TypeError("Function arguments must be integers.")
 
     if m and not isinstance(m, int):
-        raise ValueError("Function arguments must be integers.")
+        raise TypeError("Function arguments must be integers.")
 
     result = 1
 
@@ -26,22 +26,22 @@ def fpow(a: int, n: int, m: int = None) -> int:
     return result
 
 
-class EEAResult(NamedTuple):
+class EGCDResult(NamedTuple):
     """Result of the extended Euclidean algorithm"""
     gcd: int
     x: int
     y: int
 
 
-def ext_gcd(a: int, b: int) -> EEAResult:
+def ext_gcd(a: int, b: int) -> EGCDResult:
     """
     Extended Euclidean Algorithm.
 
-    Returns a tuple (d, x, y) where a, b are the
+    Returns a namedtuple (d, x, y) where x, y are the
     expansion coefficients: gcd = d = a*x + b*y
     """
     if not (isinstance(a, int) and isinstance(b, int)):
-        raise ValueError("Function arguments must be integers.")
+        raise TypeError("Function arguments must be integers.")
 
     s0, s1 = 1, 0
     t0, t1 = 0, 1
@@ -58,9 +58,9 @@ def ext_gcd(a: int, b: int) -> EEAResult:
         t0, t1 = t1, t0 - t1 * q
 
     if is_swapped:
-        result = EEAResult(a, t0, s0)
+        result = EGCDResult(a, t0, s0)
     else:
-        result = EEAResult(a, s0, t0)
+        result = EGCDResult(a, s0, t0)
 
     return result
 

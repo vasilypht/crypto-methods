@@ -1,3 +1,5 @@
+import shutil
+
 from PyQt6.QtWidgets import (
     QMainWindow,
     QTreeWidgetItem,
@@ -58,6 +60,7 @@ class MainWindow(QMainWindow):
         self.ui.tree_widget.clicked.connect(self.tree_widget_item_clicked)
 
         self._load_modules()
+        self._check_dependencies()
 
     def _load_modules(self):
         # Load default modules
@@ -124,3 +127,12 @@ class MainWindow(QMainWindow):
         # bind to stop the flow when the cancel button is clicked
         self.pbar_button_cancel.clicked.connect(self._thread_file_worker.close)
         self._thread_file_worker.start()
+
+    def _check_dependencies(self):
+        """Method for checking if required programs are installed or not."""
+        programs = ("openssl",)
+
+        for program in programs:
+            if shutil.which(program) is None:
+                QMessageBox.warning(self, "Warning!",
+                                    f"{program} module not installed or not added to PATH")

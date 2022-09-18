@@ -24,7 +24,7 @@ def test_fpow(a, n, m, result):
     (3, 5, 3.4)
 ])
 def test_fpow_error_value(a, n, m):
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         fpow(a, n, m)
 
 
@@ -43,7 +43,7 @@ def test_ext_gcd(a, b, d, x, y):
     ("23", "2356475682")
 ])
 def test_ext_gcd_error_value(a, b):
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         ext_gcd(a, b)
 
 

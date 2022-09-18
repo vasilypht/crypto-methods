@@ -1,3 +1,4 @@
+import subprocess
 from typing import Iterable
 
 
@@ -49,3 +50,22 @@ def get_letters_alphabetically(
 
     return letters, indices
 
+
+def gen_prime(n: int = 1024) -> int:
+    """
+    The function of generating prime numbers of a given dimension.
+
+    To generate prime numbers, the opensl program is used, if
+    the program is missing, an exception will occur.
+
+    n
+        The number of bits in the prime to be generated. When generating prime
+        numbers with a small number of bits (<50), the function will return the same number.
+    """
+    if not isinstance(n, int):
+        raise TypeError("The function parameter must be an integer!")
+
+    result = subprocess.run(["openssl", "prime", "-generate", "-bits", str(n)],
+                            capture_output=True, timeout=5, check=True)
+
+    return int(result.stdout)

@@ -9,7 +9,6 @@ from PyQt6.QtCore import QUrl
 
 from .caesar_ui import Ui_Caesar
 from app.crypto.symmetric import Caesar
-from app.crypto.exceptions import CaesarError
 from app.crypto.common import EncProc
 from app.gui.const import (
     MAX_CHARS_READ,

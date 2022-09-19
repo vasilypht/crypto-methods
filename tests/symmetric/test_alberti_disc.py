@@ -2,7 +2,6 @@ import pytest
 
 from app.crypto.symmetric import Alberti
 from app.crypto.common import EncProc
-from app.crypto.exceptions import AlbertiError
 
 
 @pytest.mark.parametrize("data,key,step,shift", [
@@ -30,20 +29,20 @@ class TestAlberti:
 
 
 def test_not_key():
-    with pytest.raises(AlbertiError):
+    with pytest.raises(ValueError):
         Alberti("", 3, 3)
 
 
 def test_error_key():
-    with pytest.raises(AlbertiError):
+    with pytest.raises(ValueError):
         Alberti("ЯR", 3, 3)
 
 
 def test_error_step():
-    with pytest.raises(AlbertiError):
+    with pytest.raises(ValueError):
         Alberti("aa", -1, 3)
 
 
 def test_error_shift():
-    with pytest.raises(AlbertiError):
+    with pytest.raises(ValueError):
         Alberti("aa", 1, -1)

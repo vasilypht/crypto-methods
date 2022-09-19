@@ -1,7 +1,6 @@
 # This module contains the implementation of the crypto frequency analysis method.
 from collections import Counter
 
-from app.crypto.exceptions import FreqAnalysisError
 from app.crypto.utils import get_letters_alphabetically
 from app.crypto.const import FREQ_TABLES
 from app.crypto.common import (
@@ -21,13 +20,13 @@ class FreqAnalysis:
         """A method for analyzing text by compiling a dictionary
         with alphabetical letter frequencies."""
         if not text:
-            raise FreqAnalysisError("Input string is empty!")
+            raise ValueError("Input string is empty!")
 
         # We get the letters from the text that are in the alphabet.
         substr, _ = get_letters_alphabetically(text, freq_table.keys())
 
         if not substr:
-            raise FreqAnalysisError("The input string does not have characters of the selected alphabet!")
+            raise ValueError("The input string does not have characters of the selected alphabet!")
 
         # We count the frequencies.
         counter_text = Counter(substr)
@@ -41,7 +40,7 @@ class FreqAnalysis:
     def decipher(text: str, letter_match: dict) -> str:
         """Method for replacing text letters according to the letter ratio table."""
         if not text:
-            raise FreqAnalysisError("Input string is empty!")
+            raise ValueError("Input string is empty!")
 
         # We create a translation table from lower and upper case letters.
         keys = ''.join(letter_match.keys())

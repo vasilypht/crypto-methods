@@ -1,6 +1,5 @@
 # This module contains the implementation of the cipher "Scytale cipher"
 from app.crypto.common import EncProc
-from ..exceptions import ScytaleError
 
 
 class Scytale:
@@ -14,14 +13,14 @@ class Scytale:
             auto_m: flag that determines the automatic calculation of the number of columns.
         """
         if not auto_m and m is None:
-            raise ScytaleError("You must set the value of 'm', or set the automatic calculation flag 'auto_m'!")
+            raise ValueError("You must set the value of 'm', or set the automatic calculation flag 'auto_m'!")
 
         if n <= 0:
-            raise ScytaleError("'n' must be positive!")
+            raise ValueError("'n' must be positive!")
 
         if not auto_m:
             if m <= 0:
-                raise ScytaleError("'n' must be positive!")
+                raise ValueError("'n' must be positive!")
 
         self.n = n
         self.m = m
@@ -38,7 +37,7 @@ class Scytale:
             Encrypted string.
         """
         if not text:
-            raise ScytaleError("Input text is empty!")
+            return ""
 
         if self.auto_m:
             self.m = (len(text) - 1) // self.n + 1
@@ -65,7 +64,7 @@ class Scytale:
             Decrypted string.
         """
         if not text:
-            raise ScytaleError("Input text is empty!")
+            return ""
 
         lines_list: list[str] = []
 
@@ -96,4 +95,4 @@ class Scytale:
                 return self.decrypt(text)
 
             case _:
-                raise ScytaleError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

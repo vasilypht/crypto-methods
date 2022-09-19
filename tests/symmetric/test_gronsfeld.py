@@ -2,7 +2,6 @@ import pytest
 
 from app.crypto.symmetric import Gronsfeld
 from app.crypto.common import EncProc
-from app.crypto.exceptions import GronsfeldError
 
 
 @pytest.mark.parametrize("data,key", [
@@ -29,16 +28,11 @@ class TestGronsfeld:
         assert data == decrypted_data
 
 
-def test_not_text():
-    with pytest.raises(GronsfeldError):
-        Gronsfeld("1234").make("")
-
-
 def test_not_key():
-    with pytest.raises(GronsfeldError):
+    with pytest.raises(ValueError):
         Gronsfeld("")
 
 
 def test_error_key():
-    with pytest.raises(GronsfeldError):
+    with pytest.raises(ValueError):
         Gronsfeld("-123F")

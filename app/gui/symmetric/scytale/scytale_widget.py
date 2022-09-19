@@ -4,7 +4,6 @@ from PyQt6.QtWidgets import QMessageBox
 
 from .scytale_ui import Ui_Scytale
 from app.crypto.symmetric import Scytale
-from app.crypto.exceptions import ScytaleError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 
@@ -44,7 +43,7 @@ class ScytaleWidget(BaseQWidget):
         try:
             cipher = Scytale(n, m, auto_m)
 
-        except ScytaleError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -62,7 +61,7 @@ class ScytaleWidget(BaseQWidget):
         try:
             processed_text = cipher.make(data, enc_proc)
 
-        except ScytaleError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

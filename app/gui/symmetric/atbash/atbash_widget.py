@@ -4,7 +4,6 @@ from PyQt6.QtWidgets import QMessageBox
 
 from .atbash_ui import Ui_Atbash
 from app.crypto.symmetric import Atbash
-from app.crypto.exceptions import AtbashError
 from app.gui.widgets import BaseQWidget
 
 
@@ -38,11 +37,6 @@ class AtbashWidget(BaseQWidget):
         data = self.ui.text_edit_input.toPlainText()
 
         # We call the "make" method, and pass data to it.
-        try:
-            processed_text = cipher.make(data)
-
-        except AtbashError as e:
-            QMessageBox.warning(self, "Warning!", e.args[0])
-            return
+        processed_text = cipher.make(data)
 
         self.ui.text_edit_output.setText(processed_text)

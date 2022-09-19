@@ -2,7 +2,6 @@ import pytest
 
 from app.crypto.symmetric import Scytale
 from app.crypto.common import EncProc
-from app.crypto.exceptions import ScytaleError
 
 
 @pytest.mark.parametrize("data,n", [
@@ -33,24 +32,16 @@ class TestScytale:
 
 
 def test_error_n():
-    with pytest.raises(ScytaleError):
+    with pytest.raises(ValueError):
         Scytale(0)
 
-    with pytest.raises(ScytaleError):
+    with pytest.raises(ValueError):
         Scytale(-2)
 
 
 def test_error_m():
-    with pytest.raises(ScytaleError):
+    with pytest.raises(ValueError):
         Scytale(2, 0, False)
 
-    with pytest.raises(ScytaleError):
+    with pytest.raises(ValueError):
         Scytale(2, -2, False)
-
-
-def test_not_text():
-    with pytest.raises(ScytaleError):
-        Scytale(2).encrypt("")
-
-    with pytest.raises(ScytaleError):
-        Scytale(2).decrypt("")

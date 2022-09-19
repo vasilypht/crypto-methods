@@ -19,7 +19,6 @@ from app.gui.const import (
     MAX_CHARS_READ
 )
 from app.crypto.tools import FreqAnalysis
-from app.crypto.exceptions import FreqAnalysisError
 from app.crypto.common import (
     Languages,
     TextStyle
@@ -140,7 +139,7 @@ class FreqAnalysisWidget(QWidget):
         try:
             self.freqs_by_text = FreqAnalysis.analysis(data, self.freqs_by_table)
 
-        except FreqAnalysisError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -166,7 +165,7 @@ class FreqAnalysisWidget(QWidget):
                     for key, value in freq_table.items():
                         self.freqs_by_text[key] += value
 
-        except FreqAnalysisError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -193,7 +192,7 @@ class FreqAnalysisWidget(QWidget):
         try:
             processed_data = FreqAnalysis.decipher(data, self.letter_match)
 
-        except FreqAnalysisError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -227,7 +226,7 @@ class FreqAnalysisWidget(QWidget):
             QMessageBox.warning(self, "Warning!", "Error opening input/output file!")
             return
 
-        except FreqAnalysisError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

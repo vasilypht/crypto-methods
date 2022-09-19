@@ -13,7 +13,6 @@ from PyQt6.QtCore import QUrl
 
 from .des_ui import Ui_DES
 from app.crypto.symmetric import DES
-from app.crypto.exceptions import DESError
 from app.crypto.common import EncProc
 from app.gui.const import (
     DES_SUPPORT_EXT,
@@ -149,7 +148,7 @@ class DESWidget(BaseQWidget):
         try:
             cipher = DES(key_hex, iv_hex, enc_mode)
 
-        except DESError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -171,7 +170,7 @@ class DESWidget(BaseQWidget):
         try:
             processed_data = cipher.make(data, enc_proc)
 
-        except DESError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

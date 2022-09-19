@@ -4,7 +4,6 @@ import re
 from ..utils import get_alphabet_by_letter
 from ..const import ALPHABET_TABLE
 from ..common import EncProc
-from ..exceptions import GronsfeldError
 
 
 class Gronsfeld:
@@ -13,13 +12,16 @@ class Gronsfeld:
         Implementation of the symmetric Gronsfeld cipher.
 
         Args:
-            key: a string of numbers. If the condition is not met, an GronsfeldError exception will be raised.
+            key: a string of numbers. If the condition is not met, an Type/ValueError exception will be raised.
         """
+        if not isinstance(key, str):
+            raise TypeError("The key must be of type str!")
+
         if not key:
-            raise GronsfeldError("The key is missing!")
+            raise ValueError("The key is missing!")
 
         if not re.match(r"^\d*$", key):
-            raise GronsfeldError("Invalid key!")
+            raise ValueError("Invalid key!")
 
         self.key = key
 
@@ -35,7 +37,7 @@ class Gronsfeld:
             Encrypted or decrypted string.
         """
         if not text:
-            raise GronsfeldError("Input text is empty!")
+            return ""
 
         text_list: list[str] = list(text)
 
@@ -59,7 +61,7 @@ class Gronsfeld:
                     sign = -1
 
                 case _:
-                    raise GronsfeldError(f"Invalid processing type! -> {enc_proc}")
+                    raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
             # We get the index of the current letter and calculate the new index.
             letter_text_index = alphabet.index(letter_text.lower())
@@ -105,7 +107,7 @@ class Gronsfeld:
             text: the string to be encrypted or decrypted.
 
             enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
-                If the data object is of a different type, then an exception will be raised GronsfeldError.
+                If the data object is of a different type, then an exception will be raised TypeError.
 
         Returns:
             Encrypted or decrypted string.
@@ -118,4 +120,4 @@ class Gronsfeld:
                 return self.decrypt(text)
 
             case _:
-                raise GronsfeldError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

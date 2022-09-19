@@ -6,7 +6,6 @@ from PyQt6.QtGui import QRegularExpressionValidator as QRegExpVal
 
 from .playfair_ui import Ui_Playfair
 from app.crypto.symmetric import Playfair
-from app.crypto.exceptions import PlayfairError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 
@@ -38,7 +37,7 @@ class PlayfairWidget(BaseQWidget):
         try:
             cipher = Playfair(key)
 
-        except PlayfairError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -56,7 +55,7 @@ class PlayfairWidget(BaseQWidget):
         try:
             processed_text = cipher.make(data, enc_proc)
 
-        except PlayfairError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

@@ -2,7 +2,6 @@ import pytest
 
 from app.crypto.symmetric import CarganGrille
 from app.crypto.common import EncProc
-from app.crypto.exceptions import CarganGrilleError
 
 
 @pytest.mark.parametrize("data,size_stencil", [
@@ -43,17 +42,6 @@ class TestCarganGrille:
         decrypted_data = cipher.decrypt(encrypted_data)
 
         assert decrypted_data.startswith(data)
-
-
-def test_not_text():
-    stencil = CarganGrille.gen_stencil(2)
-    cipher = CarganGrille(stencil, CarganGrille.EncMode.WITHOUT_TRASH)
-
-    with pytest.raises(CarganGrilleError):
-        cipher.encrypt("")
-
-    with pytest.raises(CarganGrilleError):
-        cipher.decrypt("")
 
 
 def test_correct_stencil():

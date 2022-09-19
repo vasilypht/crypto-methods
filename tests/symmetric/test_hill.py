@@ -2,7 +2,6 @@ import pytest
 
 from app.crypto.symmetric import Hill
 from app.crypto.common import EncProc
-from app.crypto.exceptions import HillError
 
 
 @pytest.mark.parametrize("data,key,alphabet", [
@@ -30,30 +29,25 @@ class TestHill:
 
 
 def test_not_key():
-    with pytest.raises(HillError):
+    with pytest.raises(ValueError):
         Hill("", "абвгдеёжзийклмнопрстуфхцчшщъыьэюя ,!")
 
 
 def test_not_alphabet():
-    with pytest.raises(HillError):
+    with pytest.raises(ValueError):
         Hill("asd", "")
 
 
 def test_key_is_not_square():
-    with pytest.raises(HillError):
+    with pytest.raises(ValueError):
         Hill("qwe", "абвгдеёжзийклмнопрстуфхцчшщъыьэюя ,!")
 
 
 def test_key_is_not_subset_alphabet():
-    with pytest.raises(HillError):
+    with pytest.raises(ValueError):
         Hill("абвгдеddd", "абвгдеёжзийклмнопрстуфхцчшщъыьэюя ,!")
 
 
 def test_unique_alphabet_characters():
-    with pytest.raises(HillError):
+    with pytest.raises(ValueError):
         Hill("абвг", "аабвгдеёжзийклмнопрстуфхцчшщъыьэюя ,!")
-
-
-def test_not_text():
-    with pytest.raises(HillError):
-        Hill("omgqweewq", "abcdefghijklmnopqrstuvwxyz! ,").encrypt("")

@@ -1,6 +1,5 @@
 # This module contains the implementation of the cipher "XOR cipher"
 from ..common import EncProc
-from ..exceptions import XORError
 
 
 class XOR:
@@ -13,13 +12,16 @@ class XOR:
             reset_state: parameter indicating whether to reset the state before
                 encrypting/decrypting the input data.
         """
+        if not isinstance(key, str):
+            raise TypeError("The key must be of type str!")
+
         if not key:
-            raise XORError("Key input value is empty!")
+            raise ValueError("Key input value is empty!")
 
         try:
             self.key = bytes.fromhex(key)
         except ValueError:
-            raise XORError("Wrong format key entered (Hex)")
+            raise ValueError("Wrong format key entered (Hex)")
 
         self._reset_state = reset_state
 
@@ -50,7 +52,7 @@ class XOR:
             Encrypted or decrypted strings or bytes.
         """
         if not data:
-            raise XORError("The input data is empty!")
+            return ""
 
         # check input data
         match enc_proc, data:
@@ -64,7 +66,7 @@ class XOR:
                 data_bytes = bytearray(data)
 
             case _:
-                raise XORError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: str, bytes.")
 
         if self._reset_state:
             self.index_key = 0
@@ -85,7 +87,7 @@ class XOR:
                 return bytes(data_bytes)
 
             case _:
-                raise XORError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: str, bytes.")
 
     def encrypt(self, data: str or bytes) -> str or bytes:
         """
@@ -148,4 +150,4 @@ class XOR:
                 return self.decrypt(data)
 
             case _:
-                raise XORError(f"Wrong encryption mode! ({enc_proc})")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

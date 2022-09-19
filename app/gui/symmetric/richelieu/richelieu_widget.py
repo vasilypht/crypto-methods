@@ -6,7 +6,6 @@ from PyQt6.QtGui import QRegularExpressionValidator as QRegExpVal
 
 from .richelieu_ui import Ui_Richelieu
 from app.crypto.symmetric import Richelieu
-from app.crypto.exceptions import RichelieuError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 
@@ -36,7 +35,7 @@ class RichelieuWidget(BaseQWidget):
         try:
             cipher = Richelieu(key)
 
-        except RichelieuError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -54,7 +53,7 @@ class RichelieuWidget(BaseQWidget):
         try:
             processed_text = cipher.make(data, enc_proc)
 
-        except RichelieuError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

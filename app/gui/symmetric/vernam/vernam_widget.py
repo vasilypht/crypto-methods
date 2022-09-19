@@ -8,7 +8,6 @@ from PyQt6.QtWidgets import (
 
 from .vernam_ui import Ui_vernam
 from app.crypto.symmetric import Vernam
-from app.crypto.exceptions import VernamError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 
@@ -98,7 +97,7 @@ class VernamWidget(BaseQWidget):
         try:
             cipher = Vernam(key)
 
-        except VernamError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -116,7 +115,7 @@ class VernamWidget(BaseQWidget):
         try:
             processed_text = cipher.make(data, enc_proc)
 
-        except VernamError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

@@ -2,7 +2,6 @@ import pytest
 
 from app.crypto.symmetric import Playfair
 from app.crypto.common import EncProc
-from app.crypto.exceptions import PlayfairError
 
 
 @pytest.mark.parametrize("data,key", [
@@ -29,16 +28,11 @@ class TestPlayfair:
         assert decrypted_data.startswith(data)
 
 
-def test_not_text():
-    with pytest.raises(PlayfairError):
-        Playfair("1234").make("")
-
-
 def test_not_key():
-    with pytest.raises(PlayfairError):
+    with pytest.raises(ValueError):
         Playfair("")
 
 
 def test_error_key():
-    with pytest.raises(PlayfairError):
+    with pytest.raises(ValueError):
         Playfair("-123F")

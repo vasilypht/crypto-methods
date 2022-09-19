@@ -4,7 +4,6 @@ import re
 from ..utils import get_alphabet_by_letter
 from ..const import ALPHABET_TABLE
 from ..common import EncProc
-from ..exceptions import VigenereError
 
 
 class Vigenere:
@@ -15,11 +14,14 @@ class Vigenere:
         Args:
             key: a string consisting Russian or English alphabet.
         """
+        if not isinstance(key, str):
+            raise TypeError("The key must be of type str!")
+
         if not key:
-            raise VigenereError("The key is missing!")
+            raise ValueError("The key is missing!")
 
         if not re.match(r"^[а-яёa-z]*$", key, re.IGNORECASE):
-            raise VigenereError("Invalid key!")
+            raise ValueError("Invalid key!")
 
         self.key = key
 
@@ -35,7 +37,7 @@ class Vigenere:
             Encrypted or decrypted string.
         """
         if not text:
-            raise VigenereError("Input text is empty!")
+            return ""
 
         text_list: list[str] = list(text)
 
@@ -65,7 +67,7 @@ class Vigenere:
                     key_sign = -1
 
                 case _:
-                    raise VigenereError(f"Invalid processing type! -> {enc_proc}")
+                    raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
             new_letter_text_index = (letter_text_index + letter_key_index * key_sign) % len(alphabet_text)
             new_letter_text = alphabet_text[new_letter_text_index]
@@ -109,7 +111,7 @@ class Vigenere:
             text: the string to be encrypted or decrypted.
 
             enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
-                If the data object is of a different type, then an exception will be raised VigenereError.
+                If the data object is of a different type, then an exception will be raised TypeError.
 
         Returns:
             Encrypted or decrypted string.
@@ -122,4 +124,4 @@ class Vigenere:
                 return self.decrypt(text)
 
             case _:
-                raise VigenereError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

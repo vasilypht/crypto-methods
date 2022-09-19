@@ -2,7 +2,6 @@
 from ..utils import get_alphabet_by_letter
 from ..const import ALPHABET_TABLE
 from ..common import EncProc
-from ..exceptions import CaesarError
 
 
 class Caesar:
@@ -13,6 +12,9 @@ class Caesar:
         Args:
             shift: the value by which the letter in the alphabet will be shifted.
         """
+        if not isinstance(shift, int):
+            raise TypeError("The shift must be of type int!")
+
         self.shift = shift
 
     def _transform(self, text: str, enc_proc: EncProc) -> str:
@@ -27,7 +29,7 @@ class Caesar:
             Encrypted or decrypted string.
         """
         if not text:
-            raise CaesarError("Input text is empty!")
+            return ""
 
         text_list: list[str] = list(text)
 
@@ -54,7 +56,7 @@ class Caesar:
                     sign = -1
 
                 case _:
-                    raise CaesarError(f"Invalid processing type! -> {enc_proc}")
+                    raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
             # We get the index of the current letter and calculate the new index.
             letter_text_index = alphabet.index(letter_text.lower())
@@ -100,7 +102,7 @@ class Caesar:
             text: the string to be encrypted or decrypted.
 
             enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
-                If the data object is of a different type, then an exception will be raised CaesarError.
+                If the data object is of a different type, then an exception will be raised TypeError.
 
         Returns:
             Encrypted or decrypted string.
@@ -113,4 +115,4 @@ class Caesar:
                 return self.decrypt(text)
 
             case _:
-                raise CaesarError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

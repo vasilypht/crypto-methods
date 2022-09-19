@@ -12,10 +12,6 @@ import numpy as np
 
 from .xor_ui import Ui_XOR
 from app.crypto.symmetric import XOR
-from app.crypto.exceptions import (
-    XORError,
-    RC4Error
-)
 from app.crypto.prngs import RC4
 from app.crypto.common import EncProc
 from app.gui.file_processing import FileProcessing
@@ -75,7 +71,7 @@ class XORWidget(BaseQWidget):
         try:
             cipher = XOR(key)
 
-        except XORError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -97,7 +93,7 @@ class XORWidget(BaseQWidget):
         try:
             processed_data = cipher.make(data, enc_proc)
 
-        except XORError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -181,7 +177,7 @@ class XORWidget(BaseQWidget):
     def gen_xor_key(self):
         try:
             rc4 = RC4(self.ui.line_edit_iv.text())
-        except RC4Error as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

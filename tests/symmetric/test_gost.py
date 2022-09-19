@@ -2,7 +2,6 @@ import pytest
 
 from app.crypto.symmetric import GOST
 from app.crypto.common import EncProc
-from app.crypto.exceptions import GOSTError
 
 
 @pytest.mark.parametrize("data,key,iv,enc_mode", [
@@ -39,39 +38,39 @@ class TestGOST:
 
 
 def test_error_key_len():
-    with pytest.raises(GOSTError):
+    with pytest.raises(ValueError):
         GOST("027c9c9f8f44aaa186da7619ff012efd54401f2de3e4c4f930f4216f192d5f2",
              "f356687d1989b70b", GOST.EncMode.CFB)
 
 
 def test_error_key():
-    with pytest.raises(GOSTError):
+    with pytest.raises(ValueError):
         GOST("027c9c9f8f44aaa186da7619ff012efd54401f2de3e4c4f930f4216f192d5f2-",
              "f356687d1989b70b", GOST.EncMode.CFB)
 
 
 def test_error_iv_len():
-    with pytest.raises(GOSTError):
+    with pytest.raises(ValueError):
         GOST("027c9c9f8f44aaa186da7619ff012efd54401f2de3e4c4f930f4216f192d5f29",
              "f356687d1989b7", GOST.EncMode.CFB)
 
 
 def test_error_iv():
-    with pytest.raises(GOSTError):
+    with pytest.raises(ValueError):
         GOST("027c9c9f8f44aaa186da7619ff012efd54401f2de3e4c4f930f4216f192d5f29",
              "f356687d1989b70=", GOST.EncMode.CFB)
 
 
 def test_empty_iv():
-    with pytest.raises(GOSTError):
+    with pytest.raises(TypeError):
         GOST("027c9c9f8f44aaa186da7619ff012efd54401f2de3e4c4f930f4216f192d5f29",
              enc_mode=GOST.EncMode.CBC)
 
-    with pytest.raises(GOSTError):
+    with pytest.raises(TypeError):
         GOST("027c9c9f8f44aaa186da7619ff012efd54401f2de3e4c4f930f4216f192d5f29",
              enc_mode=GOST.EncMode.OFB)
 
-    with pytest.raises(GOSTError):
+    with pytest.raises(TypeError):
         GOST("027c9c9f8f44aaa186da7619ff012efd54401f2de3e4c4f930f4216f192d5f29",
              enc_mode=GOST.EncMode.CFB)
 
@@ -79,5 +78,5 @@ def test_empty_iv():
         GOST("027c9c9f8f44aaa186da7619ff012efd54401f2de3e4c4f930f4216f192d5f29",
              enc_mode=GOST.EncMode.ECB)
 
-    except GOSTError:
+    except TypeError:
         assert False

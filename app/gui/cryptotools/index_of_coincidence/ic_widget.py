@@ -8,7 +8,6 @@ from PyQt6.QtCore import QUrl
 
 from .ic_ui import Ui_IC
 from app.crypto.tools import IndexOfCoincidence
-from app.crypto.exceptions import ICError
 from app.crypto.common import Languages
 from app.gui.widgets import DragDropWidget
 from app.gui.const import (
@@ -96,7 +95,7 @@ class ICWidget(QWidget):
             for key in possible_keys:
                 self.ui.text_edit_stats.append(f" -> \"{key}\"")
 
-        except ICError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

@@ -7,7 +7,6 @@ from PyQt6.QtWidgets import (
 from .polybius_square_ui import Ui_PolybiusSquare
 from app.gui.widgets import BaseQWidget
 from app.crypto.symmetric import PolybiusSquare
-from app.crypto.exceptions import PolybiusSquareError
 from app.crypto.common import EncProc
 
 
@@ -47,7 +46,7 @@ class PolybiusSquareWidget(BaseQWidget):
         try:
             cipher = PolybiusSquare(shift, method_mode)
 
-        except PolybiusSquareError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -65,7 +64,7 @@ class PolybiusSquareWidget(BaseQWidget):
         try:
             processed_text = cipher.make(data, enc_proc)
 
-        except PolybiusSquareError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

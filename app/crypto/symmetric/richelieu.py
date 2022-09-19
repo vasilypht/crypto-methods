@@ -2,7 +2,6 @@
 import re
 
 from ..common import EncProc
-from ..exceptions import RichelieuError
 
 
 class Richelieu:
@@ -15,11 +14,14 @@ class Richelieu:
                 If the sequence is violated or there are no brackets, or extra characters,
                 then the RichelieuError exception will be raised.
         """
+        if not isinstance(key, str):
+            raise TypeError("The key must be of type str!")
+
         if not key:
-            raise RichelieuError("The key is missing!")
+            raise ValueError("The key is missing!")
 
         if not re.match(r"^\(\d+(,\d+|\)\(\d+)*\)$", key):
-            raise RichelieuError("Invalid key entered!")
+            raise ValueError("Invalid key entered!")
 
         self.key = self._parse_key(key)
         pass
@@ -35,7 +37,7 @@ class Richelieu:
         for subkey in key_list:
             for i in range(1, len(subkey) + 1):
                 if i not in subkey:
-                    raise RichelieuError("Invalid key entered!")
+                    raise ValueError("Invalid key entered!")
 
         return tuple(key_list)
 
@@ -52,7 +54,7 @@ class Richelieu:
             Encrypted or decrypted string.
         """
         if not text:
-            raise RichelieuError("Input text is empty!")
+            return ""
 
         text_list: list[str] = list(text)
 
@@ -76,7 +78,7 @@ class Richelieu:
                         text_list[text_index + i] = substr[k - 1]
 
                     case _:
-                        raise RichelieuError(f"Invalid processing type! -> {enc_proc}")
+                        raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
             text_index += len(subkey)
             key_index = (key_index + 1) % len(self.key)
@@ -115,7 +117,7 @@ class Richelieu:
             text: the string to be encrypted or decrypted.
 
             enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
-                If the data object is of a different type, then an exception will be raised RichelieuError.
+                If the data object is of a different type, then an exception will be raised TypeError.
 
         Returns:
             Encrypted or decrypted string.
@@ -128,4 +130,4 @@ class Richelieu:
                 return self.decrypt(text)
 
             case _:
-                raise RichelieuError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

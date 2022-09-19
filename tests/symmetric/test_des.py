@@ -2,7 +2,6 @@ import pytest
 
 from app.crypto.symmetric import DES
 from app.crypto.common import EncProc
-from app.crypto.exceptions import DESError
 
 
 @pytest.mark.parametrize("data,key,iv,enc_mode", [
@@ -31,37 +30,37 @@ class TestDES:
 
 
 def test_error_key_len():
-    with pytest.raises(DESError):
+    with pytest.raises(ValueError):
         DES("8d380efc717b", "f356687d1989b70b", DES.EncMode.CFB)
 
 
 def test_error_key():
-    with pytest.raises(DESError):
+    with pytest.raises(ValueError):
         DES("8d380efc717bD-", "f356687d1989b70b", DES.EncMode.CFB)
 
 
 def test_error_iv_len():
-    with pytest.raises(DESError):
+    with pytest.raises(ValueError):
         DES("8d380efc717bad", "f356687d1989b70", DES.EncMode.CFB)
 
 
 def test_error_iv():
-    with pytest.raises(DESError):
+    with pytest.raises(ValueError):
         DES("8d380efc717bad", "f356687d1989b70=", DES.EncMode.CFB)
 
 
 def test_empty_iv():
-    with pytest.raises(DESError):
+    with pytest.raises(TypeError):
         DES("8d380efc717bad", enc_mode=DES.EncMode.CBC)
 
-    with pytest.raises(DESError):
+    with pytest.raises(TypeError):
         DES("8d380efc717bad", enc_mode=DES.EncMode.OFB)
 
-    with pytest.raises(DESError):
+    with pytest.raises(TypeError):
         DES("8d380efc717bad", enc_mode=DES.EncMode.CFB)
 
     try:
         DES("8d380efc717bad", enc_mode=DES.EncMode.ECB)
 
-    except DESError:
+    except TypeError:
         assert False

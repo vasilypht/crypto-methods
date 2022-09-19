@@ -12,7 +12,6 @@ from ..common import (
     EncProc,
     Languages
 )
-from ..exceptions import PlayfairError
 
 
 class Playfair:
@@ -23,11 +22,14 @@ class Playfair:
         Args:
             key: a string consisting only of the Russian or only of the English alphabet.
         """
+        if not isinstance(key, str):
+            raise TypeError("The key must be of type str!")
+
         if not key:
-            raise PlayfairError("The key is missing!")
+            raise ValueError("The key is missing!")
 
         if not re.match(r"(^[а-яё]*$)|(^[a-z]*$)", key, re.IGNORECASE):
-            raise PlayfairError("Invalid key!")
+            raise ValueError("Invalid key!")
 
         self.key = key
 
@@ -43,7 +45,7 @@ class Playfair:
             Encrypted or decrypted string.
         """
         if not text:
-            raise PlayfairError("Input text is empty!")
+            return ""
 
         match enc_proc:
             case EncProc.ENCRYPT:
@@ -53,7 +55,7 @@ class Playfair:
                 key_sign = -1
 
             case _:
-                raise PlayfairError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
         lang, alphabet = get_alphabet_by_letter(self.key[0], ALPHABET_TABLE)
 
@@ -179,7 +181,7 @@ class Playfair:
             text: the string to be encrypted or decrypted.
 
             enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
-                If the data object is of a different type, then an exception will be raised PlayfairError.
+                If the data object is of a different type, then an exception will be raised TypeError.
 
         Returns:
             Encrypted or decrypted string.
@@ -192,4 +194,4 @@ class Playfair:
                 return self.decrypt(text)
 
             case _:
-                raise PlayfairError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

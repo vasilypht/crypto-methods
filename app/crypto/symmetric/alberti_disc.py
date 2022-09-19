@@ -4,7 +4,6 @@ import re
 from ..utils import get_alphabet_by_letter
 from ..const import ALPHABET_TABLE
 from ..common import EncProc
-from ..exceptions import AlbertiError
 
 
 class Alberti:
@@ -15,29 +14,35 @@ class Alberti:
         Args:
             key: a string containing only characters of the English alphabet, or only the Russian alphabet.
                 It is allowed to use key characters in different case. If the key contains numbers, special
-                characters, or characters from other alphabets, then the AlbertiError exception will be raised.
+                characters, or characters from other alphabets, then the Type/ValueError exception will be raised.
 
             step: encryption step. The value by which the disk will be shifted after each iteration.
-                This value must be positive. If this value is negative, an AlbertiError exception will be thrown.
+                This value must be positive. If this value is negative, an Type/ValueError exception will be thrown.
 
             shift: initial shift of the internal alphabet. This value must be positive. If this value
-                is negative, an AlbertiError exception will be thrown.
+                is negative, an Type/ValueError exception will be thrown.
         """
+        if not isinstance(key, str):
+            raise TypeError("The key must be of type str!")
+
+        if not (isinstance(step, int) and isinstance(shift, int)):
+            raise TypeError("The step and shift must be of type int!")
+
         if not key:
-            raise AlbertiError("The key is missing!")
+            raise ValueError("The key is missing!")
 
         if not re.match(r"(^[а-яё]*$)|(^[a-z]*$)", key, re.IGNORECASE):
-            raise AlbertiError("Invalid key!")
+            raise ValueError("Invalid key!")
 
         self.key = key
 
         if step < 0:
-            raise AlbertiError("The step value must be positive or zero!")
+            raise ValueError("The step value must be positive or zero!")
 
         self.step = step
 
         if shift < 0:
-            raise AlbertiError("The shift value must be positive or zero!")
+            raise ValueError("The shift value must be positive or zero!")
 
         self.shift = shift
 
@@ -54,7 +59,7 @@ class Alberti:
             Encrypted or decrypted string.
         """
         if not text:
-            raise AlbertiError("Input text is empty!")
+            return ""
 
         # Since the alphabet consists of letters of the same alphabet,
         # we get the alphabet by the first letter of the key.
@@ -83,7 +88,7 @@ class Alberti:
                 key_sign = -1
 
             case _:
-                raise AlbertiError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
         text_list: list[str] = list(text)
         internal_shift = 0
@@ -142,7 +147,7 @@ class Alberti:
             text: the string to be encrypted or decrypted.
 
             enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
-                If the data object is of a different type, then an exception will be raised AlbertiError.
+                If the data object is of a different type, then an exception will be raised TypeError.
 
         Returns:
             Encrypted or decrypted string.
@@ -155,4 +160,4 @@ class Alberti:
                 return self.decrypt(text)
 
             case _:
-                raise AlbertiError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

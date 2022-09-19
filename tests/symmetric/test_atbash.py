@@ -1,7 +1,6 @@
 import pytest
 
 from app.crypto.symmetric import Atbash
-from app.crypto.exceptions import AtbashError
 
 
 @pytest.mark.parametrize("data", [
@@ -18,8 +17,3 @@ class TestAtbash:
         decrypted_data = cipher.make(encrypted_data)
 
         assert data == decrypted_data
-
-
-def test_no_text():
-    with pytest.raises(AtbashError):
-        Atbash().make("")

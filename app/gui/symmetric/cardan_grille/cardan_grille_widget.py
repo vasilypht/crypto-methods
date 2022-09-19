@@ -10,7 +10,6 @@ from PyQt6.QtGui import QColor
 
 from .cardan_grille_ui import Ui_CardanGrille
 from app.crypto.symmetric import CarganGrille
-from app.crypto.exceptions import CarganGrilleError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 
@@ -111,7 +110,7 @@ class CardanGrilleWidget(BaseQWidget):
         try:
             cipher = CarganGrille(self.stencil, enc_mode)
 
-        except CarganGrilleError as e:
+        except (ValueError, TypeError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -132,7 +131,7 @@ class CardanGrilleWidget(BaseQWidget):
         try:
             processed_text = cipher.make(data, enc_proc)
 
-        except CarganGrilleError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

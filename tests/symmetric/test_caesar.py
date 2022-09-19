@@ -2,7 +2,6 @@ import pytest
 
 from app.crypto.symmetric import Caesar
 from app.crypto.common import EncProc
-from app.crypto.exceptions import CaesarError
 
 
 @pytest.mark.parametrize("data,shift", [
@@ -27,8 +26,3 @@ class TestCaesar:
         decrypted_data = cipher.decrypt(encrypted_data)
 
         assert data == decrypted_data
-
-
-def test_not_text():
-    with pytest.raises(CaesarError):
-        Caesar(2).make("")

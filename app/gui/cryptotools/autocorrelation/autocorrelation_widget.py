@@ -8,7 +8,6 @@ from PyQt6.QtCore import QUrl
 
 from .autocorrelation_ui import Ui_Autocorrelation
 from app.crypto.tools import Autocorrelation
-from app.crypto.exceptions import AutocorrError
 from app.crypto.common import Languages
 from app.gui.widgets import DragDropWidget
 from app.gui.const import (
@@ -94,7 +93,7 @@ class AutocorrelationWidget(QWidget):
             possible_key = crypto_tool.find_possible_key(key_length)
             self.ui.text_edit_stats.append(f"Possible key: \"{possible_key}\"")
 
-        except AutocorrError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

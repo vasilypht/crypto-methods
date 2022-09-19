@@ -2,7 +2,6 @@ import pytest
 
 from app.crypto.symmetric import PolybiusSquare
 from app.crypto.common import EncProc
-from app.crypto.exceptions import PolybiusSquareError
 
 
 @pytest.mark.parametrize("data,shift,method", [
@@ -27,8 +26,3 @@ class TestPolybiusSquare:
         decrypted_data = cipher.decrypt(encrypted_data)
 
         assert decrypted_data.startswith(data)
-
-
-def test_not_text():
-    with pytest.raises(PolybiusSquareError):
-        PolybiusSquare(2, PolybiusSquare.MethodMode.METHOD_2).make("")

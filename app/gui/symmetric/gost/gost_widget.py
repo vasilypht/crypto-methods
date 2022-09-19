@@ -13,7 +13,6 @@ from PyQt6.QtCore import QUrl
 
 from .gost_ui import Ui_GOST
 from app.crypto.symmetric import GOST
-from app.crypto.exceptions import GOSTError
 from app.crypto.common import EncProc
 from app.gui.widgets import (
     DragDropWidget,
@@ -148,7 +147,7 @@ class GOSTWidget(BaseQWidget):
         try:
             cipher = GOST(key_hex, iv_hex, enc_mode)
 
-        except GOSTError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -170,7 +169,7 @@ class GOSTWidget(BaseQWidget):
         try:
             processed_data = cipher.make(data, enc_proc)
 
-        except GOSTError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

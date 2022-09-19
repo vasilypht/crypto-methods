@@ -10,7 +10,6 @@ from app.crypto.const import (
     GOST_SBLOCK
 )
 from app.crypto.common import EncProc
-from ..exceptions import GOSTError
 
 
 class GOST:
@@ -47,11 +46,11 @@ class GOST:
         Args:
             key: a string representing the 16th number. The key consists of 32 bytes,
                 the string must have 64 characters. If the conditions are not met, an
-                GOSTError exception will be raised.
+                ValueError exception will be raised.
 
             iv: a string representing the 16th number. The initialization vector
                 consists of 8 bytes, the string must have 16 characters. If the conditions
-                are not met, an GOSTError exception will be raised.
+                are not met, an ValueError exception will be raised.
 
             enc_mode: encryption mode, for this cipher there are several
                 modes: ECB, CBC, CFB, OFB.
@@ -60,26 +59,26 @@ class GOST:
                 before encrypting/decrypting the input data.
         """
         if len(key) != 64:
-            raise GOSTError(f"Key length must be 256 bits (32 bytes)! ({len(key) // 2} bytes entered)")
+            raise ValueError(f"Key length must be 256 bits (32 bytes)! ({len(key) // 2} bytes entered)")
 
         try:
             self.key = int(key, 16)
         except ValueError:
-            raise GOSTError("The entered key is not a hexadecimal value!")
+            raise ValueError("The entered key is not a hexadecimal value!")
 
         if iv:
             if len(iv) != 16:
-                raise GOSTError(f"IV length must be 64 bits (8 bytes)! ({len(iv) // 2} bytes entered)")
+                raise ValueError(f"IV length must be 64 bits (8 bytes)! ({len(iv) // 2} bytes entered)")
 
             try:
                 self.iv = int(iv, 16)
             except ValueError:
-                raise GOSTError("The entered IV is not a hexadecimal value!")
+                raise ValueError("The entered IV is not a hexadecimal value!")
 
             self.vector = self.iv
 
         if iv is None and enc_mode is not GOST.EncMode.ECB:
-            raise GOSTError(f"Encryption in '{enc_mode}' mode requires an initialization vector!")
+            raise TypeError(f"Encryption in '{enc_mode}' mode requires an initialization vector!")
 
         # Generation of encryption keys.
         self.subkeys = tuple((self.key >> (32 * i)) & 0xFFFFFFFF for i in range(8))
@@ -90,7 +89,7 @@ class GOST:
                           GOST.EncMode.OFB: self._OFB}
 
         if enc_mode not in self._mode_fns.keys():
-            raise GOSTError(f"Invalid encryption mode entered ({enc_mode})! "
+            raise TypeError(f"Invalid encryption mode entered ({enc_mode})! "
                             f"Possible modes: {tuple(self._mode_fns.keys())}")
 
         self._mode_fn = self._mode_fns.get(enc_mode)
@@ -122,7 +121,7 @@ class GOST:
                 indices = GOST_DEC_INDICES
 
             case _:
-                raise GOSTError(f"Invalid processing mode! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
         for i in indices:
             chunk_l, chunk_r = chunk_r ^ self._f(chunk_l, self.subkeys[i]), chunk_l
@@ -167,7 +166,7 @@ class GOST:
                     self.vector = block
 
                 case _:
-                    raise GOSTError(f"Invalid processing mode! -> {enc_proc}")
+                    raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
             processed_data += processed_block.to_bytes(8, "little")
 
@@ -190,7 +189,7 @@ class GOST:
                     self.vector = block
 
                 case _:
-                    raise GOSTError(f"Invalid processing mode! -> {enc_proc}")
+                    raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
             processed_data += processed_block.to_bytes(8, "little")
 
@@ -213,7 +212,7 @@ class GOST:
                     processed_block = self.vector ^ block
 
                 case _:
-                    raise GOSTError(f"Invalid processing mode! -> {enc_proc}")
+                    raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
             processed_data += processed_block.to_bytes(8, "little")
 
@@ -250,7 +249,7 @@ class GOST:
                 data_bytes = data
 
             case _:
-                raise GOSTError(f"Invalid processing mode! -> {enc_proc}")
+                raise TypeError("Possible types: str, bytes.")
 
         # The size of one block is 64 bits -> 8 bytes
         # Check if the number of bytes is a multiple of the block size
@@ -273,7 +272,7 @@ class GOST:
                 return processed_data
 
             case _:
-                raise GOSTError(f"Invalid processing mode! -> {enc_proc}")
+                raise TypeError("Possible types: str, bytes.")
 
     def encrypt(self, data: bytes or str) -> str or bytes:
         """
@@ -336,4 +335,4 @@ class GOST:
                 return self.decrypt(data)
 
             case _:
-                raise GOSTError(f"Invalid processing mode! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

@@ -6,7 +6,6 @@ from PyQt6.QtGui import QRegularExpressionValidator as QRegExpVal
 
 from .gronsfeld_ui import Ui_Gronsfeld
 from app.crypto.symmetric import Gronsfeld
-from app.crypto.exceptions import GronsfeldError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 
@@ -36,7 +35,7 @@ class GronsfeldWidget(BaseQWidget):
         try:
             cipher = Gronsfeld(key)
 
-        except GronsfeldError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -54,7 +53,7 @@ class GronsfeldWidget(BaseQWidget):
         try:
             processed_text = cipher.make(data, enc_proc)
 
-        except GronsfeldError as e:
+        except (TypeError, ValueError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

@@ -9,7 +9,6 @@ from enum import (
 import numpy as np
 
 from ..common import EncProc
-from ..exceptions import CarganGrilleError
 
 
 class Field:
@@ -65,7 +64,7 @@ class CarganGrille:
                 modes: with garbage, without garbage.
         """
         if not self.check_correct_stencil(stencil):
-            raise CarganGrilleError("Wrong stencil!")
+            raise ValueError("Wrong stencil!")
 
         self._stencil = stencil
         self._enc_mode = enc_mode
@@ -114,7 +113,7 @@ class CarganGrille:
             Randomly generated stencil (numpy array).
         """
         if k < 1:
-            raise CarganGrilleError("Error K value must be greater than 1!")
+            raise ValueError("Error K value must be greater than 1!")
 
         # We generate a square according to the rule, and then we get
         # 3 copies, so that they can then be filled and glued.
@@ -154,7 +153,7 @@ class CarganGrille:
             Encrypted string.
         """
         if not text:
-            raise CarganGrilleError("Input text is empty!")
+            return ""
 
         stencil = self._stencil.copy()
         n, _ = stencil.shape
@@ -199,7 +198,7 @@ class CarganGrille:
                     square[indices] = " "
 
                 case _:
-                    raise CarganGrilleError("Invalid trash type!")
+                    raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
             encrypted_text += "".join("".join(i) for i in square)
 
@@ -216,7 +215,7 @@ class CarganGrille:
             Decrypted string.
         """
         if not text:
-            raise CarganGrilleError("Input text is empty!")
+            return ""
 
         stencil = self._stencil.copy()
         n, _ = stencil.shape
@@ -255,7 +254,7 @@ class CarganGrille:
             text: the string to be encrypted or decrypted.
 
             enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
-                If the data object is of a different type, then an exception will be raised CarganGrilleError.
+                If the data object is of a different type, then an exception will be raised TypeError.
 
         Returns:
             Encrypted or decrypted string.
@@ -268,4 +267,4 @@ class CarganGrille:
                 return self.decrypt(text)
 
             case _:
-                raise CarganGrilleError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

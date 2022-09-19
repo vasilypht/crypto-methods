@@ -1,7 +1,5 @@
 # This module contains an implementation of a pseudo-random number generator
 # based on the RC4 stream encryption algorithm
-from ..exceptions import RC4Error
-
 
 class RC4:
     def __init__(self, iv: str, n: int = 8):
@@ -12,13 +10,16 @@ class RC4:
             iv: a string in hexadecimal format that initializes the value.
             n: size of generated number in bits.
         """
+        if not isinstance(iv, str):
+            raise TypeError("The iv must be of type str!")
+
         if not iv:
-            raise RC4Error("Initialization vector is empty!")
+            raise ValueError("Initialization vector is empty!")
 
         try:
             self.iv = bytes.fromhex(iv)
         except ValueError:
-            raise RC4Error("Error iv value! (must be hex)")
+            raise ValueError("Error iv value! (must be hex)")
 
         self.n = n
         self.s = []

@@ -2,7 +2,6 @@ import pytest
 
 from app.crypto.symmetric import Vernam
 from app.crypto.common import EncProc
-from app.crypto.exceptions import VernamError
 
 
 @pytest.mark.parametrize("data", [
@@ -32,18 +31,10 @@ class TestVernam:
 
 
 def test_error_key():
-    with pytest.raises(VernamError):
+    with pytest.raises(ValueError):
         Vernam("gggggg")
 
 
 def test_not_key():
-    with pytest.raises(VernamError):
+    with pytest.raises(ValueError):
         Vernam("")
-
-
-def test_not_data():
-    with pytest.raises(VernamError):
-        Vernam("af1c").encrypt("")
-
-    with pytest.raises(VernamError):
-        Vernam("af1c").decrypt("")

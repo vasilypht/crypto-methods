@@ -7,7 +7,6 @@ from app.crypto.const import (
     IC_TABLE
 )
 from app.crypto.common import Languages
-from app.crypto.exceptions import ICError
 
 
 class IndexOfCoincidence:
@@ -26,16 +25,16 @@ class IndexOfCoincidence:
         self.delta = delta
 
         if lang not in ALPHABET_TABLE.keys():
-            raise ICError(f"The selected language must be from the list -> {ALPHABET_TABLE.keys()}.")
+            raise ValueError(f"The selected language must be from the list -> {ALPHABET_TABLE.keys()}.")
 
         if lang not in IC_TABLE.keys():
-            raise ICError(f"The selected language must be from the list -> {IC_TABLE.keys()}.")
+            raise ValueError(f"The selected language must be from the list -> {IC_TABLE.keys()}.")
 
         self.alphabet = ALPHABET_TABLE.get(lang)
         self.threshold = IC_TABLE.get(lang)
 
         if not set(self.text).issubset(self.alphabet):
-            raise ICError("The text you entered contains invalid characters.")
+            raise ValueError("The text you entered contains invalid characters.")
 
     def ic(self, counter: Counter or dict) -> float:
         """Method for calculating the index of coincidences by formula."""
@@ -84,8 +83,8 @@ class IndexOfCoincidence:
             if ic_mean > self.threshold - self.delta:
                 return k
 
-        raise ICError("The key could not be found, try increasing "
-                      "the error value or increasing the maximum key size.")
+        raise ValueError("The key could not be found, try increasing "
+                         "the error value or increasing the maximum key size.")
 
     def find_possible_keys(self, key_length: int) -> tuple[str]:
         """Method for finding possible key values."""
@@ -94,7 +93,7 @@ class IndexOfCoincidence:
         shifts = self._find_column_shifts(columns)
 
         if len(shifts) != len(columns):
-            raise ICError("Unable to find all shifts, try increasing the error.")
+            raise ValueError("Unable to find all shifts, try increasing the error.")
 
         shifted_columns = [columns[0]]
         for i in range(1, len(columns)):

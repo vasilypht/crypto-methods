@@ -5,7 +5,6 @@ from collections import Counter
 from scipy.stats import chisquare
 import numpy as np
 
-from app.crypto.exceptions import AutocorrError
 from app.crypto.const import (
     ALPHABET_TABLE,
     IC_TABLE,
@@ -33,13 +32,13 @@ class Autocorrelation:
         self.max_len = max_len
 
         if lang not in ALPHABET_TABLE.keys():
-            raise AutocorrError(f"The selected language must be from the list -> {ALPHABET_TABLE.keys()}")
+            raise ValueError(f"The selected language must be from the list -> {ALPHABET_TABLE.keys()}")
 
         if lang not in FREQ_TABLES.keys():
-            raise AutocorrError(f"The selected language must be from the list -> {FREQ_TABLES.keys()}")
+            raise ValueError(f"The selected language must be from the list -> {FREQ_TABLES.keys()}")
 
         if lang not in IC_TABLE.keys():
-            raise AutocorrError(f"The selected language must be from the list -> {IC_TABLE.keys()}")
+            raise ValueError(f"The selected language must be from the list -> {IC_TABLE.keys()}")
 
         self.lang = lang
         self.alphabet = ALPHABET_TABLE.get(lang)
@@ -50,7 +49,7 @@ class Autocorrelation:
         self.freq_table = list(freq_table_norm.values())
 
         if not set(self.text).issubset(self.alphabet):
-            raise AutocorrError("The text you entered contains invalid characters.")
+            raise ValueError("The text you entered contains invalid characters.")
 
     def find_possible_key_length(self):
         """Method for finding the probable key length."""
@@ -63,8 +62,8 @@ class Autocorrelation:
             if autocorr_coff > self.threshold - self.delta:
                 return t
 
-        raise AutocorrError("The key could not be found, try increasing "
-                            "the error value or increasing the maximum key size.")
+        raise ValueError("The key could not be found, try increasing "
+                         "the error value or increasing the maximum key size.")
 
     @staticmethod
     def freq_normalize(counter: Counter or dict):

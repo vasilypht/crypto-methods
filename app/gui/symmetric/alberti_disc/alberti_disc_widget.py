@@ -6,7 +6,6 @@ from PyQt6.QtGui import QRegularExpressionValidator as QRegExpVal
 
 from .alberti_disc_ui import Ui_AlbertiDisk
 from app.crypto.symmetric import Alberti
-from app.crypto.exceptions import AlbertiError
 from app.crypto.common import EncProc
 from app.gui.widgets import BaseQWidget
 
@@ -43,7 +42,7 @@ class AlbertiDiscWidget(BaseQWidget):
         try:
             cipher = Alberti(key, step, shift)
 
-        except AlbertiError as e:
+        except (ValueError, TypeError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 
@@ -64,7 +63,7 @@ class AlbertiDiscWidget(BaseQWidget):
         try:
             processed_text = cipher.make(data, enc_proc)
 
-        except AlbertiError as e:
+        except (ValueError, TypeError) as e:
             QMessageBox.warning(self, "Warning!", e.args[0])
             return
 

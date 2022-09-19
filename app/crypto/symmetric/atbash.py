@@ -1,7 +1,6 @@
 # This module contains the implementation of the cipher "Cipher Atbash"
 from ..utils import get_alphabet_by_letter
 from ..const import ALPHABET_TABLE
-from ..exceptions import AtbashError
 
 
 class Atbash:
@@ -16,7 +15,7 @@ class Atbash:
             Encrypted or decrypted string.
         """
         if not text:
-            raise AtbashError("Input text is empty!")
+            raise ""
 
         letters_list: list[str] = list(text)
 

@@ -7,7 +7,6 @@ from sympy import Matrix
 
 from ..utils import get_letters_alphabetically
 from ..common import EncProc
-from ..exceptions import HillError
 
 
 class Hill:
@@ -17,26 +16,29 @@ class Hill:
 
         Args:
             key: a string consisting of alphabetic characters. If the condition is not met,
-                an HillError exception will be thrown.
+                an Type/ValueError exception will be thrown.
 
             alphabet: a string consisting of various characters. The number of characters
                 in a string should preferably be a prime number, otherwise it may be necessary
                 to select a different size.
         """
+        if not (isinstance(key, str) and isinstance(alphabet, str)):
+            raise TypeError("The key and alphabet must be of type str!")
+
         if not key:
-            raise HillError("The key is missing!")
+            raise ValueError("The key is missing!")
 
         if not alphabet:
-            raise HillError("Alphabet is empty!")
+            raise ValueError("Alphabet is empty!")
 
         if not is_square(len(key)):
-            raise HillError("Key length must be a square!")
+            raise ValueError("Key length must be a square!")
 
         if not set(key.lower()).issubset(alphabet):
-            raise HillError("The key must be alphabetic characters!")
+            raise ValueError("The key must be alphabetic characters!")
 
         if len(alphabet) != len(set(alphabet)):
-            raise HillError("The alphabet must be composed of unique characters!")
+            raise ValueError("The alphabet must be composed of unique characters!")
 
         # Checking the conditions of the algorithm.
         n = math.isqrt(len(key))
@@ -44,10 +46,10 @@ class Hill:
 
         matrix_key_det = int(np.linalg.det(matrix_key))
         if matrix_key_det == 0:
-            raise HillError("Matrix determinant is zero! The matrix is degenerate!")
+            raise ValueError("Matrix determinant is zero! The matrix is degenerate!")
 
         if math.gcd(matrix_key_det, len(alphabet)) != 1:
-            raise HillError("Matrix determinant and key length must be coprime!")
+            raise ValueError("Matrix determinant and key length must be coprime!")
 
         self.matrix_key = matrix_key
 
@@ -66,7 +68,7 @@ class Hill:
             Encrypted or decrypted string.
         """
         if not text:
-            raise HillError("Input text is empty!")
+            return ""
 
         match enc_proc:
             case EncProc.ENCRYPT:
@@ -77,7 +79,7 @@ class Hill:
                 matrix_key = np.array(Matrix(self.matrix_key).inv_mod(len(self.alphabet)))
 
             case _:
-                raise HillError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
         # We take only those letters that satisfy the alphabet.
         letters, indices = get_letters_alphabetically(text, self.alphabet)
@@ -139,7 +141,7 @@ class Hill:
             text: the string to be encrypted or decrypted.
 
             enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
-                If the data object is of a different type, then an exception will be raised HillError.
+                If the data object is of a different type, then an exception will be raised TypeError.
 
         Returns:
             Encrypted or decrypted string.
@@ -152,4 +154,4 @@ class Hill:
                 return self.decrypt(text)
 
             case _:
-                raise HillError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

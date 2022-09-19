@@ -11,7 +11,6 @@ from app.crypto.const import (
     DES_S_TABLE, DES_SHIFT_TABLE
 )
 from app.crypto.common import EncProc
-from ..exceptions import DESError
 
 
 class DES:
@@ -48,11 +47,11 @@ class DES:
         Args:
             key: a string representing the 16th number. The key consists of 7 bytes,
                 the string must have 14 characters. If the conditions are not met, an
-                DESError exception will be raised.
+                ValueError exception will be raised.
 
             iv: a string representing the 16th number. The initialization vector
                 consists of 8 bytes, the string must have 16 characters. If the conditions
-                 are not met, an DESError exception will be raised.
+                are not met, an ValueError exception will be raised.
 
             enc_mode: encryption mode, for this cipher there are several
                 modes: ECB, CBC, CFB, OFB.
@@ -61,26 +60,26 @@ class DES:
                 before encrypting/decrypting the input data.
         """
         if len(key) != 14:
-            raise DESError(f"Key length must be 56 bits (7 bytes)! ({len(key) // 2} bytes entered)")
+            raise ValueError(f"Key length must be 56 bits (7 bytes)! ({len(key) // 2} bytes entered)")
 
         try:
             self.key = int(key, 16)
         except ValueError:
-            raise DESError("The entered key is not a hexadecimal value!")
+            raise ValueError("The entered key is not a hexadecimal value!")
 
         if iv:
             if len(iv) != 16:
-                raise DESError(f"IV length must be 64 bits (8 bytes)! ({len(iv) // 2} bytes entered)")
+                raise ValueError(f"IV length must be 64 bits (8 bytes)! ({len(iv) // 2} bytes entered)")
 
             try:
                 self.iv = int(iv, 16)
             except ValueError:
-                raise DESError("The entered IV is not a hexadecimal value!")
+                raise ValueError("The entered IV is not a hexadecimal value!")
 
             self.vector = self.iv
 
         if iv is None and enc_mode is not DES.EncMode.ECB:
-            raise DESError(f"Encryption in '{enc_mode}' mode requires an initialization vector!")
+            raise TypeError(f"Encryption in '{enc_mode}' mode requires an initialization vector!")
 
         self._mode_fns = {DES.EncMode.ECB: self._ECB,
                           DES.EncMode.CBC: self._CBC,
@@ -88,8 +87,8 @@ class DES:
                           DES.EncMode.OFB: self._OFB}
 
         if enc_mode not in self._mode_fns.keys():
-            raise DESError(f"Invalid encryption mode entered ({enc_mode})! "
-                           f"Possible modes: {tuple(self._mode_fns.keys())}")
+            raise TypeError(f"Invalid encryption mode entered ({enc_mode})! "
+                            f"Possible modes: {tuple(self._mode_fns.keys())}")
 
         self._mode_fn = self._mode_fns.get(enc_mode)
         self._reset_iv = reset_iv
@@ -164,7 +163,7 @@ class DES:
                     chunk_r, chunk_l = chunk_l, chunk_r ^ self._f(chunk_l, self.keys[i])
 
             case _:
-                raise DESError(f"Invalid processing mode! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
         block = (chunk_l << 32) | chunk_r
         return self._permutation(block, 64, DES_IP_INV_TABLE)
@@ -210,7 +209,7 @@ class DES:
                     self.vector = block
 
                 case _:
-                    raise DESError(f"Invalid processing mode! -> {enc_proc}")
+                    raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
             processed_data += processed_block.to_bytes(8, "little")
 
@@ -233,7 +232,7 @@ class DES:
                     self.vector = block
 
                 case _:
-                    raise DESError(f"Invalid processing mode! -> {enc_proc}")
+                    raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
             processed_data += processed_block.to_bytes(8, "little")
 
@@ -256,7 +255,7 @@ class DES:
                     processed_block = self.vector ^ block
 
                 case _:
-                    raise DESError(f"Invalid processing mode! -> {enc_proc}")
+                    raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
             processed_data += processed_block.to_bytes(8, "little")
 
@@ -293,7 +292,7 @@ class DES:
                 data_bytes = data
 
             case _:
-                raise DESError(f"Invalid processing mode! -> {enc_proc}")
+                raise TypeError("Possible types: str, bytes.")
 
         if enc_proc is EncProc.ENCRYPT and (k := len(data_bytes) % 8) != 0:
             data_bytes += b"\00" * (8 - k)
@@ -314,7 +313,7 @@ class DES:
                 return processed_data
 
             case _:
-                raise DESError(f"Invalid processing mode! -> {enc_proc}")
+                raise TypeError("Possible types: str, bytes.")
 
     def encrypt(self, data: bytes or str) -> str or bytes:
         """
@@ -377,4 +376,4 @@ class DES:
                 return self.decrypt(data)
 
             case _:
-                raise DESError(f"Invalid processing mode! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

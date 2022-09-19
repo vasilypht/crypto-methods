@@ -11,7 +11,6 @@ from ..const import (
 )
 from ..utils import get_letters_alphabetically
 from ..common import EncProc
-from ..exceptions import PolybiusSquareError
 
 
 class PolybiusSquare:
@@ -44,6 +43,9 @@ class PolybiusSquare:
                 cipher, and the second method can be used both with a zero shift
                 and with a non-zero one.
         """
+        if not isinstance(shift, int):
+            raise TypeError("The key must be of type int!")
+
         self.shift = shift
         self.method_mode = method_mode
 
@@ -97,7 +99,7 @@ class PolybiusSquare:
             Encrypted or decrypted string.
         """
         if not text:
-            raise PolybiusSquareError("Input text is empty!")
+            return ""
 
         text_list: list[str] = list(text)
 
@@ -125,7 +127,7 @@ class PolybiusSquare:
                         letter_j -= 1
 
                 case _:
-                    raise PolybiusSquareError(f"Invalid processing type! -> {enc_proc}")
+                    raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
             new_letters = square.get((letter_i, letter_j))
             # Some cells of the square have several letters, so we
@@ -150,7 +152,7 @@ class PolybiusSquare:
             Encrypted or decrypted string.
         """
         if not text:
-            raise PolybiusSquareError("Input text is empty!")
+            return ""
 
         # We get only those letters and their indices in the source data that are in the squares.
         letters, indices = get_letters_alphabetically(text, ''.join(ALPHABET_TABLE.values()))
@@ -186,7 +188,7 @@ class PolybiusSquare:
                 new_indices = list(zip(indices_ij[:k:], indices_ij[k::]))
 
             case _:
-                raise PolybiusSquareError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")
 
         text_list: list[str] = list(text)
 
@@ -224,7 +226,7 @@ class PolybiusSquare:
                 return self._method_2(text, EncProc.ENCRYPT)
 
             case _:
-                raise PolybiusSquareError(f"Invalid method type! -> {self.method_mode}")
+                raise TypeError("Possible types: MethodMode.METHOD_1, MethodMode.METHOD_2.")
 
     def decrypt(self, text: str) -> str:
         """
@@ -244,7 +246,7 @@ class PolybiusSquare:
                 return self._method_2(text, EncProc.DECRYPT)
 
             case _:
-                raise PolybiusSquareError(f"Invalid method type! -> {self.method_mode}")
+                raise TypeError("Possible types: MethodMode.METHOD_1, MethodMode.METHOD_2.")
 
     def make(self, text: str, enc_proc: EncProc = EncProc.ENCRYPT) -> str:
         """
@@ -254,7 +256,7 @@ class PolybiusSquare:
             text: the string to be encrypted or decrypted.
 
             enc_proc: parameter responsible for the process of data encryption (encryption and decryption).
-                If the data object is of a different type, then an exception will be raised PolybiusSquareError.
+                If the data object is of a different type, then an exception will be raised TypeError.
 
         Returns:
             Encrypted or decrypted string.
@@ -267,4 +269,4 @@ class PolybiusSquare:
                 return self.decrypt(text)
 
             case _:
-                pass
+                TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

@@ -2,7 +2,6 @@ import pytest
 
 from app.crypto.symmetric import Vigenere
 from app.crypto.common import EncProc
-from app.crypto.exceptions import VigenereError
 
 
 @pytest.mark.parametrize("data,key", [
@@ -32,16 +31,11 @@ class TestVigenere:
         assert decrypted_data.startswith(data)
 
 
-def test_not_text():
-    with pytest.raises(VigenereError):
-        Vigenere("КакойТоКлюч").make("")
-
-
 def test_not_key():
-    with pytest.raises(VigenereError):
+    with pytest.raises(ValueError):
         Vigenere("")
 
 
 def test_error_key():
-    with pytest.raises(VigenereError):
+    with pytest.raises(ValueError):
         Vigenere("123fasd")

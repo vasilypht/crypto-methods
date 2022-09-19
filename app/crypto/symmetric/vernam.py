@@ -2,7 +2,6 @@
 import numpy as np
 
 from ..common import EncProc
-from ..exceptions import VernamError
 
 
 class Vernam:
@@ -14,12 +13,12 @@ class Vernam:
             key: a string representing the 16th number.
         """
         if not key:
-            raise VernamError("The key is missing!")
+            raise ValueError("The key is missing!")
 
         try:
             self.key = bytes.fromhex(key)
         except ValueError:
-            raise VernamError("Wrong format key entered (Hex)")
+            raise ValueError("Wrong format key entered (Hex)")
 
     @staticmethod
     def gen_key(size: int) -> str:
@@ -48,7 +47,7 @@ class Vernam:
             Encrypted or decrypted strings or bytes.
         """
         if not data:
-            raise VernamError("The input data is empty!")
+            return ""
 
         # check input data
         match enc_proc, data:
@@ -62,10 +61,10 @@ class Vernam:
                 data_bytes = bytearray(data)
 
             case _:
-                raise VernamError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: str, bytes.")
 
         if len(self.key) != len(data_bytes):
-            raise VernamError(f"Key size ({len(self.key)}) and text size ({len(data_bytes)}) in bytes must match!")
+            raise ValueError(f"Key size ({len(self.key)}) and text size ({len(data_bytes)}) in bytes must match!")
 
         for i in range(len(data_bytes)):
             data_bytes[i] ^= self.key[i % len(self.key)]
@@ -82,7 +81,7 @@ class Vernam:
                 return bytes(data_bytes)
 
             case _:
-                raise VernamError(f"Invalid processing type! -> {enc_proc}")
+                raise TypeError("Possible types: str, bytes.")
 
     def encrypt(self, data: str or bytes) -> str or bytes:
         """
@@ -145,4 +144,4 @@ class Vernam:
                 return self.decrypt(data)
 
             case _:
-                raise VernamError(f"Invalid processing mode! -> {enc_proc}")
+                raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

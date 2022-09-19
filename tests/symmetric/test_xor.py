@@ -3,7 +3,6 @@ import pytest
 from app.crypto.symmetric import XOR
 from app.crypto.prngs import RC4
 from app.crypto.common import EncProc
-from app.crypto.exceptions import XORError
 
 
 @pytest.mark.parametrize("data,iv,size_key", [
@@ -40,18 +39,10 @@ class TestXOR:
 
 
 def test_error_key():
-    with pytest.raises(XORError):
+    with pytest.raises(ValueError):
         XOR("ggggggg")
 
 
 def test_not_key():
-    with pytest.raises(XORError):
+    with pytest.raises(ValueError):
         XOR("")
-
-
-def test_not_data():
-    with pytest.raises(XORError):
-        XOR("8d380efc717b90").encrypt("")
-
-    with pytest.raises(XORError):
-        XOR("8d380efc717b90").decrypt("")

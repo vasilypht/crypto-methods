@@ -2,7 +2,6 @@ import pytest
 
 from app.crypto.symmetric import Richelieu
 from app.crypto.common import EncProc
-from app.crypto.exceptions import RichelieuError
 
 
 @pytest.mark.parametrize("data,key", [
@@ -32,25 +31,20 @@ class TestRichelieu:
         assert decrypted_data.startswith(data)
 
 
-def test_not_text():
-    with pytest.raises(RichelieuError):
-        Richelieu("(3,1,2)(3,2,1)").make("")
-
-
 def test_not_key():
-    with pytest.raises(RichelieuError):
+    with pytest.raises(ValueError):
         Richelieu("")
 
 
 def test_error_key():
-    with pytest.raises(RichelieuError):
+    with pytest.raises(ValueError):
         Richelieu("(1, 2)")
 
-    with pytest.raises(RichelieuError):
+    with pytest.raises(ValueError):
         Richelieu("(2,3)")
 
-    with pytest.raises(RichelieuError):
+    with pytest.raises(ValueError):
         Richelieu("(1,2),(3,2)")
 
-    with pytest.raises(RichelieuError):
+    with pytest.raises(ValueError):
         Richelieu("1,2")

@@ -51,7 +51,7 @@ def get_letters_alphabetically(
     return letters, indices
 
 
-def gen_prime(n: int = 1024) -> int:
+def gen_prime(n: int = 1024, timeout: int = 10) -> int:
     """
     The function of generating prime numbers of a given dimension.
 
@@ -66,6 +66,6 @@ def gen_prime(n: int = 1024) -> int:
         raise TypeError("The function parameter must be an integer!")
 
     result = subprocess.run(["openssl", "prime", "-generate", "-bits", str(n)],
-                            capture_output=True, timeout=5, check=True)
+                            capture_output=True, timeout=timeout, check=True)
 
     return int(result.stdout)

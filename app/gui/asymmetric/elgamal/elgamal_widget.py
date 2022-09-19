@@ -90,7 +90,12 @@ class ElgamalWidget(BaseQWidget):
 
         private_key = Elgamal.PrivateKey(x, p)
         public_key = Elgamal.PublicKey(y, g, p)
-        cipher = Elgamal(private_key, public_key)
+
+        try:
+            cipher = Elgamal(private_key, public_key)
+        except (ValueError, TypeError) as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
 
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:

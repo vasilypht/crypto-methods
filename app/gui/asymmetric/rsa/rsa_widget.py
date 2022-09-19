@@ -89,7 +89,11 @@ class RSAWidget(BaseQWidget):
         private_key = RSA.PrivateKey(d, n)
         public_key = RSA.PublicKey(e, n)
 
-        cipher = RSA(private_key, public_key)
+        try:
+            cipher = RSA(private_key, public_key)
+        except (ValueError, TypeError) as e:
+            QMessageBox.warning(self, "Warning!", e.args[0])
+            return
 
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:

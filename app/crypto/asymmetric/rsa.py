@@ -35,6 +35,9 @@ class RSA:
         if not (isinstance(private_key, RSA.PrivateKey) and isinstance(public_key, RSA.PublicKey)):
             raise TypeError("Arguments must be of type RSA.PrivateKey and RSA.PublicKey.")
 
+        if public_key.n.bit_length() >> 3 <= 512 and private_key.n >> 3 <= 512:
+            raise ValueError("The module value must be greater than 2 bytes!")
+
         self._private_key = private_key
         self._public_key = public_key
 

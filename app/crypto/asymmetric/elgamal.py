@@ -47,6 +47,9 @@ class Elgamal:
         if not (isinstance(private_key, Elgamal.PrivateKey) and isinstance(public_key, Elgamal.PublicKey)):
             raise TypeError("Values must be of type Elgamal.PrivateKey and Elgamal.PublicKey.")
 
+        if public_key.p.bit_length() >> 3 <= 512 and private_key.p >> 3 <= 512:
+            raise ValueError("The module value must be greater than 2 bytes!")
+
         self._private_key = private_key
         self._public_key = public_key
         self._sysrand = SystemRandom()

@@ -15,6 +15,7 @@ from .defmodules import WIDGETS_DEFAULT
 from .symmetric import WIDGETS_SYMMETRIC
 from .asymmetric import WIDGETS_ASYMMETRIC
 from .cryptotools import WIDGETS_CRYPTOTOOLS
+from .cryptoprotocols import WIDGETS_CRYPTOPROTOCOLS
 from .widgets import (
     BaseQThread,
     PBar
@@ -23,6 +24,7 @@ from .widgets import (
 WIDGETS_CIPHERS = {
     "Symmetric ciphers": WIDGETS_SYMMETRIC,
     "Asymmetric ciphers": WIDGETS_ASYMMETRIC,
+    "Cryptographic Protocols": WIDGETS_CRYPTOPROTOCOLS,
     "Crypto tools": WIDGETS_CRYPTOTOOLS
 }
 

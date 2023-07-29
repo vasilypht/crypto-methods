@@ -1,6 +1,8 @@
 # The module contains the implementation of the Elgamal asymmetric encryption algorithm
-from dataclasses import dataclass
 from secrets import SystemRandom
+from dataclasses import dataclass
+from math import ceil
+from typing import Literal
 
 from sympy import isprime, primitive_root
 
@@ -15,27 +17,28 @@ from app.crypto.common import EncProc
 
 class Elgamal:
 
-    @dataclass(frozen=True)
+    @dataclass
     class PrivateKey:
         x: int
+        g: int
         p: int
 
-    @dataclass(frozen=True)
+    @dataclass
     class PublicKey:
         y: int
         g: int
         p: int
 
-    @dataclass(frozen=True)
+    @dataclass
     class SessionKey:
         k: int
 
-    @dataclass(frozen=True)
+    @dataclass
     class Ciphertext:
-        a: int
-        b: int
+        r: int
+        s: int
 
-    def __init__(self, private_key: PrivateKey, public_key: PublicKey) -> None:
+    def __init__(self, pr_key: PrivateKey = None, pb_key: PublicKey = None) -> None:
         """
         Implementation of the asymmetric Elgamal encryption algorithm.
 
@@ -44,14 +47,14 @@ class Elgamal:
         public_key
             Public key of type Elgamal.PublicKey, which contains the number E and the modulus N.
         """
-        if not (isinstance(private_key, Elgamal.PrivateKey) and isinstance(public_key, Elgamal.PublicKey)):
-            raise TypeError("Values must be of type Elgamal.PrivateKey and Elgamal.PublicKey.")
+        #if not (isinstance(private_key, ElgamalPrivateKey) and isinstance(public_key, ElgamalPublicKey)):
+        #    raise TypeError("Values must be of type Elgamal.PrivateKey and Elgamal.PublicKey.")
 
-        if public_key.p.bit_length() >> 3 <= 512 and private_key.p >> 3 <= 512:
-            raise ValueError("The module value must be greater than 2 bytes!")
+        #if public_key.p.bit_length() <= 512 and private_key.p.bit_length() <= 512:
+        #    raise ValueError("The module value must be greater than 2 bytes!")
 
-        self._private_key = private_key
-        self._public_key = public_key
+        self._pr_key = pr_key
+        self._pb_key = pb_key
         self._sysrand = SystemRandom()
 
     @staticmethod
@@ -90,28 +93,26 @@ class Elgamal:
         sysrand = SystemRandom()
         x = sysrand.randrange(2, p-1)
         y = fpow(g, x, p)
-        return Elgamal.PrivateKey(x, p), Elgamal.PublicKey(y, g, p)
+        return Elgamal.PrivateKey(x, g, p), Elgamal.PublicKey(y, g, p)
 
     @property
-    def num_bytes_to_encrypt(self):
-        """The maximum number of bytes that can be read from the file to encrypt."""
-        return (self._public_key.p.bit_length() >> 3) - 1
+    def num_bytes_private_module(self):
+        return ceil(self._pr_key.p.bit_length() / 8)
 
     @property
-    def num_bytes_to_decrypt(self):
-        """The maximum number of bytes that can be read from the file to be decrypted."""
-        return (self._private_key.p.bit_length() >> 3) * 2
+    def num_bytes_public_module(self):
+        return ceil(self._pb_key.p.bit_length() / 8)
 
     def _gen_session_key(self) -> SessionKey:
         """Method for generating a session key."""
         while True:
-            k = self._sysrand.randrange(2, self._public_key.p - 1)
-            if ext_gcd(k, self._public_key.p - 1).gcd == 1:
+            k = self._sysrand.randrange(2, self._pb_key.p - 1)
+            if ext_gcd(k, self._pb_key.p - 1).gcd == 1:
                 break
 
         return Elgamal.SessionKey(k)
 
-    def encrypt(self, data: int or bytes) -> Ciphertext or bytes:
+    def encrypt(self, data: int or bytes, byteorder: Literal["big", "little"] = "big") -> Ciphertext or bytes:
         """
         Method for encrypting data.
 
@@ -125,23 +126,23 @@ class Elgamal:
             of the module (little endian order).
         """
         session_key = self._gen_session_key()
-        a = fpow(self._public_key.g, session_key.k, self._public_key.p)
+        a = fpow(self._pb_key.g, session_key.k, self._pb_key.p)
 
         match data:
             case int():
-                b = fpow(self._public_key.y, session_key.k, self._public_key.p) * data % self._public_key.p
+                b = fpow(self._pb_key.y, session_key.k, self._pb_key.p) * data % self._pb_key.p
                 return Elgamal.Ciphertext(a, b)
 
             case bytes():
-                data = int.from_bytes(data, "little")
-                b = fpow(self._public_key.y, session_key.k, self._public_key.p) * data % self._public_key.p
-                block_size = self._public_key.p.bit_length() >> 3
-                return a.to_bytes(block_size, "little") + b.to_bytes(block_size, "little")
+                data = int.from_bytes(data, byteorder)
+                b = fpow(self._pb_key.y, session_key.k, self._pb_key.p) * data % self._pb_key.p
+                block_size = self.num_bytes_public_module
+                return a.to_bytes(block_size, byteorder) + b.to_bytes(block_size, byteorder)
 
             case _:
                 raise TypeError("Possible types: int, bytes.")
 
-    def decrypt(self, data: Ciphertext or bytes) -> int or bytes:
+    def decrypt(self, data: Ciphertext or bytes, byteorder: Literal["big", "little"] = "big") -> int or bytes:
         """
         Method for decrypting data
 
@@ -154,10 +155,10 @@ class Elgamal:
             of bytes must contain serially connected numbers A and B in byte representation.
             The length of the total string must be the length of the module.
         """
-        def transform(a: int, b: int) -> int:
-            m1 = fpow(a, self._private_key.x, self._private_key.p)
-            m2 = modinv(m1, self._private_key.p)
-            m = m2 * b % self._private_key.p
+        def transform(_a: int, _b: int) -> int:
+            m1 = fpow(_a, self._pr_key.x, self._pr_key.p)
+            m2 = modinv(m1, self._pr_key.p)
+            m = m2 * _b % self._pr_key.p
             return m
 
         match data:
@@ -165,15 +166,18 @@ class Elgamal:
                 return transform(a, b)
 
             case bytes():
-                block_size = self._private_key.p.bit_length() >> 3
-                a = int.from_bytes(data[:block_size], "little")
-                b = int.from_bytes(data[block_size:], "little")
-                return transform(a, b).to_bytes(block_size - 1, "little")
+                block_size = self.num_bytes_private_module
+                a = int.from_bytes(data[:block_size], byteorder)
+                b = int.from_bytes(data[block_size:], byteorder)
+                return transform(a, b).to_bytes(block_size - 1, byteorder)
 
             case _:
                 raise TypeError("Possible types: Elgamal.Ciphertext, bytes.")
 
-    def make(self, data: int or Ciphertext or bytes, enc_proc: EncProc):
+    def make(self,
+             data: int or Ciphertext or bytes,
+             enc_proc: EncProc,
+             byteorder: Literal["big", "little"] = "big"):
         """
         Method for encrypting and decrypting data.
 
@@ -195,10 +199,10 @@ class Elgamal:
         """
         match enc_proc:
             case EncProc.ENCRYPT:
-                return self.encrypt(data)
+                return self.encrypt(data, byteorder)
 
             case EncProc.DECRYPT:
-                return self.decrypt(data)
+                return self.decrypt(data, byteorder)
 
             case _:
                 raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

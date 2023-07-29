@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RSA</class>
- <widget class="QWidget" name="RSA">
+ <class>RSADS</class>
+ <widget class="QWidget" name="RSADS">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>907</width>
-    <height>610</height>
+    <width>830</width>
+    <height>609</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -81,34 +81,6 @@
          </layout>
         </widget>
        </item>
-       <item>
-        <widget class="QGroupBox" name="group_box_output">
-         <property name="title">
-          <string>Output text</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QTextEdit" name="text_edit_output">
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab_document">
@@ -122,11 +94,8 @@
     <layout class="QHBoxLayout" name="horizontal_layout_1">
      <item>
       <layout class="QVBoxLayout" name="vertical_layout_2">
-       <property name="spacing">
-        <number>20</number>
-       </property>
        <item>
-        <widget class="QGroupBox" name="group_box_options">
+        <widget class="QGroupBox" name="group_box_sign">
          <property name="maximumSize">
           <size>
            <width>400</width>
@@ -134,9 +103,53 @@
           </size>
          </property>
          <property name="title">
+          <string>Signature</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QFormLayout" name="form_layout_sign">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::ExpandingFieldsGrow</enum>
+            </property>
+            <property name="leftMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>4</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_sign">
+              <property name="text">
+               <string>Sign:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="line_edit_sign"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="group_box_options">
+         <property name="title">
           <string>Options</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
+         <layout class="QVBoxLayout" name="verticalLayout_5">
           <property name="leftMargin">
            <number>0</number>
           </property>
@@ -170,32 +183,72 @@
             <item row="0" column="1">
              <widget class="QSpinBox" name="spin_box_key_size">
               <property name="minimum">
-               <number>64</number>
+               <number>128</number>
               </property>
               <property name="maximum">
-               <number>99999</number>
+               <number>8192</number>
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_p">
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="group_box_pb">
+         <property name="maximumSize">
+          <size>
+           <width>400</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>Public key</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QFormLayout" name="form_layout_pb">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::ExpandingFieldsGrow</enum>
+            </property>
+            <property name="leftMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>4</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_pb_key">
               <property name="text">
-               <string>P (hex):</string>
+               <string>Public key:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="line_edit_pb_key"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_pb_module">
+              <property name="text">
+               <string>Module:</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QLineEdit" name="line_edit_p"/>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_q">
-              <property name="text">
-               <string>Q (hex):</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLineEdit" name="line_edit_q"/>
+             <widget class="QLineEdit" name="line_edit_pb_module"/>
             </item>
            </layout>
           </item>
@@ -213,7 +266,7 @@
          <property name="title">
           <string>Private key</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="leftMargin">
            <number>0</number>
           </property>
@@ -240,7 +293,7 @@
             <item row="0" column="0">
              <widget class="QLabel" name="label_pr_key">
               <property name="text">
-               <string>Private key (hex):</string>
+               <string>Private key:</string>
               </property>
              </widget>
             </item>
@@ -250,78 +303,12 @@
             <item row="1" column="0">
              <widget class="QLabel" name="label_pr_module">
               <property name="text">
-               <string>Module (hex):</string>
+               <string>Module:</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
              <widget class="QLineEdit" name="line_edit_pr_module"/>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="group_box_pb">
-         <property name="maximumSize">
-          <size>
-           <width>400</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="title">
-          <string>Public key</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_5">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <layout class="QFormLayout" name="form_layout_pb">
-            <property name="fieldGrowthPolicy">
-             <enum>QFormLayout::ExpandingFieldsGrow</enum>
-            </property>
-            <property name="horizontalSpacing">
-             <number>-1</number>
-            </property>
-            <property name="leftMargin">
-             <number>4</number>
-            </property>
-            <property name="rightMargin">
-             <number>4</number>
-            </property>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_pb_key">
-              <property name="text">
-               <string>Public key (hex):</string>
-              </property>
-              <property name="scaledContents">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="line_edit_pb_key"/>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_pb_module">
-              <property name="text">
-               <string>Module (hex):</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="line_edit_pb_module"/>
             </item>
            </layout>
           </item>
@@ -361,7 +348,17 @@
        <item>
         <layout class="QHBoxLayout" name="horizontal_layout_2">
          <item>
-          <widget class="QComboBox" name="combo_box_enc_proc"/>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
          <item>
           <widget class="QPushButton" name="button_make">
@@ -394,6 +391,16 @@
             <string/>
            </property>
           </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QComboBox" name="combo_box_sign_proc"/>
+         </item>
+         <item>
+          <widget class="QComboBox" name="combo_box_hash_alg"/>
          </item>
         </layout>
        </item>

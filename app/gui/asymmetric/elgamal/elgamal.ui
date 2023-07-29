@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>568</width>
-    <height>394</height>
+    <width>795</width>
+    <height>540</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -160,7 +160,7 @@
             <item row="0" column="0">
              <widget class="QLabel" name="label_key_size">
               <property name="text">
-               <string>Key size (bit):</string>
+               <string>Key size:</string>
               </property>
              </widget>
             </item>
@@ -174,45 +174,133 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_module_p">
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="group_box_pr_key">
+         <property name="title">
+          <string>Private key</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QFormLayout" name="form_layout_pr_key">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::ExpandingFieldsGrow</enum>
+            </property>
+            <property name="leftMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>4</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_pr_key_x">
               <property name="text">
-               <string>Module p (hex):</string>
+               <string>X:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="line_edit_pr_key_x"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_pr_key_g">
+              <property name="text">
+               <string>G:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_pr_key_p">
+              <property name="text">
+               <string>P:</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QLineEdit" name="line_edit_module_p"/>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_public_key_g">
-              <property name="text">
-               <string>Public key g (hex):</string>
-              </property>
-             </widget>
+             <widget class="QLineEdit" name="line_edit_pr_key_g"/>
             </item>
             <item row="2" column="1">
-             <widget class="QLineEdit" name="line_edit_public_key_g"/>
+             <widget class="QLineEdit" name="line_edit_pr_key_p"/>
             </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_public_key_y">
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="group_box_pb_key">
+         <property name="title">
+          <string>Public key</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QFormLayout" name="form_layout_pb_key">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::ExpandingFieldsGrow</enum>
+            </property>
+            <property name="leftMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>4</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_pb_key_y">
               <property name="text">
-               <string>Public key y (hex):</string>
+               <string>Y:</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
-             <widget class="QLineEdit" name="line_edit_public_key_y"/>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="line_edit_pb_key_y"/>
             </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_private_key_x">
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_pb_key_g">
               <property name="text">
-               <string>Private key x (hex):</string>
+               <string>G:</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
-             <widget class="QLineEdit" name="line_edit_private_key_x"/>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_pb_key_p">
+              <property name="text">
+               <string>P:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="line_edit_pb_key_g"/>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="line_edit_pb_key_p"/>
             </item>
            </layout>
           </item>

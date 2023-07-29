@@ -1,10 +1,14 @@
 # This module contains the implementation of the widget for working
 # with the encryption algorithm "XOR".
+from io import BytesIO
+from typing import Literal, Optional
+
 from PyQt6.QtWidgets import (
     QMessageBox,
     QMenu,
     QFileDialog,
-    QVBoxLayout
+    QVBoxLayout,
+    QTextEdit,
 )
 from PyQt6.QtCore import QUrl
 
@@ -14,15 +18,13 @@ from .xor_ui import Ui_XOR
 from app.crypto.symmetric import XOR
 from app.crypto.prngs import RC4
 from app.crypto.common import EncProc
-from app.gui.file_processing import FileProcessing
 from app.gui.widgets import (
     DragDropWidget,
-    BaseQWidget
+    BaseQWidget,
+    BaseQThread,
+    PBar,
 )
-from app.gui.const import (
-    XOR_SUPPORT_EXT,
-    MAX_BYTES_READ
-)
+from app.gui.const import XOR_SUPPORT_EXT
 
 
 class XORWidget(BaseQWidget):
@@ -77,27 +79,47 @@ class XORWidget(BaseQWidget):
 
         match self.ui.tab_widget.currentWidget():
             case self.ui.tab_text:
-                self._tab_text_processing(cipher, enc_proc)
+                cipher.set_reset_state_flag(False)
+                self.ui.text_edit_output.setText("")
+
+                thread_worker = DataProcessing(
+                    cipher=cipher,
+                    input_string=self.ui.text_edit_input.toPlainText(),
+                    output_text_edit=self.ui.text_edit_output,
+                    mode="string",
+                    enc_proc=enc_proc
+                )
 
             case self.ui.tab_document:
                 cipher.set_reset_state_flag(False)
-                self._tab_document_processing(cipher, enc_proc)
+
+                if self.file_path.isEmpty():
+                    QMessageBox.warning(self, "Warning!", "File not selected!")
+                    return
+
+                # We get the path to the output file from the user.
+                file_path_output, _ = QFileDialog.getSaveFileName(
+                    parent=self,
+                    caption="Save new file",
+                    directory="",
+                    filter=XOR_SUPPORT_EXT,
+                )
+
+                if not file_path_output:
+                    return
+
+                thread_worker = DataProcessing(
+                    cipher=cipher,
+                    input_file_path=self.file_path.toLocalFile(),
+                    output_file_path=file_path_output,
+                    mode="file",
+                    enc_proc=enc_proc,
+                )
 
             case _:
-                pass
+                assert False
 
-    def _tab_text_processing(self, cipher: XOR, enc_proc: EncProc) -> None:
-        """Method for encryption on the text processing tab."""
-        data = self.ui.text_edit_input.toPlainText()
-
-        try:
-            processed_data = cipher.make(data, enc_proc)
-
-        except (TypeError, ValueError) as e:
-            QMessageBox.warning(self, "Warning!", e.args[0])
-            return
-
-        self.ui.text_edit_output.setText(processed_data)
+        self.thread_ready.emit(thread_worker)
 
     def _tab_document_processing(self, cipher: XOR, enc_proc: EncProc) -> None:
         """Method for encryption on the document processing tab."""
@@ -116,11 +138,6 @@ class XORWidget(BaseQWidget):
         if not file_path_output:
             return
 
-        # We create a stream object that will encrypt the contents of the file, then we send
-        # the object to the main window, which will launch it.
-        thread_worker = FileProcessing(cipher, enc_proc, self.file_path.toLocalFile(), file_path_output,
-                                       "rb", "wb", read_block_size=MAX_BYTES_READ)
-        self.thread_ready.emit(thread_worker)
 
     def _action_gen_iv_clicked(self) -> None:
         """Method for generating an initialization vector."""
@@ -186,3 +203,98 @@ class XORWidget(BaseQWidget):
     def _file_path_changed(self, file: QUrl) -> None:
         """Method - a slot for processing a signal from the dragdrop widget to get the path to the file."""
         self.file_path = file
+
+
+
+class DataProcessing(BaseQThread):
+    def __init__(
+            self,
+            cipher: XOR,
+            *,
+            output_text_edit: Optional[QTextEdit] = None,
+            input_string: str = "",
+            input_file_path: Optional[str] = None,
+            output_file_path: Optional[str] = None,
+            mode: Literal["file", "string"] = "string",
+            enc_proc: EncProc = EncProc.ENCRYPT,
+            **options
+    ) -> None:
+        super(DataProcessing, self).__init__()
+
+        self._cipher = cipher
+        self._output_text_edit = output_text_edit
+        self._input_string = input_string
+        self._input_file_path = input_file_path
+        self._output_file_path = output_file_path
+        self._mode = mode
+        self._enc_proc = enc_proc
+
+        self._read_block_size = options.get("read_block_size", 4096)
+
+        self._is_worked = True
+
+    def close(self) -> None:
+        self._is_worked = False
+        self.wait()
+
+    def run(self) -> None:
+        output_buffer = BytesIO()
+
+        match self._mode, self._enc_proc:
+            case "file", _:
+                try:
+                    input_buffer = open(self._input_file_path, "rb")
+                    output_buffer = open(self._output_file_path, "wb")
+                except IOError:
+                    self.message.emit((
+                        BaseQThread.MessageType.WARNING,
+                        "Warning!",
+                        "Error opening file!",
+                    ))
+                    return
+
+            case "string", EncProc.ENCRYPT:
+                input_buffer = BytesIO(self._input_string.encode("utf-8"))
+
+            case "string", EncProc.DECRYPT:
+                input_buffer = BytesIO(bytes.fromhex(self._input_string))
+
+        try:
+            input_buffer.seek(0, 2)
+            input_buffer_size = input_buffer.tell()
+            input_buffer.seek(0, 0)
+
+            self.pbar.emit((PBar.Commands.SET_RANGE, 0, input_buffer_size))
+            self.pbar.emit((PBar.Commands.SET_VALUE, 0))
+            self.pbar.emit((PBar.Commands.SHOW,))
+
+            while (block := input_buffer.read(self._read_block_size)) and self._is_worked:
+                processed_block = self._cipher.make(block, self._enc_proc)
+                output_buffer.write(processed_block)
+
+                self.pbar.emit((PBar.Commands.SET_VALUE, input_buffer.tell()))
+
+            if self._mode == "string":
+                match self._enc_proc:
+                    case EncProc.ENCRYPT:
+                        self._output_text_edit.append(output_buffer.getvalue().hex())
+
+                    case EncProc.DECRYPT:
+                        self._output_text_edit.append(output_buffer.getvalue().decode("utf-8"))
+
+                    case _:
+                        assert False
+
+        except Exception as e:
+            self.message.emit((
+                BaseQThread.MessageType.CRITICAL,
+                "Unknown error!",
+                "An error occurred while working with file or when determining the file size.\n"
+                f"({e.args[0]})"
+            ))
+
+        finally:
+            input_buffer.close()
+            output_buffer.close()
+            self.pbar.emit((PBar.Commands.CLOSE,))
+

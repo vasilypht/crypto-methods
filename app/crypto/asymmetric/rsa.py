@@ -1,6 +1,8 @@
 # The module contains the implementation of the RSA asymmetric encryption algorithm
-from dataclasses import dataclass
 from secrets import SystemRandom
+from dataclasses import dataclass
+from math import ceil
+from typing import Literal
 
 from app.crypto.mathlib import (
     ext_gcd,
@@ -12,46 +14,44 @@ from app.crypto.common import EncProc
 
 
 class RSA:
-
-    @dataclass(frozen=True)
-    class PrivateKey:
-        d: int
-        n: int
-
-    @dataclass(frozen=True)
+    @dataclass
     class PublicKey:
         e: int
         n: int
 
-    def __init__(self, private_key: PrivateKey, public_key: PublicKey) -> None:
+    @dataclass
+    class PrivateKey:
+        d: int
+        n: int
+
+    def __init__(self, private_key: PrivateKey = None, public_key: PublicKey = None) -> None:
         """
         Implementation of the asymmetric RSA encryption algorithm.
 
         private_key
-            Private key of type RSA.PrivateKey, which contains the number D and the modulus N.
+            Private key of type RSAPrivateKey, which contains the number D and the modulus N.
         public_key
-            Public key of type RSA.PublicKey, which contains the number E and the modulus N.
+            Public key of type RSAPublicKey, which contains the number E and the modulus N.
         """
-        if not (isinstance(private_key, RSA.PrivateKey) and isinstance(public_key, RSA.PublicKey)):
-            raise TypeError("Arguments must be of type RSA.PrivateKey and RSA.PublicKey.")
 
-        if public_key.n.bit_length() >> 3 <= 512 and private_key.n >> 3 <= 512:
-            raise ValueError("The module value must be greater than 2 bytes!")
+        #if not (isinstance(private_key, (RSA.PrivateKey, None)) and isinstance(public_key, RSA.PublicKey)):
+        #    raise TypeError("Arguments must be of type RSA.PrivateKey and RSA.PublicKey.")
 
-        self._private_key = private_key
-        self._public_key = public_key
+        #if public_key.n.bit_length() >> 3 <= 512 and private_key.n >> 3 <= 512:
+        #    raise ValueError("The module value must be greater than 2 bytes!")
 
-    @property
-    def num_bytes_to_encrypt(self):
-        """The maximum number of bytes that can be read from the file to encrypt."""
-        return (self._public_key.n.bit_length() >> 3) - 1
+        self._pr_key = private_key
+        self._pb_key = public_key
 
     @property
-    def num_bytes_to_decrypt(self):
-        """The maximum number of bytes that can be read from the file to be decrypted."""
-        return self._private_key.n.bit_length() >> 3
+    def num_bytes_public_module(self):
+        return ceil(self._pb_key.n.bit_length() / 8)
 
-    def encrypt(self, data: int or bytes) -> int or bytes:
+    @property
+    def num_bytes_private_module(self):
+        return ceil(self._pr_key.n.bit_length() / 8)
+
+    def encrypt(self, data: int or bytes, byteorder: Literal["big", "little"] = "big") -> int or bytes:
         """
         Method for encrypting data.
 
@@ -63,17 +63,17 @@ class RSA:
         """
         match data:
             case int():
-                return fpow(data, self._public_key.e, self._public_key.n)
+                return fpow(data, self._pb_key.e, self._pb_key.n)
 
             case bytes():
-                data = int.from_bytes(data, "little")
-                encrypted_data = fpow(data, self._public_key.e, self._public_key.n)
-                return encrypted_data.to_bytes(self._public_key.n.bit_length() >> 3, "little")
+                data = int.from_bytes(data, byteorder)
+                encrypted_data = fpow(data, self._pb_key.e, self._pb_key.n)
+                return encrypted_data.to_bytes(self.num_bytes_public_module, byteorder)
 
             case _:
                 raise TypeError("Possible types: int, bytes.")
 
-    def decrypt(self, data: int or bytes) -> int or bytes:
+    def decrypt(self, data: int or bytes, byteorder: Literal["big", "little"] = "big") -> int or bytes:
         """
         Method for decrypting data
 
@@ -87,17 +87,17 @@ class RSA:
         """
         match data:
             case int():
-                return fpow(data, self._private_key.d, self._private_key.n)
+                return fpow(data, self._pr_key.d, self._pr_key.n)
 
             case bytes():
-                data = int.from_bytes(data, "little")
-                decrypted_data = fpow(data, self._private_key.d, self._private_key.n)
-                return decrypted_data.to_bytes((self._private_key.n.bit_length() >> 3) - 1, "little")
+                data = int.from_bytes(data, byteorder)
+                decrypted_data = fpow(data, self._pr_key.d, self._pr_key.n)
+                return decrypted_data.to_bytes(self.num_bytes_private_module - 1, byteorder)
 
             case _:
                 raise TypeError("Possible types: int, bytes.")
 
-    def make(self, data: int or bytes, enc_proc: EncProc) -> int or bytes:
+    def make(self, data: int or bytes, enc_proc: EncProc, byteorder: Literal["big", "little"] = "big") -> int or bytes:
         """
         Method for encrypting and decrypting data.
 
@@ -115,10 +115,10 @@ class RSA:
         """
         match enc_proc:
             case EncProc.ENCRYPT:
-                return self.encrypt(data)
+                return self.encrypt(data, byteorder)
 
             case EncProc.DECRYPT:
-                return self.decrypt(data)
+                return self.decrypt(data, byteorder)
 
             case _:
                 raise TypeError("Possible types: EncProc.ENCRYPT, EncProc.DECRYPT.")

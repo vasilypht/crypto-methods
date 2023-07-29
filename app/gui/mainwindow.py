@@ -14,8 +14,10 @@ from .mainwindow_ui import Ui_MainWindow
 from .defmodules import WIDGETS_DEFAULT
 from .symmetric import WIDGETS_SYMMETRIC
 from .asymmetric import WIDGETS_ASYMMETRIC
+from .hash import WIDGETS_HASH
 from .cryptotools import WIDGETS_CRYPTOTOOLS
 from .cryptoprotocols import WIDGETS_CRYPTOPROTOCOLS
+from .signature import WIDGETS_SIGNATURES
 from .widgets import (
     BaseQThread,
     PBar
@@ -24,6 +26,8 @@ from .widgets import (
 WIDGETS_CIPHERS = {
     "Symmetric ciphers": WIDGETS_SYMMETRIC,
     "Asymmetric ciphers": WIDGETS_ASYMMETRIC,
+    "Hash functions": WIDGETS_HASH,
+    "Digital signature": WIDGETS_SIGNATURES,
     "Cryptographic Protocols": WIDGETS_CRYPTOPROTOCOLS,
     "Crypto tools": WIDGETS_CRYPTOTOOLS
 }
@@ -113,6 +117,23 @@ class MainWindow(QMainWindow):
                 pass
 
     def _task_start_handler(self, thread: BaseQThread):
+        def _message_handler(_type, _title, _text):
+            match _type:
+                case BaseQThread.MessageType.WARNING:
+                    QMessageBox.warning(self, _title, _text)
+
+                case BaseQThread.MessageType.INFORMATION:
+                    QMessageBox.information(self, _title, _text)
+
+                case BaseQThread.MessageType.CRITICAL:
+                    QMessageBox.critical(self, _title, _text)
+
+                case BaseQThread.MessageType.QUESTION:
+                    QMessageBox.question(self, _title, _text)
+
+                case _:
+                    assert False
+
         if self._thread_file_worker is not None:
             if not self._thread_file_worker.isFinished():
                 QMessageBox.warning(
@@ -123,7 +144,7 @@ class MainWindow(QMainWindow):
 
         self._thread_file_worker = thread
         # bind to receive and display error messages from the stream
-        self._thread_file_worker.message.connect(lambda m: QMessageBox.warning(self, "Warning!", m))
+        self._thread_file_worker.message.connect(lambda m: _message_handler(*m))
         # bind to receive commands to initialize and update the progress bar
         self._thread_file_worker.pbar.connect(self.progress_bar.event_handler)
         # bind to stop the flow when the cancel button is clicked

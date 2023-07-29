@@ -19,6 +19,36 @@ IC_TABLE: Final = {
     Languages.ENGLISH: 0.0644
 }
 
+
+CURVE_GOST256: Final = {
+    "name": "gost256",
+    "p": 0x8000000000000000000000000000000000000000000000000000000000000431,
+    "a": 0x7,
+    "b": 0x5fbff498aa938ce739b8e022fbafef40563f6e6a3472fc2a514c0ce9dae23b7e,
+    "q": 0x8000000000000000000000000000000150fe8a1892976154c59cfc193accf5b3,
+    "n": 1,
+    "base_point": (0x2,
+                   0x8e2a8a0e65147d4bd6316030e16d19c85c97f0a9ca267122b96abbcea7e8fc8),
+}
+
+CURVE_GOST512: Final = {
+    "name": "gost256",
+    "p": 0x4531acd1fe0023c7550d267b6b2fee80922b14b2ffb90f04d4eb7c09b5d2d15df1d852741af4704a0458047e80e4546d35b8336fac224dd81664bbf528be6373,
+    "a": 0x7,
+    "b": 0x1cff0806a31116da29d8cfa54e57eb748bc5f377e49400fdd788b649eca1ac4361834013b2ad7322480a89ca58e0cf74bc9e540c2add6897fad0a3084f302adc,
+    "q": 0x4531acd1fe0023c7550d267b6b2fee80922b14b2ffb90f04d4eb7c09b5d2d15da82f2d7ecb1dbac719905c5eecc423f1d86e25edbe23c595d644aaf187e6e6df,
+    "n": 1,
+    "base_point": (0x24d19cc64572ee30f396bf6ebbfd7a6c5213b3b3d7057cc825f91093a68cd762fd60611262cd838dc6b60aa7eee804e28bc849977fac33b4b530f1b120248a9a,
+                   0x2bb312a43bd2ce6e0d020613c857acddcfbf061e91e5f2c3f32447c259f39b2c83ab156d77f1496bf7eb3351e1ee4e43dc1a18b91b24640b6dbb92cb1add371e),
+}
+
+
+CURVES: Final = {
+    "gost256": CURVE_GOST256,
+    "gost512": CURVE_GOST512,
+}
+
+
 POLYBIUS_SQUARE_EN: Final = {
     (1, 1): ("A",), (2, 1): ("B",), (3, 1): ("C",), (4, 1): ("D",),     (5, 1): ("E",),
     (1, 2): ("F",), (2, 2): ("G",), (3, 2): ("H",), (4, 2): ("I", "J"), (5, 2): ("K",),
